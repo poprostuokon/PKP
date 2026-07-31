@@ -1,0 +1,24 @@
+CREATE TABLE silver.disruption_log (
+    id                   NUMBER                    	GENERATED ALWAYS AS IDENTITY, 
+    schedule_id          NUMBER                		NOT NULL,
+    order_id             NUMBER                		NOT NULL,
+    train_order_id       NUMBER                		NOT NULL,
+    operating_date       DATE                      	NOT NULL,
+    dsta_id           	 NUMBER                		NOT NULL,   	-- → silver.def_station.id (zrobić sprawdzenie i dodać  stacje do słownika gdy nie znajdzie id stacji)
+    sequence_number      NUMBER                 	NOT NULL,
+	-- utrudnienie
+	disruption_type_code VARCHAR2(20 CHAR),   						-- → silver.def_disruption_cause.code (disruptionTypeCode) bez FK bo może być null (tylko message)
+	message				 VARCHAR2(1000 CHAR),						-- może być null
+	-- detekcja zmian
+    change_hash          CHAR(64)                  	NOT NULL,   	-- hash pól śledzonych
+	-- czas
+    snapshot_ts          TIMESTAMP WITH TIME ZONE  	NOT NULL,
+    loaded_at            TIMESTAMP WITH TIME ZONE  	NOT NULL,
+    CONSTRAINT pk_dilog_id PRIMARY KEY (operating_date, id) USING INDEX LOCAL,
+	CONSTRAINT fk_dilog_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id)
+)
+PARTITION BY RANGE (operating_date)
+INTERVAL (NUMTODSINTERVAL(1, 'DAY'))
+(
+    PARTITION p_anchor VALUES LESS THAN (DATE '2026-01-01')
+);

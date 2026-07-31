@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv*/
+env/
+ENV/
+OCI/
+Database/
+test_api/
+
+
+# API Keys & Secrets
+.env
+!.env.example
+*.key
+config_local.py
+
+# Data files
+*.csv
+*.xlsx
+output/
+logs/
+png/*/*
+
+# Data files — ignoruj zawartość ale zachowaj strukturę folderów
+data/**
+!data/
+
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Loging
+*.log
+
+
+# dbt
+target/
+dbt_packages/
+logs/
+.user.yml
+
+
+# Airflow prod
+airflow_prod/.env
+airflow_prod/logs/

@@ -1,0 +1,9 @@
+CREATE TABLE silver.def_city (
+    id             NUMBER                    GENERATED ALWAYS AS IDENTITY,  -- lokalne ID
+    name           VARCHAR2(200 CHAR)        NOT NULL,
+    station_count  NUMBER,                                              	-- z API, kontrola spójności
+    is_active      BOOLEAN                   DEFAULT TRUE NOT NULL,
+    loaded_at      TIMESTAMP WITH TIME ZONE  NOT NULL,
+    CONSTRAINT pk_dcit_id PRIMARY KEY (id),
+    CONSTRAINT uq_dcit_name UNIQUE (name)
+);
