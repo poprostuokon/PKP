@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pkp-ingestion"
+version = "0.1.0"
+description = "Ingestion bronze dla danych ruchu pociagow PKP PLK (Wroclaw Glowny)"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+    "oci>=2.120",
+]
+
+[tool.setuptools.packages.find]
+# szukamy pakietu pkp_ingestion w biezacym katalogu (ingestion/)
+include = ["pkp_ingestion*"]

@@ -21,3 +21,7 @@ ENV = os.getenv("PKP_ENV", "DEV")
 
 # Katalog bazowy struktury Data (domyslnie 'Data' w biezacym katalogu).
 DATA_ROOT = Path(os.getenv("PKP_DATA_ROOT", "Data"))
+
+# --- OCI Object Storage (upload bronze) ---
+OCI_PROFILE = os.getenv("PKP_OCI_PROFILE", "DEFAULT")   # profil z ~/.oci/config
+OCI_BUCKET = os.getenv("PKP_OCI_BUCKET", "bronze-pkp")  # nazwa bucketu
