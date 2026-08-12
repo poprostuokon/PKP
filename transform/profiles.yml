@@ -1,0 +1,24 @@
+# profiles.yml — polaczenie dbt do Oracle ADB (wallet, thin mode)
+# Trzymaj poza repo (albo w ~/.dbt/). Sekrety z env, nie na sztywno.
+#
+# Wymagane env (te same co db.py):
+#   PKP_DB_USER, PKP_DB_PASSWORD, PKP_DB_DSN (np. pkpdev_high)
+#   PKP_WALLET_DIR, PKP_WALLET_PASSWORD
+# Dodatkowo dla dbt-oracle wskaz wallet:
+#   TNS_ADMIN = ten sam folder co PKP_WALLET_DIR
+#
+# dbt-oracle: thin mode -> ustaw zmienna ORA_PYTHON_DRIVER_TYPE=thin
+
+pkp:
+  target: dev
+  outputs:
+    dev:
+      type: oracle
+      user: "{{ env_var('PKP_DB_USER') }}"
+      password: "{{ env_var('PKP_DB_PASSWORD') }}"
+      database: PKPDEV
+      tns_name: "{{ env_var('PKP_DB_DSN') }}"
+      # wallet (mTLS) - jesli dbt-oracle w Twojej wersji wspiera te klucze:
+      wallet_location: "{{ env_var('PKP_WALLET_DIR') }}"
+      wallet_password: "{{ env_var('PKP_WALLET_PASSWORD') }}"
+      threads: 4

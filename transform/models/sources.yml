@@ -1,0 +1,36 @@
+version: 2
+
+sources:
+  - name: stg
+    description: "Tabele landing (surowy JSON z bucketu) zapelniane przez prepare_stg."
+    schema: STG
+    tables:
+      - name: land_carriers # nazwa obiektu w dbt, która będzie używana w modelach (alias)
+        identifier: land_carriers # nazwa obiektu w bazie danych
+
+      - name: land_cities
+        identifier: raw_cities
+
+      - name: land_stations
+        identifier: raw_stations
+
+      - name: land_commercial_categories
+        identifier: raw_commercial_categories
+
+      - name: land_stop_types
+        identifier: raw_stop_types
+
+      - name: land_disruption_types
+        identifier: raw_disruption_types
+
+      - name: land_train_statuses
+        identifier: raw_train_statuses
+
+      - name: land_schedules
+        identifier: raw_schedules
+
+      - name: land_operations
+        identifier: raw_operations
+
+      - name: land_disruptions
+        identifier: raw_disruptions

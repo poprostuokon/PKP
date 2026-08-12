@@ -1,0 +1,24 @@
+name: 'pkp'
+version: '1.0.0'
+profile: 'pkp'
+
+# Sciezki do plikow projektu
+model-paths: ["models"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# Materializacje per warstwa:
+#   staging -> widoki (lekkie, JSON_TABLE na landing STG)
+#   silver  -> tabele/incremental (MERGE, dedup) - dopniemy pozniej
+models:
+  pkp:
+    staging:
+      +materialized: view
+      +schema: stg          # widoki staging w schemacie STG
+    silver:
+      +materialized: incremental
+      +schema: silver
