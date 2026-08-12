@@ -1,5 +1,6 @@
 CREATE TABLE silver.schedule_details (
-    sche_id  			NUMBER                        	NOT NULL,
+    schedule_id     	NUMBER     						NOT NULL,   -- edycja rozkladu (np. 2026)
+    order_id        	NUMBER      					NOT NULL,   -- wersja tresci planu
     -- pozycja na trasie
     order_number        NUMBER                     		NOT NULL,   -- MOŻE być ujemny (zagranica)
     dsta_id          	NUMBER                    		NOT NULL,   -- → silver.def_station.id
@@ -23,8 +24,7 @@ CREATE TABLE silver.schedule_details (
     departure_train_no  VARCHAR2(50 CHAR),
     -- postój
     dstty_id        	NUMBER,                                		-- → silver.def_stop_type.id
-    CONSTRAINT pk_scde_id PRIMARY KEY (sche_id, order_number),
-    CONSTRAINT fk_scde_sche_id FOREIGN KEY (sche_id) REFERENCES silver.schedule_header(id) ON DELETE CASCADE,
+    CONSTRAINT pk_scde_id      PRIMARY KEY (schedule_id, order_id, order_number),
 	CONSTRAINT fk_scde_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id),
 	CONSTRAINT fk_scde_dstty_id FOREIGN KEY (dstty_id) REFERENCES silver.def_stop_type(id)
 );
