@@ -80,6 +80,14 @@ def bucket_object_name(filename: str) -> str:
     return f"daily/{category}/{subtype}/date={part_date}/{filename}"
 
 
+def bucket_prefix(category: str, name: str, part_date: str) -> str:
+    """
+    Prefiks folderu w buckecie dla danego feedu i dnia (do listowania obiektow):
+      daily/<category>/<name>/date=YYYYMMDD/
+    """
+    return f"daily/{category}/{name}/date={part_date}/"
+
+
 def archive_dir(part_date: str) -> Path:
     """Lokalny katalog na pliki wgrane pomyslnie: Data/<ENV>/ARCHIVE/DAILY/<YYYYMMDD>."""
     return DATA_ROOT / ENV / "ARCHIVE" / "DAILY" / part_date

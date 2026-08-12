@@ -14,6 +14,8 @@ zeby ten modul nie byl zwiazany z konkretnym zrodlem polaczenia.
 
 from datetime import date
 
+import oracledb
+
 from .storage.oci_reader import OciReader
 from .paths import bucket_prefix
 from .client.config import DICTIONARY_ENDPOINTS, SPECIAL_DICTIONARIES, DATA_ENDPOINTS
@@ -49,6 +51,8 @@ def prepare_stg(connection, day: str | None = None) -> None:
 
         # 2) listujemy + 3) pobieramy i wstawiamy caly dokument jako 1 wiersz
         objects = reader.list_objects(prefix)
+        cur.setinputsizes(doc=oracledb.DB_TYPE_CLOB)
+
         for object_name in objects:
             doc = reader.download_text(object_name)
             cur.execute(
