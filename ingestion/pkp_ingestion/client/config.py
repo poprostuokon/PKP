@@ -12,7 +12,7 @@ Docelowo dojda tu endpointy schedules/operations/disruptions.
 BASE_URL = "https://pdp-api.plk-sa.pl"
 
 # Domyslny timeout requestu (sekundy).
-DEFAULT_TIMEOUT = 30
+DEFAULT_TIMEOUT = 10
 
 # --- Retry / backoff ---
 # Ponawiamy tylko bledy przejsciowe: 429 (rate limit) + 5xx oraz bledy sieciowe.

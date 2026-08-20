@@ -46,13 +46,22 @@ def prepare_stg(connection, day: str | None = None) -> None:
         table = f"land_{name}"
         prefix = bucket_prefix(category, name, part_date)
 
-        # 1) czyscimy landing (scratch)
+        # 1) listujemy pliki - jesli brak, POMIJAMY feed (bez TRUNCATE, landing nietkniety)
+        objects = reader.list_objects(prefix)
+        if not objects:
+            print(f"--  stg.{table:26} pominieto (brak pliku)  [{prefix}]")
+            continue
+
+        # wyczysc ewentualny bind ':doc' z poprzedniej iteracji
+        # (setinputsizes utrzymuje sie na kursorze -> TRUNCATE bez :doc rzucilby DPY-4008)
+        cur.setinputsizes()
+
+        # 2) czyscimy landing (scratch) - tylko gdy sa pliki do zaladowania
         cur.execute(f"TRUNCATE TABLE stg.{table}")
 
-        # 2) listujemy + 3) pobieramy i wstawiamy caly dokument jako 1 wiersz
-        objects = reader.list_objects(prefix)
+        # 3) pobieramy i wstawiamy caly dokument jako 1 wiersz
+        # duze dokumenty JSON (np. stations) przekraczaja limit VARCHAR2 -> bind jako CLOB
         cur.setinputsizes(doc=oracledb.DB_TYPE_CLOB)
-
         for object_name in objects:
             doc = reader.download_text(object_name)
             cur.execute(

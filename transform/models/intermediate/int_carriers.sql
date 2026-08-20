@@ -1,6 +1,6 @@
--- staging: przewoznicy (def_carrier) - rozbicie payload JSON na wiersze.
+-- intermediate: przewoznicy - rozbicie payload JSON na wiersze (ephemeral CTE).
 -- Struktura zrodla: { "generatedAt": ..., "carriers": [ {code, name, validFrom, validTo}, ... ] }
--- Zero logiki biznesowej - tylko JSON_TABLE + rename + casty.
+-- Zero logiki biznesowej - tylko JSON_TABLE + rename + casty. Uzywane w silver.def_carrier.
 
 with source as (
     select payload

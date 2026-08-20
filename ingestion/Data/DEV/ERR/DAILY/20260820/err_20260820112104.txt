@@ -1,0 +1,140 @@
+[2026-08-20T09:24:03.128466+00:00] UPLOAD ERROR
+  plik      : schedules_20260819_20260820111354.json
+  wyjatek   : RequestException: ("('Connection aborted.', TimeoutError('The write operation timed out'))", 'Request Endpoint: PUT https://objectstorage.eu-paris-1.oraclecloud.com/n/axk5oowdtk0z/b/bronze-pkp/o/daily%2Fdata%2Fschedules%2Fdate%3D20260820%2Fschedules_20260819_20260820111354.json See https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdk_troubleshooting.htm for help troubleshooting this error, or contact support and provide this full error message.')
+  traceback :
+Traceback (most recent call last):
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\urllib3\connectionpool.py", line 788, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\urllib3\connectionpool.py", line 493, in _make_request
+    conn.request(
+    ~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<6 lines>...
+        enforce_content_length=enforce_content_length,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\urllib3\connection.py", line 514, in request
+    self.send(chunk)
+    ~~~~~~~~~^^^^^^^
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\base_client.py", line 327, in send
+    return super(OCIConnection, self).send(str)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\bartlomiej.okoniewsk\AppData\Local\Programs\Python\Python314\Lib\http\client.py", line 1077, in send
+    self.sock.sendall(data)
+    ~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\bartlomiej.okoniewsk\AppData\Local\Programs\Python\Python314\Lib\ssl.py", line 1263, in sendall
+    v = self.send(byte_view[count:])
+  File "C:\Users\bartlomiej.okoniewsk\AppData\Local\Programs\Python\Python314\Lib\ssl.py", line 1232, in send
+    return self._sslobj.write(data)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+TimeoutError: The write operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\_vendor\requests\adapters.py", line 447, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        enforce_content_length=True
+    )
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\urllib3\connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\urllib3\util\retry.py", line 498, in increment
+    raise reraise(type(error), error, _stacktrace)
+          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\urllib3\util\util.py", line 38, in reraise
+    raise value.with_traceback(tb)
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\urllib3\connectionpool.py", line 788, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\urllib3\connectionpool.py", line 493, in _make_request
+    conn.request(
+    ~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<6 lines>...
+        enforce_content_length=enforce_content_length,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\urllib3\connection.py", line 514, in request
+    self.send(chunk)
+    ~~~~~~~~~^^^^^^^
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\base_client.py", line 327, in send
+    return super(OCIConnection, self).send(str)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\bartlomiej.okoniewsk\AppData\Local\Programs\Python\Python314\Lib\http\client.py", line 1077, in send
+    self.sock.sendall(data)
+    ~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\bartlomiej.okoniewsk\AppData\Local\Programs\Python\Python314\Lib\ssl.py", line 1263, in sendall
+    v = self.send(byte_view[count:])
+  File "C:\Users\bartlomiej.okoniewsk\AppData\Local\Programs\Python\Python314\Lib\ssl.py", line 1232, in send
+    return self._sslobj.write(data)
+           ~~~~~~~~~~~~~~~~~~^^^^^^
+urllib3.exceptions.ProtocolError: ('Connection aborted.', TimeoutError('The write operation timed out'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\base_client.py", line 1098, in request
+    response = self.session.request(
+        request.method,
+    ...<5 lines>...
+        stream=stream,
+        timeout=self.timeout)
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\_vendor\requests\sessions.py", line 536, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\_vendor\requests\sessions.py", line 652, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\_vendor\requests\adapters.py", line 509, in send
+    raise ConnectionError(err, request=request)
+oci._vendor.requests.exceptions.ConnectionError: ("('Connection aborted.', TimeoutError('The write operation timed out'))", 'Request Endpoint: PUT https://objectstorage.eu-paris-1.oraclecloud.com/n/axk5oowdtk0z/b/bronze-pkp/o/daily%2Fdata%2Fschedules%2Fdate%3D20260820%2Fschedules_20260819_20260820111354.json See https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdk_troubleshooting.htm for help troubleshooting this error, or contact support and provide this full error message.')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\BAOK\python\stream_mpk\ingestion\pkp_ingestion\upload.py", line 75, in run_upload
+    uploader.upload_file(path, object_name)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\BAOK\python\stream_mpk\ingestion\pkp_ingestion\storage\oci_uploader.py", line 36, in upload_file
+    resp = self.client.put_object(
+        namespace_name=self.namespace,
+    ...<3 lines>...
+        content_md5=md5_b64,          # OCI odrzuci (400) przy niezgodnosci
+    )
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\object_storage\object_storage_client.py", line 6179, in put_object
+    return retry_strategy.make_retrying_call(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.base_client.call_api,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        api_reference_link=api_reference_link,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        required_arguments=required_arguments)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\retry\retry.py", line 308, in make_retrying_call
+    response = func_ref(*func_args, **func_kwargs)
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\base_client.py", line 797, in call_api
+    response = self.request(request, allow_control_chars, operation_name, api_reference_link)
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\circuitbreaker.py", line 146, in wrapper
+    return self.call(function, *args, **kwargs)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\circuitbreaker.py", line 188, in call
+    return func(*args, **kwargs)
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\base_client.py", line 1148, in request
+    raise exceptions.RequestException(e)
+oci.exceptions.RequestException: ("('Connection aborted.', TimeoutError('The write operation timed out'))", 'Request Endpoint: PUT https://objectstorage.eu-paris-1.oraclecloud.com/n/axk5oowdtk0z/b/bronze-pkp/o/daily%2Fdata%2Fschedules%2Fdate%3D20260820%2Fschedules_20260819_20260820111354.json See https://docs.oracle.com/en-us/iaas/Content/API/Concepts/sdk_troubleshooting.htm for help troubleshooting this error, or contact support and provide this full error message.')
+
+------------------------------------------------------------

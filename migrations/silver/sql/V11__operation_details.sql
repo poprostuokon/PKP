@@ -16,5 +16,5 @@ CREATE TABLE silver.operation_details (
     dwell_time_sec       NUMBER,             -- actual_departure − actual_arrival
     CONSTRAINT pk_opde_id PRIMARY KEY (ophe_id, actual_sequence),
     CONSTRAINT fk_opde_ophe_id FOREIGN KEY (ophe_id) REFERENCES silver.operation_header(id) ON DELETE CASCADE,
-	CONSTRAINT fk_opde_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id)
+	--CONSTRAINT fk_opde_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id) -- są przypadki gdzie są wykonane trasy do stacji których nie ma w słowniku (api stacji nie zwrca takie ID ze słownika)
 );

@@ -3,34 +3,69 @@ version: 2
 sources:
   - name: stg
     description: "Tabele landing (surowy JSON z bucketu) zapelniane przez prepare_stg."
-    schema: STG
+    schema: stg
     tables:
       - name: land_carriers # nazwa obiektu w dbt, która będzie używana w modelach (alias)
         identifier: land_carriers # nazwa obiektu w bazie danych
 
       - name: land_cities
-        identifier: raw_cities
+        identifier: land_cities
 
       - name: land_stations
-        identifier: raw_stations
+        identifier: land_stations
 
       - name: land_commercial_categories
-        identifier: raw_commercial_categories
+        identifier: land_commercial_categories
 
       - name: land_stop_types
-        identifier: raw_stop_types
+        identifier: land_stop_types
 
       - name: land_disruption_types
-        identifier: raw_disruption_types
+        identifier: land_disruption_types
 
       - name: land_train_statuses
-        identifier: raw_train_statuses
+        identifier: land_train_statuses
 
       - name: land_schedules
-        identifier: raw_schedules
+        identifier: land_schedules
 
       - name: land_operations
-        identifier: raw_operations
+        identifier: land_operations
 
       - name: land_disruptions
-        identifier: raw_disruptions
+        identifier: land_disruptions
+
+  - name: silver
+    description: "Tabele silver."
+    schema: SILVER
+    tables:
+      - name: def_city
+        identifier: def_city
+      - name: def_station
+        identifier: def_station
+      - name: def_carrier
+        identifier: def_carrier
+      - name: def_train_status
+        identifier: def_train_status
+      - name: def_stop_type
+        identifier: def_stop_type
+      - name: def_commercial_category
+        identifier: def_commercial_category
+      - name: def_disruption_cause
+        identifier: def_disruption_cause
+      - name: schedule_header
+        identifier: schedule_header
+      - name: schedule_details
+        identifier: schedule_details
+      - name: operation_header
+        identifier: operation_header
+      - name: operation_details
+        identifier: operation_details
+      - name: operation_tracking_log
+        identifier: operation_tracking_log
+      - name: disruption_header
+        identifier: disruption_header
+      - name: disruption_details
+        identifier: disruption_details
+      - name: disruption_log
+        identifier: disruption_log

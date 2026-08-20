@@ -11,14 +11,11 @@ clean-targets:
   - "target"
   - "dbt_packages"
 
-# Materializacje per warstwa:
-#   staging -> widoki (lekkie, JSON_TABLE na landing STG)
-#   silver  -> tabele/incremental (MERGE, dedup) - dopniemy pozniej
+
 models:
   pkp:
-    staging:
-      +materialized: view
-      +schema: stg          # widoki staging w schemacie STG
+    intermediate:
+      +materialized: ephemeral  
     silver:
       +materialized: incremental
       +schema: silver
