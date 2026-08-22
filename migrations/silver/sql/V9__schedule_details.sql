@@ -25,7 +25,7 @@ CREATE TABLE silver.schedule_details (
     -- postój
     dstty_id        	NUMBER,                                		-- → silver.def_stop_type.id
     CONSTRAINT pk_scde_id      PRIMARY KEY (schedule_id, order_id, order_number),
-	CONSTRAINT fk_scde_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id),
+	--CONSTRAINT fk_scde_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id), -- przez APi potrafi wgrać stację, której nie ma w silver.def_station
 	CONSTRAINT fk_scde_dstty_id FOREIGN KEY (dstty_id) REFERENCES silver.def_stop_type(id)
 );
 

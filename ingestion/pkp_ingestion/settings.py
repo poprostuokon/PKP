@@ -8,9 +8,9 @@ Jedno miejsce, z ktorego reszta paczki bierze klucz API, srodowisko i katalog Da
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-load_dotenv()  # wczytuje .env z biezacego katalogu roboczego
+load_dotenv(find_dotenv())  # wczytuje .env
 
 # --- Sekrety / srodowisko ---
 API_KEY = os.environ["PKP_API_KEY"]          # wymagany; brak -> KeyError na starcie

@@ -12,9 +12,11 @@ import os
 
 import oracledb
 from pathlib import Path
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-load_dotenv(Path(__file__).with_name(".env"))  
+load_dotenv(find_dotenv())
+
+#load_dotenv(Path(__file__).with_name(".env"))  
 
 WALLET_DIR = os.environ["PKP_WALLET_DIR"]   # folder z rozpakowanym walletem (tnsnames/sqlnet/cwallet.sso)
 WALLET_PASSWORD = os.environ["PKP_WALLET_PASSWORD"]  # haslo walletu (opcjonalne)

@@ -1,6 +1,4 @@
 CREATE TABLE silver.disruption_details (
-    -- dotknięty kurs (z affectedRoutes[])
-	-- klucz naturalny z API (bez FK)
     schedule_id          NUMBER                		NOT NULL,
     order_id             NUMBER                		NOT NULL,
     train_order_id       NUMBER                		NOT NULL,
