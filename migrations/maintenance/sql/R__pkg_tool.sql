@@ -3,13 +3,14 @@
 -- zeby dalo sie ja rozbic JSON_TABLE (iteracja kluczy obiektu).
 
 CREATE OR REPLACE PACKAGE maintenance.pkg_tool AS
-    FUNCTION json_obj_to_kv(p_json IN CLOB) RETURN CLOB;
+    FUNCTION f_json_obj_to_kv(p_json IN CLOB) RETURN CLOB;
+	FUNCTION f_now_warsaw RETURN TIMESTAMP WITH TIME ZONE;
 END pkg_tool;
 /
 
 CREATE OR REPLACE PACKAGE BODY maintenance.pkg_tool AS
 
-    FUNCTION json_obj_to_kv(p_json IN CLOB) RETURN CLOB IS
+    FUNCTION f_json_obj_to_kv(p_json IN CLOB) RETURN CLOB IS
         o     JSON_OBJECT_T;
         keys  JSON_KEY_LIST;
         arr   JSON_ARRAY_T := JSON_ARRAY_T();
@@ -27,9 +28,17 @@ CREATE OR REPLACE PACKAGE BODY maintenance.pkg_tool AS
             arr.append(item);
         END LOOP;
         RETURN arr.to_clob;
-    END json_obj_to_kv;
+    END f_json_obj_to_kv;
+	
+	FUNCTION f_now_warsaw RETURN TIMESTAMP WITH TIME ZONE IS
+    BEGIN
+        RETURN SYSTIMESTAMP AT TIME ZONE 'Europe/Warsaw';
+    END f_now_warsaw;
 
 END pkg_tool;
 /
 
+
 grant execute on  maintenance.pkg_tool to DEV_APP;
+grant execute on  maintenance.pkg_tool to SILVER;
+grant execute on  maintenance.pkg_tool to GOLD;
