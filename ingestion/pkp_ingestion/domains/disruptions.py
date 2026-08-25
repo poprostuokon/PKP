@@ -18,30 +18,25 @@ from ..storage.local_writer import write_raw
 from ..paths import todo_data_dir, data_filename
 
 
-def fetch_disruptions(client: PkpApiClient, run_ts: str, day: str | None = None) -> Path:
-    """
-    Pobiera disruptions dla dnia zapytania (domyslnie wczoraj wg config.default_day),
-    ale NAZWA pliku uzywa daty INGESTII (dzis) - bo skrypt odpalamy w nocy po.
-    day - YYYY-MM-DD; None => wartosc z configu.
-    """
+def fetch_disruptions(client, run_ts, day=None, date_from=None, date_to=None):
     cfg = DATA_ENDPOINTS["disruptions"]
-    params = build_params("disruptions", day)
-    query_day = business_date("disruptions", day)     # dzien danych (wczoraj)
-    ingest_date = date.today().strftime("%Y%m%d")      # dzien runu (nazwa pliku)
+    params  = build_params("disruptions", day, date_from, date_to)
+    biz_day = business_date("disruptions", day, date_from)   # poczatek okna
+
+    # nazwa: dla backfillu/zakresu (day lub date_from podany) -> data DANYCH;
+    #        dla zwyklego nocnego runu -> data ingestii (jak dotad)
+    name_date = biz_day.replace("-", "") if (day or date_from) else date.today().strftime("%Y%m%d")
 
     raw = client.get(cfg["endpoint"], params=params)
-
-    filename = data_filename("disruptions", ingest_date, run_ts)
+    filename = data_filename("disruptions", name_date, run_ts)
     out_path = write_raw(todo_data_dir(), filename, raw)
-    print(f"OK  disruptions dane={query_day} nazwa={ingest_date} -> {out_path}")
+    print(f"OK  disruptions {params['dateFrom']}..{params['dateTo']} nazwa={name_date} -> {out_path}")
     return out_path
 
 
-def run_disruptions(day: str | None = None) -> None:
-    """Pojedynczy przebieg disruptions. day - YYYY-MM-DD; domyslnie wg configu (wczoraj)."""
+def run_disruptions(day=None, date_from=None, date_to=None):
     run_ts = datetime.now().strftime("%Y%m%d%H%M%S")
-    client = PkpApiClient()
-    fetch_disruptions(client, run_ts, day)
+    fetch_disruptions(PkpApiClient(), run_ts, day, date_from, date_to)
 
 
 if __name__ == "__main__":

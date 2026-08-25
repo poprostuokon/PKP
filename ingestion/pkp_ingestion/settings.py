@@ -25,3 +25,7 @@ DATA_ROOT = Path(os.getenv("PKP_DATA_ROOT", "Data"))
 # --- OCI Object Storage (upload bronze) ---
 OCI_PROFILE = os.getenv("PKP_OCI_PROFILE", "DEFAULT")   # profil z ~/.oci/config
 OCI_BUCKET = os.getenv("PKP_OCI_BUCKET", "bronze-pkp")  # nazwa bucketu
+
+# --- OCI timeouts (sekundy) ---
+OCI_READ_TIMEOUT = int(os.getenv("PKP_OCI_READ_TIMEOUT", "300"))
+OCI_CONNECT_TIMEOUT = int(os.getenv("PKP_OCI_CONNECT_TIMEOUT", "10"))

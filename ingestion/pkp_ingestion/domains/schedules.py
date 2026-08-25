@@ -18,28 +18,20 @@ from ..storage.local_writer import write_raw
 from ..paths import todo_data_dir, data_filename
 
 
-def fetch_schedules(client: PkpApiClient, run_ts: str, day: str | None = None) -> Path:
-    """
-    Pobiera schedules dla dnia (domyslnie dzis wg config.default_day) i zapisuje surowo.
-    day - YYYY-MM-DD; None => wartosc z configu.
-    """
+def fetch_schedules(client, run_ts, day=None, date_from=None, date_to=None):
     cfg = DATA_ENDPOINTS["schedules"]
-    params = build_params("schedules", day)
-    biz_day = business_date("schedules", day)          # YYYY-MM-DD
+    params  = build_params("schedules", day, date_from, date_to)
+    biz_day = business_date("schedules", day, date_from)   # poczatek okna
 
     raw = client.get(cfg["endpoint"], params=params)
-
     filename = data_filename("schedules", biz_day.replace("-", ""), run_ts)
     out_path = write_raw(todo_data_dir(), filename, raw)
-    print(f"OK  schedules {biz_day} -> {out_path}")
+    print(f"OK  schedules {biz_day} ({params['dateFrom']}..{params['dateTo']}) -> {out_path}")
     return out_path
 
-
-def run_schedules(day: str | None = None) -> None:
-    """Pojedynczy przebieg schedules. day - YYYY-MM-DD; domyslnie wg configu (dzis)."""
+def run_schedules(day=None, date_from=None, date_to=None):
     run_ts = datetime.now().strftime("%Y%m%d%H%M%S")
-    client = PkpApiClient()
-    fetch_schedules(client, run_ts, day)
+    fetch_schedules(PkpApiClient(), run_ts, day, date_from, date_to)
 
 
 if __name__ == "__main__":

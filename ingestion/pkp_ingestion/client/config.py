@@ -59,13 +59,9 @@ SPECIAL_DICTIONARIES = {
 # Stacja bazowa projektu (Wroclaw Glowny). Docelowo mozna rozszerzyc o sasiednie ID.
 BASE_STATIONS = "60103"
 
-# KOMPLET parametrow kazdego endpointu trzymany jest tutaj - lacznie z datami.
-# Daty jako token DATE_TOKEN ("{day}") - realna wartosc podstawiana w runtime
-# przez params.build_params() na podstawie pola "default_day":
-#   "today"     -> dzien biezacy
-#   "yesterday" -> dzien poprzedni (D-1)
-#   None        -> endpoint nie uzywa daty
-# Boole jako stringi "true"/"false" - requests inaczej wysle "True"/"False".
+# "default_day": kotwica zakresu = dateTo:  "D" -> dzis, "D-1" -> wczoraj, None -> brak daty
+# "range_days":  dlugosc okna wstecz od kotwicy (dni). Brak => 1 (pojedynczy dzien).
+#                dateTo = kotwica, dateFrom = kotwica - (range_days - 1).
 DATE_TOKEN = "{day}"
 
 DATA_ENDPOINTS = {
@@ -73,13 +69,14 @@ DATA_ENDPOINTS = {
         "endpoint":  "/api/v1/schedules",
         "params": {
             "stations":     BASE_STATIONS,
-            "fullRoute":    "true",    # pelne trasy pociagow przez stacje
-            "dictionaries": "false",   # slowniki pobieramy osobno (DEF)
+            "fullRoute":    "true",
+            "dictionaries": "false",
             "dateFrom":     DATE_TOKEN,
             "dateTo":       DATE_TOKEN,
         },
-        "default_day": "D",
-        "paginated": False,            # schedules zwraca wszystko w jednej odpowiedzi
+        "default_day": "D",     # kotwica = dateTo
+        "range_days":  3,       # 1 = pojedynczy dzien (jak dotad); 7 = ostatni tydzien
+        "paginated":   False,
     },
     "operations": {
         "endpoint":  "/api/v1/operations",
@@ -90,19 +87,19 @@ DATA_ENDPOINTS = {
             "pageSize":    5000,       # max -> mniej stron/calli
             # page wstrzykiwany w petli (runtime) - to mechanika paginacji, nie parametr uzytkownika
         },
-        "default_day": "D-1",          # Dane z wczoraj (D-1) - snapshot "na teraz" w nocy po.
+        "default_day": "None",          # Dane z wczoraj (D-1) - snapshot "na teraz" w nocy po.
         "paginated": True,             # operations paginowany: petla po stronach
     },
     "disruptions": {
         "endpoint":  "/api/v1/disruptions",
         "params": {
-            #"stations":     BASE_STATIONS,
-            "dictionaries": "false",   # slownik disruption_types ciagniemy osobno (DEF)
+            "dictionaries": "false",
             "dateFrom":     DATE_TOKEN,
             "dateTo":       DATE_TOKEN,
         },
-        "default_day": "D-1",    # odpalane w nocy po -> pobieramy D-1
-        "paginated": False,
+        "default_day": "D-1",    # kotwica = dateTo (nocny run -> wczoraj)
+        "range_days":  3,        # 1 = pojedynczy dzien; 3 = ostatnie 3 dni (D-3..D-1)
+        "paginated":   False,
     },
 }
 
