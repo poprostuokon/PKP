@@ -3,6 +3,6 @@ CREATE TABLE gold.d_train_status (
     status_code  	VARCHAR2(20 CHAR)         NOT NULL,   -- S, P, C, X... (= silver.def_train_status.code)
     status_name  	VARCHAR2(200 CHAR)        NOT NULL,
     loaded_at    	TIMESTAMP WITH TIME ZONE  NOT NULL,
-    CONSTRAINT pk_dtrst PRIMARY KEY (status_id),
+    CONSTRAINT pk_dtrst PRIMARY KEY (id),
     CONSTRAINT uq_dtrst_code UNIQUE (status_code)
 );

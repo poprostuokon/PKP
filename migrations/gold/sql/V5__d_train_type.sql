@@ -11,6 +11,6 @@ CREATE TABLE gold.d_train_type (
     valid_from          DATE                      NOT NULL,
     valid_to            DATE                      NOT NULL,   -- 2999-12-31 = wersja bieżąca
     loaded_at           TIMESTAMP WITH TIME ZONE  NOT NULL,
-    CONSTRAINT pk_dtrtype PRIMARY KEY (train_type_id),
+    CONSTRAINT pk_dtrtype PRIMARY KEY (id),
     CONSTRAINT uq_dtrtype_natural UNIQUE (category_code, carrier_code, valid_from)   -- klucz naturalny wersji
 );

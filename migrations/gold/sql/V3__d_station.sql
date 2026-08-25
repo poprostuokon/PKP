@@ -3,5 +3,5 @@ CREATE TABLE gold.d_station (
     station_name  VARCHAR2(200 CHAR)        NOT NULL,
     city_name     VARCHAR2(200 CHAR),                   -- NULL gdy stacja bez powiązania z miastem (LEFT JOIN)
     loaded_at     TIMESTAMP WITH TIME ZONE  NOT NULL,
-    CONSTRAINT pk_dstat PRIMARY KEY (station_id)
+    CONSTRAINT pk_dstat PRIMARY KEY (id)
 );

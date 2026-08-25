@@ -3,6 +3,6 @@ CREATE TABLE gold.d_disruption_cause (
     cause_code  VARCHAR2(20 CHAR)         NOT NULL,   -- utr_XX (= silver.def_disruption_cause.code)
     cause_name  VARCHAR2(400 CHAR)        NOT NULL,   -- "Ograniczenie prędkości pociągu"
     loaded_at   TIMESTAMP WITH TIME ZONE  NOT NULL,
-    CONSTRAINT pk_dcause PRIMARY KEY (cause_id),
+    CONSTRAINT pk_dcause PRIMARY KEY (id),
     CONSTRAINT uq_dcause_code UNIQUE (cause_code)
 );

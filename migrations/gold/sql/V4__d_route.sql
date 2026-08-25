@@ -3,6 +3,6 @@ CREATE TABLE gold.d_route (
     from_station_id  	NUMBER                    NOT NULL,   -- stacja początkowa (min order_number) -> d_station
     to_station_id    	NUMBER                    NOT NULL,   -- stacja końcowa (max order_number)  -> d_station
     loaded_at        	TIMESTAMP WITH TIME ZONE  NOT NULL,
-    CONSTRAINT pk_droute PRIMARY KEY (route_id),
+    CONSTRAINT pk_droute PRIMARY KEY (id),
     CONSTRAINT uq_droute_from_to UNIQUE (from_station_id, to_station_id)   -- klucz naturalny relacji
 );

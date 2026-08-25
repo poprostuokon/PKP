@@ -11,7 +11,7 @@ CREATE TABLE gold.d_date (
     iso_week    NUMBER(2)                 NOT NULL,   -- tydzień ISO
     is_weekend  CHAR(1)                   NOT NULL,   -- 'T'/'N'
     loaded_at   TIMESTAMP WITH TIME ZONE  NOT NULL,
-    CONSTRAINT pk_ddate PRIMARY KEY (date_id),
+    CONSTRAINT pk_ddate PRIMARY KEY (id),
     CONSTRAINT uq_ddate_full UNIQUE (full_date),
     CONSTRAINT chk_ddate_weekend CHECK (is_weekend IN ('T','N'))
 );
