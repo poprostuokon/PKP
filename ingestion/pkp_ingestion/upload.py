@@ -15,7 +15,9 @@ import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
+
 from .storage.oci_uploader import OciUploader
+from .prune import prune_archive
 from .paths import (
     todo_dict_dir,
     todo_data_dir,
@@ -62,6 +64,7 @@ def run_upload() -> None:
     """Przebieg uploadu wszystkich plikow z TODO."""
     run_ts = datetime.now().strftime("%Y%m%d%H%M%S")
     uploader = OciUploader()
+    touched: set[str] = set()
 
     files = _collect_todo_files()
     print(f"Do wgrania: {len(files)} plikow (bucket={uploader.bucket})")
@@ -74,6 +77,7 @@ def run_upload() -> None:
             object_name = bucket_object_name(filename)
             uploader.upload_file(path, object_name)
             dst = _move(path, archive_dir(part_date))
+            touched.add(part_date)
             print(f"OK   {filename} -> oci:{object_name} | archive:{dst}")
             ok += 1
         except Exception as exc:  # izolacja bledu per plik
@@ -81,6 +85,9 @@ def run_upload() -> None:
             _write_err(part_date, run_ts, filename, exc)
             print(f"ERR  {filename} -> ERR/DAILY/{part_date} ({exc.__class__.__name__})")
             err += 1
+
+    for part_date in touched:
+        prune_archive(part_date)
 
     print(f"Zakonczono: OK={ok}, ERR={err}")
 

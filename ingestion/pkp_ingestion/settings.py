@@ -13,19 +13,22 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())  # wczytuje .env
 
 # --- Sekrety / srodowisko ---
-API_KEY = os.environ["PKP_API_KEY"]          # wymagany; brak -> KeyError na starcie
+API_KEY                 = os.environ["PKP_API_KEY"]          # wymagany; brak -> KeyError na starcie
 
 # Srodowisko (DEV/PROD) - decyduje o galezi w strukturze Data.
 # Docelowo podstawiane przez Airflow; domyslnie DEV.
-ENV = os.getenv("PKP_ENV", "DEV")
+ENV                     = os.getenv("PKP_ENV", "DEV")
 
 # Katalog bazowy struktury Data (domyslnie 'Data' w biezacym katalogu).
-DATA_ROOT = Path(os.getenv("PKP_DATA_ROOT", "Data"))
+DATA_ROOT               = Path(os.getenv("PKP_DATA_ROOT", "Data"))
 
 # --- OCI Object Storage (upload bronze) ---
-OCI_PROFILE = os.getenv("PKP_OCI_PROFILE", "DEFAULT")   # profil z ~/.oci/config
-OCI_BUCKET = os.getenv("PKP_OCI_BUCKET", "bronze-pkp")  # nazwa bucketu
+OCI_PROFILE             = os.getenv("PKP_OCI_PROFILE", "DEFAULT")   # profil z ~/.oci/config
+OCI_BUCKET              = os.getenv("PKP_OCI_BUCKET", "bronze-pkp")  # nazwa bucketu
 
-# --- OCI timeouts (sekundy) ---
-OCI_READ_TIMEOUT = int(os.getenv("PKP_OCI_READ_TIMEOUT", "300"))
-OCI_CONNECT_TIMEOUT = int(os.getenv("PKP_OCI_CONNECT_TIMEOUT", "10"))
+# --- OCI: timeout + retry uploadu ---
+OCI_CONNECT_TIMEOUT     = int(os.getenv("PKP_OCI_CONNECT_TIMEOUT", "10"))
+OCI_READ_TIMEOUT        = int(os.getenv("PKP_OCI_READ_TIMEOUT", "60"))
+OCI_UPLOAD_TIMEOUT      = int(os.getenv("PKP_OCI_UPLOAD_TIMEOUT", "300"))
+OCI_RETRY_MAX_ATTEMPTS  = int(os.getenv("PKP_OCI_RETRY_MAX_ATTEMPTS", "5"))
+OCI_RETRY_TOTAL_SECONDS = int(os.getenv("PKP_OCI_RETRY_TOTAL_SECONDS", "600"))
