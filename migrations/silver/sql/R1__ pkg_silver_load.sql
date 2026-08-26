@@ -60,7 +60,7 @@ CREATE OR REPLACE PACKAGE silver.pkg_silver_load AUTHID DEFINER AS
 END pkg_silver_load;
 /
 
-CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
+create or replace PACKAGE BODY silver.pkg_silver_load AS
 
     -- log do DBMS_OUTPUT; nazwa kroku = nazwa wolajacej procedury (z call stacku)
     PROCEDURE log_rows(p_rows IN NUMBER) IS
@@ -72,7 +72,7 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
         DBMS_OUTPUT.PUT_LINE( RPAD(v_step, 32) || ' -> ' || p_rows || ' wierszy' );
     END log_rows;
 
-    -- ================= WYMIARY (MERGE) =================
+    -- ================= WYMIARY (MERGE + no-op skip) =================
 
     PROCEDURE load_def_carrier IS
     BEGIN
@@ -93,6 +93,8 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
         ) s
         ON (d.code = s.code AND d.valid_from = s.valid_from)
         WHEN MATCHED THEN UPDATE SET d.name = s.name, d.valid_to = s.valid_to, d.loaded_at = pkg_tool.f_now_warsaw
+            WHERE DECODE(d.name, s.name, 0, 1) = 1
+               OR DECODE(d.valid_to, s.valid_to, 0, 1) = 1
         WHEN NOT MATCHED THEN
             INSERT (code, name, valid_from, valid_to, loaded_at)
             VALUES (s.code, s.name, s.valid_from, s.valid_to, pkg_tool.f_now_warsaw);
@@ -113,8 +115,9 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
         ) s
         ON (d.name = s.city_name)
         WHEN MATCHED THEN UPDATE SET d.station_count = s.station_count, d.loaded_at = pkg_tool.f_now_warsaw
+            WHERE DECODE(d.station_count, s.station_count, 0, 1) = 1
         WHEN NOT MATCHED THEN
-            INSERT (name, station_count, loaded_at)        
+            INSERT (name, station_count, loaded_at)
             VALUES (s.city_name, s.station_count, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
     END load_def_city;
@@ -144,6 +147,8 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
         ) s
         ON (d.id = s.station_id)
         WHEN MATCHED THEN UPDATE SET d.name = s.station_name, d.dcit_id = s.dcit_id, d.loaded_at = pkg_tool.f_now_warsaw
+            WHERE DECODE(d.name, s.station_name, 0, 1) = 1
+               OR DECODE(d.dcit_id, s.dcit_id, 0, 1) = 1
         WHEN NOT MATCHED THEN
             INSERT (id, name, dcit_id, first_seen_at, loaded_at)
             VALUES (s.station_id, s.station_name, s.dcit_id, pkg_tool.f_now_warsaw, pkg_tool.f_now_warsaw);
@@ -161,6 +166,7 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
         ) s
         ON (d.id = s.stop_type_id)
         WHEN MATCHED THEN UPDATE SET d.description = s.description, d.loaded_at = pkg_tool.f_now_warsaw
+            WHERE DECODE(d.description, s.description, 0, 1) = 1
         WHEN NOT MATCHED THEN
             INSERT (id, description, loaded_at) VALUES (s.stop_type_id, s.description, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
@@ -183,6 +189,8 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
         ) s
         ON (d.code = s.code AND d.carrier_code = s.carrier_code)
         WHEN MATCHED THEN UPDATE SET d.name = s.name, d.speed_category_code = s.speed_category_code, d.loaded_at = pkg_tool.f_now_warsaw
+            WHERE DECODE(d.name, s.name, 0, 1) = 1
+               OR DECODE(d.speed_category_code, s.speed_category_code, 0, 1) = 1
         WHEN NOT MATCHED THEN
             INSERT (code, name, carrier_code, speed_category_code, loaded_at)
             VALUES (s.code, s.name, s.carrier_code, s.speed_category_code, pkg_tool.f_now_warsaw);
@@ -201,6 +209,7 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
         ) s
         ON (d.code = s.code)
         WHEN MATCHED THEN UPDATE SET d.name = s.name, d.loaded_at = pkg_tool.f_now_warsaw
+            WHERE DECODE(d.name, s.name, 0, 1) = 1
         WHEN NOT MATCHED THEN
             INSERT (code, name, loaded_at) VALUES (s.code, s.name, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
@@ -218,6 +227,7 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
         ) s
         ON (d.code = s.code)
         WHEN MATCHED THEN UPDATE SET d.description = s.description, d.loaded_at = pkg_tool.f_now_warsaw
+            WHERE DECODE(d.description, s.description, 0, 1) = 1
         WHEN NOT MATCHED THEN
             INSERT (code, description, loaded_at) VALUES (s.code, s.description, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
@@ -311,29 +321,58 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
     BEGIN
         INSERT INTO operation_header
             (schedule_id, order_id, train_order_id, operating_date, train_status, snapshot_ts, loaded_at)
-        SELECT j.schedule_id, j.order_id, j.train_order_id,
-               to_date(j.operating_date, 'YYYY-MM-DD'), j.train_status, j.snapshot_ts, pkg_tool.f_now_warsaw
-        FROM land_operations src,
-             json_table(src.payload, '$'
-                 columns (
-                     snapshot_ts timestamp with time zone path '$.generatedAt',
-                     nested path '$.trains[*]' columns (
-                         schedule_id    number              path '$.scheduleId',
-                         order_id       number              path '$.orderId',
-                         train_order_id number              path '$.trainOrderId',
-                         operating_date varchar2(4000 char) path '$.operatingDate',
-                         train_status   varchar2(4000 char) path '$.trainStatus'
-                     )
-                 )) j
-        WHERE NOT EXISTS (
+        SELECT s.schedule_id, s.order_id, s.train_order_id,
+               to_date(s.operating_date, 'YYYY-MM-DD'), s.train_status, s.snapshot_ts, pkg_tool.f_now_warsaw
+        FROM (
+            SELECT snapshot_ts, schedule_id, order_id, train_order_id, operating_date, train_status,
+                   -- czy jest jakikolwiek nieodwolany przystanek
+                   MAX(CASE WHEN NOT is_cancelled THEN 1 ELSE 0 END) AS has_noncanc,
+                   -- potwierdzenie OSTATNIEGO nieodwolanego przystanku (po planned_seq)
+                   MAX(CASE WHEN NOT is_cancelled AND is_confirmed THEN 1
+                            WHEN NOT is_cancelled                  THEN 0 END)
+                       KEEP (DENSE_RANK LAST ORDER BY
+                             CASE WHEN NOT is_cancelled THEN planned_seq END NULLS FIRST) AS last_conf
+            FROM (
+                SELECT j.snapshot_ts, j.schedule_id, j.order_id, j.train_order_id,
+                       j.operating_date, j.train_status, j.planned_seq,
+                       NVL(j.is_cancelled, FALSE) AS is_cancelled,
+                       NVL(j.is_confirmed, FALSE) AS is_confirmed
+                FROM land_operations src,
+                     json_table(src.payload, '$'
+                         columns (
+                             snapshot_ts timestamp with time zone path '$.generatedAt',
+                             nested path '$.trains[*]' columns (
+                                 schedule_id    number              path '$.scheduleId',
+                                 order_id       number              path '$.orderId',
+                                 train_order_id number              path '$.trainOrderId',
+                                 operating_date varchar2(4000 char) path '$.operatingDate',
+                                 train_status   varchar2(4000 char) path '$.trainStatus',
+                                 nested path '$.stations[*]' columns (
+                                     planned_seq  number  path '$.plannedSequenceNumber',
+                                     is_cancelled boolean path '$.isCancelled',
+                                     is_confirmed boolean path '$.isConfirmed'
+                                 )
+                             )
+                         )) j
+            )
+            GROUP BY snapshot_ts, schedule_id, order_id, train_order_id, operating_date, train_status
+        ) s
+        WHERE (
+                  s.train_status IN ('C','X')                          -- Completed / Cancelled
+               OR (s.train_status = 'Q' AND s.last_conf = 1)           -- czesc. odwolany, dojechal do konca
+               OR (s.train_status = 'Q' AND s.has_noncanc = 0)         -- Q, wszystko odwolane
+              )
+          AND NOT EXISTS (
                   select 1 from operation_header t
-                  where t.operating_date = to_date(j.operating_date, 'YYYY-MM-DD')
-                    and t.schedule_id = j.schedule_id and t.order_id = j.order_id
-                    and t.train_order_id = j.train_order_id)
+                  where t.operating_date = to_date(s.operating_date, 'YYYY-MM-DD')
+                    and t.schedule_id = s.schedule_id and t.order_id = s.order_id
+                    and t.train_order_id = s.train_order_id)
         QUALIFY row_number() over (
-                    partition by j.operating_date, j.schedule_id, j.order_id, j.train_order_id order by 1) = 1;
+                    partition by s.operating_date, s.schedule_id, s.order_id, s.train_order_id
+                    order by s.snapshot_ts desc) = 1;   -- przy wielu settled-snapshotach: najswiezszy
         log_rows(SQL%ROWCOUNT);
     END load_operation_header;
+    
 
     PROCEDURE load_operation_details IS
     BEGIN
@@ -375,6 +414,7 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
         QUALIFY row_number() over (partition by oh.id, j.actual_sequence order by 1) = 1;
         log_rows(SQL%ROWCOUNT);
     END load_operation_details;
+
 
     PROCEDURE load_disruption_header IS
     BEGIN
@@ -442,7 +482,7 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load AS
     PROCEDURE load_all IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== SILVER load START ===');
-		EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
+        EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
         -- wymiary (kolejnosc: city przed station)
         load_def_carrier;
         load_def_city;
