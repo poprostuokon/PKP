@@ -1,4 +1,4 @@
-CREATE TABLE silver.def_audit (
+CREATE TABLE silver.AUDIT_TBL_DEF (
     audit_id     NUMBER GENERATED ALWAYS AS IDENTITY,
     table_name   VARCHAR2(30 CHAR)        NOT NULL,   
     business_key VARCHAR2(400 CHAR)       NOT NULL,   

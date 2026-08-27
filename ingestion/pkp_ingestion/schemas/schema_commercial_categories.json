@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "commercial_categories",
+  "description": "/api/v1/dictionaries/commercial-categories.",
+  "type": "object",
+  "required": ["generatedAt", "commercialCategories"],
+  "additionalProperties": true,
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "commercialCategories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "name", "carrierCode", "speedCategoryCode"],
+        "additionalProperties": true,
+        "properties": {
+          "code":               { "type": "string" },
+          "name":               { "type": "string" },
+          "carrierCode":        { "type": "string" },
+          "speedCategoryCode":  { "type": "string" }
+        }
+      }
+    }
+  }
+}

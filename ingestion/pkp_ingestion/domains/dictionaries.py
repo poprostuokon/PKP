@@ -20,16 +20,23 @@ from pathlib import Path
 from ..client.api_client import PkpApiClient
 from ..client.config import DICTIONARY_ENDPOINTS, SPECIAL_DICTIONARIES
 from ..storage.local_writer import write_raw
+from ..validation import validate_or_quarantine
 from ..paths import todo_dict_dir, dict_filename
 
 
-def fetch_dictionary(name: str, cfg: dict, client: PkpApiClient, run_ts: str) -> Path:
+
+def fetch_dictionary(name, cfg, client, run_ts):
     """
     Uniwersalny pobieracz: dziala dla kazdego wpisu o ksztalcie
     {"endpoint": ..., "params": ...} - niezaleznie czy to slownik prosty
     czy specjalny. GET -> surowy tekst -> zapis do TODO/DAILY/DICT.
     """
     raw = client.get(cfg["endpoint"], params=cfg["params"])
+
+    # walidacja: 'name' to feed (carriers/cities/disruption_types/...) = klucz w SCHEMA_MAP
+    if not validate_or_quarantine(name, raw, f"dict_{name}", run_ts):
+        return None   # zly slownik -> w kwarantannie, pomijamy
+
     out_path = write_raw(todo_dict_dir(), dict_filename(name, run_ts), raw)
     print(f"OK  {name:22} -> {out_path}")
     return out_path

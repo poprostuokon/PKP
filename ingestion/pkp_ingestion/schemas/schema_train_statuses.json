@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "train_statuses",
+  "description": "Endpoint /api/v1/fields/operations. Required = obiekt trainStatuses (kod -> opis), czytany przez silver def_train_status.",
+  "type": "object",
+  "required": ["trainStatuses"],
+  "additionalProperties": true,
+  "properties": {
+    "trainStatuses": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}

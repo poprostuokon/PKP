@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "stop_types",
+  "description": "/api/v1/dictionaries/stop-types. Required = stopTypes[] + id/description (silver def_stop_type).",
+  "type": "object",
+  "required": ["generatedAt", "stopTypes"],
+  "additionalProperties": true,
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "stopTypes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "description"],
+        "additionalProperties": true,
+        "properties": {
+          "id":          { "type": "integer" },
+          "description": { "type": "string" }
+        }
+      }
+    }
+  }
+}

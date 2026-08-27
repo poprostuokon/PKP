@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "cities",
+  "description": "/api/v1/dictionaries/cities. Required = pola uzywane w silver def_city/int_city_stations (name, stationCount, stationIds).",
+  "type": "object",
+  "required": ["cities"],
+  "additionalProperties": true,
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "cities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "stationCount", "stationIds"],
+        "additionalProperties": true,
+        "properties": {
+          "name":         { "type": "string" },
+          "stationCount": { "type": "integer" },
+          "stationIds": {
+            "type": "array",
+            "items": { "type": "integer" }
+          }
+        }
+      }
+    }
+  }
+}

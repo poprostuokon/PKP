@@ -1,12 +1,12 @@
 -- =====================================================================
--- TRIGGERY AUDYTOWE dla slownikow SILVER.DEF_*  ->  silver.def_audit
+-- TRIGGERY AUDYTOWE dla slownikow SILVER.DEF_*  ->  silver.AUDIT_TBL_DEF
 --
 -- Zasada: AFTER UPDATE OF <kolumny aktualizowalne> - jeden wiersz audytu
 --         na kazda REALNIE zmieniona kolumne (WHERE DECODE(old,new,0,1)=1, null-safe).
 -- business_key = klucz glowny (PK) rekordu. Wartosci jako tekst (TO_CHAR dla dat/liczb).
 -- changed_at = pkg_tool.f_now_warsaw (synonim w SILVER), changed_by = USER.
 --
--- Wymaga: tabela silver.def_audit oraz synonim silver.pkg_tool (z pkg_silver_load).
+-- Wymaga: tabela silver.AUDIT_TBL_DEF oraz synonim silver.pkg_tool (z pkg_silver_load).
 -- Repeatable migration Flyway.
 -- =====================================================================
 
@@ -15,7 +15,7 @@ CREATE OR REPLACE TRIGGER silver.trg_def_carrier_audit
 AFTER UPDATE OF name, valid_to ON silver.def_carrier
 FOR EACH ROW
 BEGIN
-    INSERT INTO silver.def_audit
+    INSERT INTO silver.AUDIT_TBL_DEF
         (table_name, business_key, column_name, old_value, new_value, changed_at, changed_by)
     SELECT 'DEF_CARRIER',
            'code=' || :OLD.code || ';valid_from=' || TO_CHAR(:OLD.valid_from,'YYYY-MM-DD'),
@@ -34,7 +34,7 @@ CREATE OR REPLACE TRIGGER silver.trg_def_city_audit
 AFTER UPDATE OF station_count ON silver.def_city
 FOR EACH ROW
 BEGIN
-    INSERT INTO silver.def_audit
+    INSERT INTO silver.AUDIT_TBL_DEF
         (table_name, business_key, column_name, old_value, new_value, changed_at, changed_by)
     SELECT 'DEF_CITY',
            'id=' || :OLD.id,
@@ -51,7 +51,7 @@ CREATE OR REPLACE TRIGGER silver.trg_def_station_audit
 AFTER UPDATE OF name, dcit_id ON silver.def_station
 FOR EACH ROW
 BEGIN
-    INSERT INTO silver.def_audit
+    INSERT INTO silver.AUDIT_TBL_DEF
         (table_name, business_key, column_name, old_value, new_value, changed_at, changed_by)
     SELECT 'DEF_STATION',
            'id=' || :OLD.id,
@@ -70,7 +70,7 @@ CREATE OR REPLACE TRIGGER silver.trg_def_stop_type_audit
 AFTER UPDATE OF description ON silver.def_stop_type
 FOR EACH ROW
 BEGIN
-    INSERT INTO silver.def_audit
+    INSERT INTO silver.AUDIT_TBL_DEF
         (table_name, business_key, column_name, old_value, new_value, changed_at, changed_by)
     SELECT 'DEF_STOP_TYPE',
            'id=' || :OLD.id,
@@ -87,7 +87,7 @@ CREATE OR REPLACE TRIGGER silver.trg_def_comm_cat_audit
 AFTER UPDATE OF name, speed_category_code ON silver.def_commercial_category
 FOR EACH ROW
 BEGIN
-    INSERT INTO silver.def_audit
+    INSERT INTO silver.AUDIT_TBL_DEF
         (table_name, business_key, column_name, old_value, new_value, changed_at, changed_by)
     SELECT 'DEF_COMMERCIAL_CATEGORY',
            'code=' || :OLD.code || ';carrier_code=' || :OLD.carrier_code,
@@ -106,7 +106,7 @@ CREATE OR REPLACE TRIGGER silver.trg_def_train_status_audit
 AFTER UPDATE OF name ON silver.def_train_status
 FOR EACH ROW
 BEGIN
-    INSERT INTO silver.def_audit
+    INSERT INTO silver.AUDIT_TBL_DEF
         (table_name, business_key, column_name, old_value, new_value, changed_at, changed_by)
     SELECT 'DEF_TRAIN_STATUS',
            'code=' || :OLD.code,
@@ -123,7 +123,7 @@ CREATE OR REPLACE TRIGGER silver.trg_def_disr_cause_audit
 AFTER UPDATE OF description ON silver.def_disruption_cause
 FOR EACH ROW
 BEGIN
-    INSERT INTO silver.def_audit
+    INSERT INTO silver.AUDIT_TBL_DEF
         (table_name, business_key, column_name, old_value, new_value, changed_at, changed_by)
     SELECT 'DEF_DISRUPTION_CAUSE',
            'code=' || :OLD.code,

@@ -19,6 +19,7 @@ from ..client.api_client import PkpApiClient
 from ..client.config import DATA_ENDPOINTS
 from ..params import build_params
 from ..storage.local_writer import write_raw
+from ..validation import validate_or_quarantine
 from ..paths import todo_data_dir, data_filename
 
 
@@ -41,6 +42,12 @@ def fetch_operations(client: PkpApiClient, run_ts: str, ingest_date: str) -> lis
 
         # zapis surowy (bit w bit) - jedna strona = jeden plik
         filename = data_filename("operations", ingest_date, run_ts, page=page)
+        raw = client.get(cfg["endpoint"], params=params)
+        if not validate_or_quarantine("operations", raw, f"operations_{ingest_date}_p{page:03d}", run_ts):
+            # zla strona -> pomijamy ja, ale petla leci dalej po nastepne strony
+            pagination = json.loads(raw).get("pagination", {}) if raw else {}
+            if not pagination.get("hasNextPage"): break
+            page += 1; continue
         out_path = write_raw(todo_data_dir(), filename, raw)
         saved.append(out_path)
 

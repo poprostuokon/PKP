@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "stations",
+  "description": "/api/v1/dictionaries/stations. Required = stations[] + id/name (silver def_station).",
+  "type": "object",
+  "required": ["generatedAt", "stations"],
+  "additionalProperties": true,
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "stations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name"],
+        "additionalProperties": true,
+        "properties": {
+          "id":   { "type": "integer" },
+          "name": { "type": "string" }
+        }
+      }
+    }
+  }
+}

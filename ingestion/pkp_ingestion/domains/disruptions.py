@@ -15,6 +15,7 @@ from ..client.api_client import PkpApiClient
 from ..client.config import DATA_ENDPOINTS
 from ..params import build_params, business_date
 from ..storage.local_writer import write_raw
+from ..validation import validate_or_quarantine
 from ..paths import todo_data_dir, data_filename
 
 
@@ -29,6 +30,9 @@ def fetch_disruptions(client, run_ts, day=None, date_from=None, date_to=None):
 
     raw = client.get(cfg["endpoint"], params=params)
     filename = data_filename("disruptions", name_date, run_ts)
+    raw = client.get(cfg["endpoint"], params=params)
+    if not validate_or_quarantine("disruptions", raw, f"disruptions_{biz_day}", run_ts):
+        return None
     out_path = write_raw(todo_data_dir(), filename, raw)
     print(f"OK  disruptions {params['dateFrom']}..{params['dateTo']} nazwa={name_date} -> {out_path}")
     return out_path

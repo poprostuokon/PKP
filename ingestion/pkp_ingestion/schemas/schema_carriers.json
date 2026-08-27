@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "carriers",
+  "description": "/api/v1/dictionaries/carriers. Required = pola uzywane w silver def_carrier (klucz code+validFrom).",
+  "type": "object",
+  "required": ["carriers"],
+  "additionalProperties": true,
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "carriers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "name", "validFrom", "validTo"],
+        "additionalProperties": true,
+        "properties": {
+          "code":      { "type": "string" },
+          "name":      { "type": "string" },
+          "validFrom": { "type": "string" },
+          "validTo":   { "type": "string" }
+        }
+      }
+    }
+  }
+}

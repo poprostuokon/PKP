@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "disruption_types",
+  "description": "Endpoint /api/v1/disruptions z dictionaries=true. Required = obiekt disruptionTypes (kod -> nazwa), czytany przez silver def_disruption_cause.",
+  "type": "object",
+  "required": ["generatedAt", "disruptionTypes"],
+  "additionalProperties": true,
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "disruptionTypes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": { "type": "string" }
+    }
+  }
+}
