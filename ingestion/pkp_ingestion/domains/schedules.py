@@ -17,6 +17,7 @@ from ..client.config import DATA_ENDPOINTS
 from ..params import build_params, business_date
 from ..storage.local_writer import write_raw
 from ..validation import validate_or_quarantine
+from ..prune import keep_latest_todo
 from ..paths import todo_data_dir, data_filename
 
 
@@ -25,12 +26,13 @@ def fetch_schedules(client, run_ts, day=None, date_from=None, date_to=None):
     params  = build_params("schedules", day, date_from, date_to)
     biz_day = business_date("schedules", day, date_from)   # poczatek okna
 
-    raw = client.get(cfg["endpoint"], params=params)
     filename = data_filename("schedules", biz_day.replace("-", ""), run_ts)
     raw = client.get(cfg["endpoint"], params=params)
     if not validate_or_quarantine("schedules", raw, f"schedules_{biz_day}", run_ts):
         return None
+    
     out_path = write_raw(todo_data_dir(), filename, raw)
+    keep_latest_todo(todo_data_dir(), "schedules")
     print(f"OK  schedules {biz_day} ({params['dateFrom']}..{params['dateTo']}) -> {out_path}")
     return out_path
 

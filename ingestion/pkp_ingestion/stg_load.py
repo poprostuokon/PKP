@@ -94,10 +94,7 @@ def prepare_stg(connection, day: str | None = None, load_mode: str = "DAILY") ->
 
         # 3) brak nowych -> landing tego feedu ma byc pusty (delta = 0)
         if not new_objects:
-            cur.setinputsizes()
-            cur.execute(f"TRUNCATE TABLE stg.{table}")
-            connection.commit()  # DDL i tak commituje; jawnie dla czytelnosci
-            print(f"==  stg.{table:26} wyczyszczono (brak NOWYCH plikow)  [{prefix}]")
+            print(f"==  stg.{table:26} pominieto (brak NOWYCH plikow)  [{prefix}]")
             continue
 
         # 4) sa nowe pliki -> czyscimy landing (scratch) i ladujemy WYLACZNIE delte

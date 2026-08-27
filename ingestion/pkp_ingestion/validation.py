@@ -20,7 +20,7 @@ from pathlib import Path
 from jsonschema import validate as _js_validate
 from jsonschema import ValidationError
 
-from .paths import ingest_err_dir
+from .paths import err_dir
 
 SCHEMA_DIR = Path(__file__).resolve().parent / "schemas"
 
@@ -74,7 +74,7 @@ def validate_or_quarantine(feed: str, raw_text: str, name_base: str, run_ts: str
         return True
     except (ValidationError, ValueError) as exc:
         part_date = date.today().strftime("%Y%m%d")
-        qdir = ingest_err_dir(part_date)
+        qdir = err_dir(part_date)
         qdir.mkdir(parents=True, exist_ok=True)
         safe = name_base.replace(":", "").replace("/", "_")
         (qdir / f"{safe}_{run_ts}.bad.json").write_text(raw_text, encoding="utf-8")

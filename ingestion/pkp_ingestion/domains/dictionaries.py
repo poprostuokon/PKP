@@ -21,6 +21,7 @@ from ..client.api_client import PkpApiClient
 from ..client.config import DICTIONARY_ENDPOINTS, SPECIAL_DICTIONARIES
 from ..storage.local_writer import write_raw
 from ..validation import validate_or_quarantine
+from ..prune import keep_latest_todo
 from ..paths import todo_dict_dir, dict_filename
 
 
@@ -38,6 +39,7 @@ def fetch_dictionary(name, cfg, client, run_ts):
         return None   # zly slownik -> w kwarantannie, pomijamy
 
     out_path = write_raw(todo_dict_dir(), dict_filename(name, run_ts), raw)
+    keep_latest_todo(todo_dict_dir(), name)
     print(f"OK  {name:22} -> {out_path}")
     return out_path
 

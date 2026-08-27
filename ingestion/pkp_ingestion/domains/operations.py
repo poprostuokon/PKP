@@ -20,6 +20,7 @@ from ..client.config import DATA_ENDPOINTS
 from ..params import build_params
 from ..storage.local_writer import write_raw
 from ..validation import validate_or_quarantine
+from ..prune import keep_latest_todo
 from ..paths import todo_data_dir, data_filename
 
 
@@ -38,7 +39,6 @@ def fetch_operations(client: PkpApiClient, run_ts: str, ingest_date: str) -> lis
 
     while True:
         params = {**base_params, "page": page}  # page = mechanika paginacji
-        raw = client.get(cfg["endpoint"], params=params)
 
         # zapis surowy (bit w bit) - jedna strona = jeden plik
         filename = data_filename("operations", ingest_date, run_ts, page=page)
@@ -59,6 +59,9 @@ def fetch_operations(client: PkpApiClient, run_ts: str, ingest_date: str) -> lis
         if not has_next:
             break
         page += 1
+
+
+    keep_latest_todo(todo_data_dir(), "operations")
 
     return saved
 

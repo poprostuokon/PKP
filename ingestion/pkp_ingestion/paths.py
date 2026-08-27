@@ -101,7 +101,3 @@ def err_dir(part_date: str) -> Path:
 def err_filename(run_ts: str) -> str:
     """Plik sladu bledow danego przebiegu uploadu: err_<YYYYMMDDHH24MISS>.txt."""
     return f"err_{run_ts}.txt"
-
-def ingest_err_dir(part_date: str) -> Path:
-    """Payloady odrzucone przez walidacje: Data/<ENV>/ERR/INGEST/<YYYYMMDD>."""
-    return DATA_ROOT / ENV / "ERR" / "INGEST" / part_date

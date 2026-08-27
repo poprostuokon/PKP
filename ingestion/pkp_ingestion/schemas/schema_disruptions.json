@@ -20,7 +20,7 @@
             "type": "array",
             "items": {
               "type": "object",
-              "required": ["scheduleId", "orderId", "trainOrderId", "operatingDate", "stationId", "sequenceNumber"],
+              "required": ["scheduleId", "orderId", "operatingDate", "stationId", "sequenceNumber"],
               "additionalProperties": true,
               "properties": {
                 "scheduleId":     { "type": "integer" },
