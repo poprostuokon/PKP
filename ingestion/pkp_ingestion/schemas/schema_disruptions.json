@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "disruptions",
+  "description": "Walidacja struktury odpowiedzi /api/v1/disruptions. Required = pola uzywane w silver (disruption_header/details). additionalProperties: nowe pola dozwolone.",
+  "type": "object",
+  "required": ["generatedAt", "disruptions"],
+  "additionalProperties": true,
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "disruptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["disruptionId", "message", "affectedRoutes"],
+        "additionalProperties": true,
+        "properties": {
+          "disruptionId": { "type": "integer" },
+          "message":      { "type": "string" },
+          "affectedRoutes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["scheduleId", "orderId", "trainOrderId", "operatingDate", "stationId", "sequenceNumber"],
+              "additionalProperties": true,
+              "properties": {
+                "scheduleId":     { "type": "integer" },
+                "orderId":        { "type": "integer" },
+                "trainOrderId":   { "type": "integer" },
+                "operatingDate":  { "type": "string" },
+                "stationId":      { "type": "integer" },
+                "sequenceNumber": { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

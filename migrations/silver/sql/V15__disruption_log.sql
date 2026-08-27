@@ -15,7 +15,7 @@ CREATE TABLE silver.disruption_log (
     snapshot_ts          TIMESTAMP WITH TIME ZONE  	NOT NULL,
     loaded_at            TIMESTAMP WITH TIME ZONE  	NOT NULL,
     CONSTRAINT pk_dilog_id PRIMARY KEY (operating_date, id) USING INDEX LOCAL,
-	CONSTRAINT fk_dilog_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id)
+	--CONSTRAINT fk_dilog_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id)
 )
 PARTITION BY RANGE (operating_date)
 INTERVAL (NUMTODSINTERVAL(1, 'DAY'))

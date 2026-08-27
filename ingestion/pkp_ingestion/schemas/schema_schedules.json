@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "schedules",
+  "description": "Walidacja struktury odpowiedzi /api/v1/schedules. Required = pola uzywane w silver (schedule_header/details): klucze naturalne + operatingDates + stations + orderNumber/stationId. Atrybuty (czasy, perony) sa opcjonalne. additionalProperties: nowe pola dozwolone.",
+  "type": "object",
+  "required": ["generatedAt", "routes"],
+  "additionalProperties": true,
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "routes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["scheduleId", "orderId", "trainOrderId", "operatingDates", "carrierCode", "commercialCategorySymbol", "nationalNumber", "stations"],
+        "additionalProperties": true,
+        "properties": {
+          "scheduleId":                 { "type": "integer" },
+          "orderId":                    { "type": "integer" },
+          "trainOrderId":               { "type": "integer" },
+          "operatingDates": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "stations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["stationId", "orderNumber"],
+              "additionalProperties": true,
+              "properties": {
+                "stationId":    { "type": "integer" },
+                "orderNumber":  { "type": "integer" },
+                "arrivalDay":   { "type": "integer" },
+                "departureDay": { "type": "integer" },
+                "stopTypeId":   { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
