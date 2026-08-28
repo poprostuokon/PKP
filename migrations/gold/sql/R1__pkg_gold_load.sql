@@ -17,23 +17,29 @@
 grant execute on maintenance.pkg_tool               to gold;
 grant select  on silver.def_station                 to gold;
 grant select  on silver.def_city                    to gold;
-grant select  on silver.schedule_header            to gold;
+grant select  on silver.schedule_header            	to gold;
 grant select  on silver.schedule_details            to gold;
 grant select  on silver.def_commercial_category     to gold;
 grant select  on silver.def_carrier                 to gold;
 grant select  on silver.def_train_status            to gold;
 grant select  on silver.def_disruption_cause        to gold;
+grant select on silver.operation_header  			to gold;
+grant select on silver.operation_details 			to gold;
+
+
 
 -- ---- synonimy: kod pakietu bez prefiksow schematow ----
 CREATE OR REPLACE SYNONYM gold.pkg_tool                 FOR maintenance.pkg_tool;
-CREATE OR REPLACE SYNONYM gold.def_station             FOR silver.def_station;
-CREATE OR REPLACE SYNONYM gold.def_city                FOR silver.def_city;
-CREATE OR REPLACE SYNONYM gold.schedule_header         FOR silver.schedule_header;
-CREATE OR REPLACE SYNONYM gold.schedule_details        FOR silver.schedule_details;
-CREATE OR REPLACE SYNONYM gold.def_commercial_category FOR silver.def_commercial_category;
-CREATE OR REPLACE SYNONYM gold.def_carrier             FOR silver.def_carrier;
-CREATE OR REPLACE SYNONYM gold.def_train_status        FOR silver.def_train_status;
-CREATE OR REPLACE SYNONYM gold.def_disruption_cause    FOR silver.def_disruption_cause;
+CREATE OR REPLACE SYNONYM gold.def_station             	FOR silver.def_station;
+CREATE OR REPLACE SYNONYM gold.def_city                	FOR silver.def_city;
+CREATE OR REPLACE SYNONYM gold.schedule_header         	FOR silver.schedule_header;
+CREATE OR REPLACE SYNONYM gold.schedule_details        	FOR silver.schedule_details;
+CREATE OR REPLACE SYNONYM gold.def_commercial_category 	FOR silver.def_commercial_category;
+CREATE OR REPLACE SYNONYM gold.def_carrier             	FOR silver.def_carrier;
+CREATE OR REPLACE SYNONYM gold.def_train_status        	FOR silver.def_train_status;
+CREATE OR REPLACE SYNONYM gold.def_disruption_cause    	FOR silver.def_disruption_cause;
+CREATE OR REPLACE SYNONYM gold.operation_header  		FOR silver.operation_header;
+CREATE OR REPLACE SYNONYM gold.operation_details 		FOR silver.operation_details;
 
 
 
@@ -45,12 +51,19 @@ CREATE OR REPLACE PACKAGE gold.pkg_gold_load AUTHID DEFINER AS
     PROCEDURE load_d_train_type;
     PROCEDURE load_d_train_status;
     PROCEDURE load_d_disruption_cause;
-    PROCEDURE load_dimensions;   -- master: wszystkie wymiary, jeden COMMIT
+    PROCEDURE load_dimensions;
+	
+    PROCEDURE load_f_train_run_daily(p_days IN NUMBER DEFAULT 3);
+    PROCEDURE load_facts_daily (p_days IN NUMBER DEFAULT 3);
 END pkg_gold_load;
 /
 
-CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
-
+create or replace PACKAGE BODY      pkg_gold_load AS
+    
+    
+    /**********************************************************************************************************/
+    /***** log_rows  *****/
+    /**********************************************************************************************************/
     -- log do DBMS_OUTPUT; nazwa kroku = wolajaca procedura (z call stacku)
     PROCEDURE log_rows(p_rows IN NUMBER) IS
         v_full VARCHAR2(200);
@@ -62,7 +75,11 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
     END log_rows;
 
     -- ================= WYMIARY GENEROWANE =================
-
+    
+    
+    /**********************************************************************************************************/
+    /***** load_d_date  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_d_date IS
         v_start DATE := TRUNC(SYSDATE, 'YYYY');                     -- 1 stycznia roku biezacego
         v_end   DATE := ADD_MONTHS(TRUNC(SYSDATE,'YYYY'), 24) - 1;  -- 31 grudnia roku przyszlego
@@ -95,7 +112,11 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
         log_rows(SQL%ROWCOUNT);
     END load_d_date;
 
-
+    
+    
+    /**********************************************************************************************************/
+    /***** load_d_hour  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_d_hour IS
     BEGIN
         INSERT INTO d_hour (id, hour_label, part_of_day, loaded_at)
@@ -114,8 +135,15 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
         log_rows(SQL%ROWCOUNT);
     END load_d_hour;
 
-    -- ================= WYMIARY ZE SILVER (MERGE + no-op skip) =================
 
+
+
+
+    -- ================= WYMIARY ZE SILVER (MERGE + no-op skip) =================
+    
+    /**********************************************************************************************************/
+    /***** load_d_station  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_d_station IS
     BEGIN
         MERGE INTO d_station d
@@ -136,6 +164,10 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
     END load_d_station;
 
 
+
+    /**********************************************************************************************************/
+    /***** load_d_route  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_d_route(p_full_load IN BOOLEAN DEFAULT FALSE) IS
     BEGIN
         IF p_full_load THEN
@@ -193,8 +225,13 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
 
         log_rows(SQL%ROWCOUNT);
     END load_d_route;
-	
 
+    
+    
+    
+    /**********************************************************************************************************/
+    /***** load_d_train_type  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_d_train_type IS
     BEGIN
         -- SCD2: kazda kategoria x kazda wersja przewoznika (valid_from/valid_to z def_carrier)
@@ -226,7 +263,12 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
         log_rows(SQL%ROWCOUNT);
     END load_d_train_type;
 
-
+    
+    
+    
+    /**********************************************************************************************************/
+    /***** load_d_train_status  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_d_train_status IS
     BEGIN
         MERGE INTO d_train_status d
@@ -242,7 +284,12 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
         log_rows(SQL%ROWCOUNT);
     END load_d_train_status;
 
-
+    
+    
+    
+    /**********************************************************************************************************/
+    /***** load_d_disruption_cause  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_d_disruption_cause IS
     BEGIN
         MERGE INTO d_disruption_cause d
@@ -257,10 +304,107 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
             VALUES (s.cause_code, s.cause_name, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
     END load_d_disruption_cause;
+    
+    
+    
+    
+    -- ================= FAKTY =================
+    
+    /**********************************************************************************************************/
+    /***** load_f_train_run_daily  *****/
+    /**********************************************************************************************************/
+    PROCEDURE load_f_train_run_daily(p_days IN NUMBER DEFAULT 3) IS
+        v_from DATE;
+        v_to   DATE;
+    BEGIN
+        EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';   -- Autonomous: ORA-12839
+
+        v_from := TRUNC(SYSDATE) - p_days;
+        v_to   := TRUNC(SYSDATE) - 1;
+        DELETE FROM f_train_run_daily
+        WHERE date_id BETWEEN TO_NUMBER(TO_CHAR(v_from,'YYYYMMDD')) AND TO_NUMBER(TO_CHAR(v_to,  'YYYYMMDD'));
+
+        INSERT INTO f_train_run_daily
+            (date_id, route_id, train_type_id, status_id,
+             runs_count, delayed_count, sum_terminal_delay_min, sum_delayed_delay_min, max_terminal_delay_min, loaded_at)
+        WITH runs AS (       -- jeden wiersz na kurs w oknie + atrybuty z rozkladu
+            select oh.id as ophe_id,
+                   oh.operating_date,
+                   to_number(to_char(oh.operating_date,'YYYYMMDD')) as date_id,
+                   oh.schedule_id, oh.order_id, oh.train_status,
+                   sh.category_code, sh.carrier_code
+            from operation_header oh
+            join schedule_header sh
+              on  sh.operating_date = oh.operating_date
+              and sh.schedule_id    = oh.schedule_id
+              and sh.order_id       = oh.order_id
+              and sh.train_order_id = oh.train_order_id
+            where oh.operating_date between v_from and v_to
+        ),
+        ep AS (              -- endpointy rozkladu tylko dla kursow z okna
+            select sd.schedule_id, sd.order_id,
+                   min(sd.order_number) as min_on, max(sd.order_number) as max_on
+            from schedule_details sd
+            where (sd.schedule_id, sd.order_id) in (select schedule_id, order_id from runs)
+            group by sd.schedule_id, sd.order_id
+        ),
+        route_pair AS (      -- from/to stacja per (schedule_id, order_id)
+            select ep.schedule_id, ep.order_id, f.dsta_id as from_station_id, t.dsta_id as to_station_id
+            from ep
+            join schedule_details f on f.schedule_id=ep.schedule_id and f.order_id=ep.order_id and f.order_number=ep.min_on
+            join schedule_details t on t.schedule_id=ep.schedule_id and t.order_id=ep.order_id and t.order_number=ep.max_on
+        ),
+        term AS (            -- opoznienie terminalne = przystanek o max actual_sequence
+            select od.ophe_id, od.arrival_delay_min as terminal_delay
+            from operation_details od
+            where od.ophe_id in (select ophe_id from runs)
+            qualify row_number() over (partition by od.ophe_id order by od.actual_sequence desc) = 1
+        ),
+        resolved AS (        -- mapowanie na klucze wymiarow
+            select r.date_id,
+                   dr.id                    as route_id,
+                   coalesce(ttm.id, ttc.id) as train_type_id,   -- SCD2 po dacie + fallback biezaca
+                   dts.id                   as status_id,
+                   tm.terminal_delay
+            from runs r
+            left join term       tm on tm.ophe_id = r.ophe_id
+            left join route_pair rp on rp.schedule_id = r.schedule_id and rp.order_id = r.order_id
+            join d_route dr on dr.from_station_id = rp.from_station_id and dr.to_station_id = rp.to_station_id
+            left join d_train_type ttm
+                   on ttm.category_code = r.category_code and ttm.carrier_code = r.carrier_code
+                  and r.operating_date between ttm.valid_from and ttm.valid_to
+            left join d_train_type ttc
+                   on ttc.category_code = r.category_code and ttc.carrier_code = r.carrier_code
+                  and ttc.valid_to = DATE '2999-12-31'
+            join d_train_status dts on dts.status_code = r.train_status
+        )
+        select date_id, route_id, train_type_id, status_id,
+               count(*)                                                              as runs_count,
+               case when count(terminal_delay) = 0 then null
+                    else sum(case when terminal_delay >= 6 then 1 else 0 end) end     as delayed_count,
+               sum(terminal_delay)                                                   as sum_terminal_delay_min,
+               sum(case when terminal_delay >= 6 then terminal_delay end)            as sum_delayed_delay_min,
+               max(terminal_delay)                                                   as max_terminal_delay_min,
+               pkg_tool.f_now_warsaw
+        from resolved
+        where train_type_id is not null       -- nie wpuszczamy kursow bez zmapowanego typu (NOT NULL w fakcie)
+        group by date_id, route_id, train_type_id, status_id;
+
+        log_rows(SQL%ROWCOUNT);
+        COMMIT;
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;
+            DBMS_OUTPUT.PUT_LINE('load_f_train_run_daily ERROR - ROLLBACK: ' || SQLERRM);
+            RAISE;
+    END load_f_train_run_daily;
+    
+    
+    
 
     -- ================= ORCHESTRACJA =================
 
-    PROCEDURE load_dimensions IS
+    PROCEDURE load_dimensions (p_route_full IN BOOLEAN DEFAULT FALSE) IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== GOLD dimensions load START ===');
         EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
@@ -268,7 +412,7 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
         load_d_date;
         load_d_hour;
         load_d_station;
-        load_d_route;
+        load_d_route(p_route_full);
         load_d_train_type;
         load_d_train_status;
         load_d_disruption_cause;
@@ -281,8 +425,27 @@ CREATE OR REPLACE PACKAGE BODY gold.pkg_gold_load AS
             DBMS_OUTPUT.PUT_LINE('=== GOLD dimensions load ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
     END load_dimensions;
+    
+    
+    
+    PROCEDURE load_facts_daily (p_days IN NUMBER DEFAULT 3) IS
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('=== GOLD facts daily load START ===');
+        EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
+
+        load_f_train_run_daily(p_days);
+
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('=== GOLD facts daily load OK (COMMIT) ===');
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;
+            DBMS_OUTPUT.PUT_LINE('=== GOLD facts daily load ERROR - ROLLBACK: ' || SQLERRM);
+            RAISE;
+    END load_facts_daily;
 
 END pkg_gold_load;
+
 /
 
 
