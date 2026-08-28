@@ -11,5 +11,5 @@ CREATE TABLE silver.disruption_details (
     loaded_at            TIMESTAMP WITH TIME ZONE  	NOT NULL,
     CONSTRAINT pk_dide_opda_scid_orid_stid_diid PRIMARY KEY (operating_date, schedule_id, order_id, dsta_id, dihe_id),
 	--CONSTRAINT fk_dide_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id), -- są przypadki gdzie są wykonane trasy do stacji których nie ma w słowniku (api stacji nie zwrca takie ID ze słownika)
-	CONSTRAINT fk_dide_dihe_id FOREIGN KEY (dihe_id) REFERENCES silver.disruption_header(id)
+	CONSTRAINT fk_dide_dihe_id FOREIGN KEY (dihe_id) REFERENCES silver.disruption_header(id) ON DELETE CASCADE
 );

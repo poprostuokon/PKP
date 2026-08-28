@@ -60,7 +60,7 @@ CREATE OR REPLACE PACKAGE silver.pkg_silver_load AUTHID DEFINER AS
 END pkg_silver_load;
 /
 
-create or replace PACKAGE BODY silver.pkg_silver_load AS
+create or replace PACKAGE BODY               pkg_silver_load AS
 
     -- log do DBMS_OUTPUT; nazwa kroku = nazwa wolajacej procedury (z call stacku)
     PROCEDURE log_rows(p_rows IN NUMBER) IS
@@ -74,6 +74,9 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
 
     -- ================= WYMIARY (MERGE + no-op skip) =================
 
+    /**********************************************************************************************************/
+    /***** load_def_carrier  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_def_carrier IS
     BEGIN
         MERGE INTO def_carrier d
@@ -100,9 +103,16 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
             VALUES (s.code, s.name, s.valid_from, s.valid_to, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
     END load_def_carrier;
-
+    
+    
+    /**********************************************************************************************************/
+    /***** load_def_city  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_def_city IS
     BEGIN
+        -- 1) UPSERT z API: nowe/istniejace nazwy -> is_active = 1, loaded_at = teraz.
+        --    Guard: nie ruszamy niezmienionych AKTYWNYCH (nic nie robimy),
+        --    ale reaktywujemy te, ktore byly FALSE, i aktualizujemy zmieniony station_count.
         MERGE INTO def_city d
         USING (
             select jt.name as city_name, jt.station_count
@@ -114,14 +124,36 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
                        )) jt
         ) s
         ON (d.name = s.city_name)
-        WHEN MATCHED THEN UPDATE SET d.station_count = s.station_count, d.loaded_at = pkg_tool.f_now_warsaw
-            WHERE DECODE(d.station_count, s.station_count, 0, 1) = 1
+        WHEN MATCHED THEN UPDATE SET d.station_count = s.station_count,
+                                     d.is_active = 1,
+                                     d.loaded_at = pkg_tool.f_now_warsaw
+            WHERE d.is_active = 0                              -- reaktywacja starej nazwy
+               OR DECODE(d.station_count, s.station_count, 0, 1) = 1
         WHEN NOT MATCHED THEN
-            INSERT (name, station_count, loaded_at)
-            VALUES (s.city_name, s.station_count, pkg_tool.f_now_warsaw);
+            INSERT (name, station_count, is_active, loaded_at)
+            VALUES (s.city_name, s.station_count, 1, pkg_tool.f_now_warsaw);
+        log_rows(SQL%ROWCOUNT);
+
+        -- 2) DEZAKTYWACJA nieobecnych: miasto, ktorego nazwy nie ma juz w API -> is_active = 0.
+        --    (loaded_at NIE ruszamy - ma znaczyc "ostatnio widziane w API", wazne dla tie-breaku).
+        --    Odpiecie stacji dzieje sie w load_def_station (dcit_id -> NULL), bo tam
+        --    resolvujemy tylko AKTYWNE miasta.
+        UPDATE def_city d
+           SET d.is_active = 0
+         WHERE d.is_active = 1
+           AND NOT EXISTS (
+                   select 1
+                   from   land_cities l,
+                          json_table(l.payload, '$.cities[*]'
+                              columns (name varchar2(4000 char) path '$.name')) jt
+                   where  jt.name = d.name);
         log_rows(SQL%ROWCOUNT);
     END load_def_city;
 
+    
+    /**********************************************************************************************************/
+    /***** load_def_station  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_def_station IS
     BEGIN
         MERGE INTO def_station d
@@ -142,19 +174,32 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
                                    nested path '$.stationIds[*]' columns (station_id number path '$')
                                )) jt
                  ) m on m.station_id = st.station_id
-            left join def_city c on c.name = m.city_name
-            qualify row_number() over (partition by st.station_id order by c.id nulls last) = 1
+            -- tylko AKTYWNE miasta: stacja miasta znikniętego z API dostanie dcit_id = NULL (odpiecie)
+            left join def_city c on c.name = m.city_name and c.is_active = 1
+            -- zabezpieczenie gdy stacja pasuje do >1 miasta (stara+nowa nazwa naraz):
+            --   1) aktywne, 2) najnowszy DZIEN loaded_at, 3) remis tego samego dnia -> wyzsze id
+            qualify row_number() over (
+                        partition by st.station_id
+                        order by trunc(cast(c.loaded_at as date)) desc nulls last,
+                                 c.id desc nulls last
+                    ) = 1
         ) s
         ON (d.id = s.station_id)
-        WHEN MATCHED THEN UPDATE SET d.name = s.station_name, d.dcit_id = s.dcit_id, d.loaded_at = pkg_tool.f_now_warsaw
-            WHERE DECODE(d.name, s.station_name, 0, 1) = 1
-               OR DECODE(d.dcit_id, s.dcit_id, 0, 1) = 1
+        WHEN MATCHED THEN UPDATE SET d.name = s.station_name,
+                                     d.dcit_id = s.dcit_id,
+                                     d.loaded_at = pkg_tool.f_now_warsaw
+            WHERE DECODE(d.name,    s.station_name, 0, 1) = 1
+               OR DECODE(d.dcit_id, s.dcit_id,      0, 1) = 1   -- null-safe: zmiana miasta lub odpiecie (->NULL)
         WHEN NOT MATCHED THEN
             INSERT (id, name, dcit_id, first_seen_at, loaded_at)
             VALUES (s.station_id, s.station_name, s.dcit_id, pkg_tool.f_now_warsaw, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
     END load_def_station;
 
+    
+    /**********************************************************************************************************/
+    /***** load_def_stop_type  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_def_stop_type IS
     BEGIN
         MERGE INTO def_stop_type d
@@ -171,7 +216,11 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
             INSERT (id, description, loaded_at) VALUES (s.stop_type_id, s.description, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
     END load_def_stop_type;
-
+    
+    
+    /**********************************************************************************************************/
+    /***** load_def_commercial_category  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_def_commercial_category IS
     BEGIN
         MERGE INTO def_commercial_category d
@@ -196,7 +245,11 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
             VALUES (s.code, s.name, s.carrier_code, s.speed_category_code, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
     END load_def_commercial_category;
-
+    
+    
+    /**********************************************************************************************************/
+    /***** load_def_train_status  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_def_train_status IS
     BEGIN
         MERGE INTO def_train_status d
@@ -214,7 +267,11 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
             INSERT (code, name, loaded_at) VALUES (s.code, s.name, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
     END load_def_train_status;
-
+    
+    
+    /**********************************************************************************************************/
+    /***** load_def_disruption_cause  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_def_disruption_cause IS
     BEGIN
         MERGE INTO def_disruption_cause d
@@ -233,8 +290,15 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
         log_rows(SQL%ROWCOUNT);
     END load_def_disruption_cause;
 
-    -- ================= FAKTY (INSERT ONLY NEW + QUALIFY) =================
 
+
+
+
+    -- ================= FAKTY (INSERT ONLY NEW + QUALIFY) =================
+    
+    /**********************************************************************************************************/
+    /***** load_schedule_header  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_schedule_header IS
     BEGIN
         INSERT INTO schedule_header
@@ -271,7 +335,11 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
                     partition by j.operating_date, j.schedule_id, j.order_id, j.train_order_id order by 1) = 1;
         log_rows(SQL%ROWCOUNT);
     END load_schedule_header;
-
+    
+    
+    /**********************************************************************************************************/
+    /***** load_schedule_details  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_schedule_details IS
     BEGIN
         INSERT INTO schedule_details
@@ -316,7 +384,11 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
                     partition by j.schedule_id, j.order_id, j.order_number order by 1) = 1;
         log_rows(SQL%ROWCOUNT);
     END load_schedule_details;
-
+    
+    
+    /**********************************************************************************************************/
+    /***** load_operation_header  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_operation_header IS
     BEGIN
         INSERT INTO operation_header
@@ -373,7 +445,10 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
         log_rows(SQL%ROWCOUNT);
     END load_operation_header;
     
-
+    
+    /**********************************************************************************************************/
+    /***** load_operation_details  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_operation_details IS
     BEGIN
         INSERT INTO operation_details
@@ -415,12 +490,15 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
         log_rows(SQL%ROWCOUNT);
     END load_operation_details;
 
-
+    
+    /**********************************************************************************************************/
+    /***** load_disruption_header  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_disruption_header IS
     BEGIN
         INSERT INTO disruption_header
             (id, disruption_type_code, message, snapshot_ts, loaded_at)
-        SELECT to_number(to_char(cast(j.snapshot_ts as date), 'YYYYMMDD')) * 1000000 + j.disruption_id,
+        SELECT to_number(to_char(to_date(j.operating_date, 'YYYY-MM-DD'), 'YYYYMMDD')) * 1000000 + j.disruption_id,
                j.disruption_type_code, j.message, j.snapshot_ts, pkg_tool.f_now_warsaw
         FROM land_disruptions src,
              json_table(src.payload, '$'
@@ -429,23 +507,31 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
                      nested path '$.disruptions[*]' columns (
                          disruption_id        number              path '$.disruptionId',
                          disruption_type_code varchar2(4000 char) path '$.disruptionTypeCode',
-                         message              varchar2(4000 char) path '$.message'
+                         message              varchar2(4000 char) path '$.message',
+                         nested path '$.affectedRoutes[*]' columns (
+                            operating_date  varchar2(4000 char) path '$.operatingDate'
+                         )
                      )
                  )) j
         WHERE NOT EXISTS (
                   select 1 from disruption_header t
-                  where t.id = to_number(to_char(cast(j.snapshot_ts as date), 'YYYYMMDD')) * 1000000 + j.disruption_id)
-        QUALIFY row_number() over (partition by cast(j.snapshot_ts as date), j.disruption_id order by 1) = 1;
+                  where t.id = to_number(to_char(to_date(j.operating_date, 'YYYY-MM-DD'), 'YYYYMMDD')) * 1000000 + j.disruption_id)
+        QUALIFY row_number() over (partition by to_date(j.operating_date, 'YYYY-MM-DD'), j.disruption_id order by 1) = 1;
         log_rows(SQL%ROWCOUNT);
     END load_disruption_header;
-
+    
+    
+    
+    /**********************************************************************************************************/
+    /***** load_disruption_details  *****/
+    /**********************************************************************************************************/
     PROCEDURE load_disruption_details IS
     BEGIN
         INSERT INTO disruption_details
             (schedule_id, order_id, train_order_id, operating_date, sequence_number, dsta_id, dihe_id, loaded_at)
         SELECT j.schedule_id, j.order_id, j.train_order_id,
                to_date(j.operating_date, 'YYYY-MM-DD'), j.sequence_number, j.station_id,
-               to_number(to_char(cast(j.snapshot_ts as date), 'YYYYMMDD')) * 1000000 + j.disruption_id,
+               to_number(to_char(to_date(j.operating_date, 'YYYY-MM-DD'), 'YYYYMMDD')) * 1000000 + j.disruption_id,
                pkg_tool.f_now_warsaw
         FROM land_disruptions src,
              json_table(src.payload, '$'
@@ -463,26 +549,32 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
                          )
                      )
                  )) j
-        WHERE j.schedule_id is not null and j.order_id is not null and j.train_order_id is not null
+        WHERE j.schedule_id is not null and j.order_id is not null and j.operating_date is not null and j.station_id is not null and j.sequence_number is not null
           AND NOT EXISTS (
                   select 1 from disruption_details t
                   where t.operating_date = to_date(j.operating_date, 'YYYY-MM-DD')
-                    and t.schedule_id = j.schedule_id and t.train_order_id = j.train_order_id
+                    and t.schedule_id = j.schedule_id and t.order_id = j.order_id --and nvl(t.train_order_id,0) = nvl(j.train_order_id,0)
                     and t.dsta_id = j.station_id
-                    and t.dihe_id = to_number(to_char(cast(j.snapshot_ts as date), 'YYYYMMDD')) * 1000000 + j.disruption_id)
+                    and t.dihe_id = to_number(to_char(to_date(j.operating_date, 'YYYY-MM-DD'), 'YYYYMMDD')) * 1000000 + j.disruption_id)
         QUALIFY row_number() over (
-                    partition by to_date(j.operating_date, 'YYYY-MM-DD'), j.schedule_id, j.train_order_id, j.station_id,
+                    partition by to_date(j.operating_date, 'YYYY-MM-DD'), j.schedule_id, j.order_id, j.station_id,
                                  (to_number(to_char(cast(j.snapshot_ts as date), 'YYYYMMDD')) * 1000000 + j.disruption_id)
                     order by 1) = 1;
         log_rows(SQL%ROWCOUNT);
     END load_disruption_details;
 
-    -- ================= ORCHESTRACJA =================
 
+
+
+
+
+    -- ================= ORCHESTRACJA =================
+    
     PROCEDURE load_all IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== SILVER load START ===');
         EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
+        
         -- wymiary (kolejnosc: city przed station)
         load_def_carrier;
         load_def_city;
@@ -491,6 +583,7 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
         load_def_commercial_category;
         load_def_train_status;
         load_def_disruption_cause;
+        
         -- fakty (header przed details tam gdzie FK)
         load_schedule_header;
         load_schedule_details;
