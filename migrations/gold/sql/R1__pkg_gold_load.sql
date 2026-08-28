@@ -354,11 +354,11 @@ create or replace PACKAGE BODY      pkg_gold_load AS
             join schedule_details f on f.schedule_id=ep.schedule_id and f.order_id=ep.order_id and f.order_number=ep.min_on
             join schedule_details t on t.schedule_id=ep.schedule_id and t.order_id=ep.order_id and t.order_number=ep.max_on
         ),
-        term AS (            -- opoznienie terminalne = przystanek o max actual_sequence
-            select od.ophe_id, od.arrival_delay_min as terminal_delay
-            from operation_details od
-            where od.ophe_id in (select ophe_id from runs)
-            qualify row_number() over (partition by od.ophe_id order by od.actual_sequence desc) = 1
+        term AS (
+            select ophe_id, nvl(arrival_delay_min, 0) as terminal_delay
+            from operation_details
+            where is_confirmed = 1
+            qualify row_number() over (partition by ophe_id order by actual_sequence desc) = 1
         ),
         resolved AS (        -- mapowanie na klucze wymiarow
             select r.date_id,
@@ -379,12 +379,13 @@ create or replace PACKAGE BODY      pkg_gold_load AS
             join d_train_status dts on dts.status_code = r.train_status
         )
         select date_id, route_id, train_type_id, status_id,
-               count(*)                                                              as runs_count,
+               count(*)                                                                             as runs_count,
                case when count(terminal_delay) = 0 then null
-                    else sum(case when terminal_delay >= 6 then 1 else 0 end) end     as delayed_count,
-               sum(terminal_delay)                                                   as sum_terminal_delay_min,
-               sum(case when terminal_delay >= 6 then terminal_delay end)            as sum_delayed_delay_min,
-               max(terminal_delay)                                                   as max_terminal_delay_min,
+                    else sum(case when terminal_delay >= 6 then 1 else 0 end) end                   as delayed_count,
+               sum(terminal_delay)                                                                  as sum_terminal_delay_min,
+               case when count(terminal_delay) = 0 then null
+                    else nvl(sum(case when terminal_delay >= 6 then terminal_delay end), 0) end     as sum_delayed_delay_min,
+               max(terminal_delay)                                                                  as max_terminal_delay_min,
                pkg_tool.f_now_warsaw
         from resolved
         where train_type_id is not null       -- nie wpuszczamy kursow bez zmapowanego typu (NOT NULL w fakcie)
