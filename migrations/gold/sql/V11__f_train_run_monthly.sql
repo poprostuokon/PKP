@@ -11,6 +11,11 @@ CREATE TABLE gold.F_TRAIN_RUN_MONTHLY (
     sum_terminal_delay_min  NUMBER,                      -- suma opoznien koncowych; NULL dla "Odwolany"
     sum_delayed_delay_min   NUMBER,                      -- suma tylko spoznionych (>=6); NULL dla "Odwolany"
     max_terminal_delay_min  NUMBER,                      -- max opoznienie; NULL dla "Odwolany"
+	travel_runs_count       NUMBER,   -- SUM(daily) - kursy ukonczone z policzalnym czasem = mianownik srednich
+    sum_planned_travel_min  NUMBER,   -- SUM(daily) planowanych czasow przejazdu [min]
+    sum_actual_travel_min   NUMBER,   -- SUM(daily) rzeczywistych czasow przejazdu [min]
+    min_actual_travel_min   NUMBER,   -- MIN(daily) najszybszy rzeczywisty przejazd [min]
+    max_actual_travel_min   NUMBER,    -- MAX(daily) najdluzszy rzeczywisty przejazd [min]
     loaded_at               TIMESTAMP WITH TIME ZONE NOT NULL,
     CONSTRAINT pk_agg_run_m PRIMARY KEY (month, route_id, train_type_id, status_id, day_type)
         USING INDEX LOCAL,
@@ -18,3 +23,5 @@ CREATE TABLE gold.F_TRAIN_RUN_MONTHLY (
 )
 PARTITION BY RANGE (month) INTERVAL (1)
 ( PARTITION p_init VALUES LESS THAN (202601) );
+
+grant select on gold.F_TRAIN_RUN_MONTHLY to DEV_APP;
