@@ -47,27 +47,41 @@ CREATE OR REPLACE SYNONYM gold.disruption_details 		FOR silver.disruption_detail
 
 
 
-CREATE OR REPLACE PACKAGE gold.pkg_gold_load AUTHID DEFINER AS
+create or replace PACKAGE gold.pkg_gold_load AUTHID DEFINER AS
+
+    c_default_days CONSTANT NUMBER := 3;
+    c_full_load CONSTANT BOOLEAN := FALSE;
+
     PROCEDURE load_d_date;
     PROCEDURE load_d_hour;
     PROCEDURE load_d_station;
-    PROCEDURE load_d_route (p_full_load IN BOOLEAN DEFAULT FALSE);
+    PROCEDURE load_d_route (p_full_load IN BOOLEAN DEFAULT c_full_load);
     PROCEDURE load_d_train_type;
     PROCEDURE load_d_train_status;
     PROCEDURE load_d_disruption_cause;
-    PROCEDURE load_dimensions;
-	
-    PROCEDURE load_f_train_run_daily(p_days IN NUMBER DEFAULT 3);
-	PROCEDURE load_f_train_stop_daily(p_days IN NUMBER DEFAULT 3);
-	PROCEDURE load_f_train_disruption_daily(p_days IN NUMBER DEFAULT 3);
-    PROCEDURE load_facts_daily (p_days IN NUMBER DEFAULT 3);
-	
+    PROCEDURE load_dimensions (p_full_load IN BOOLEAN DEFAULT c_full_load);
+
+    PROCEDURE load_f_train_run_daily(p_days IN NUMBER DEFAULT c_default_days);
+	PROCEDURE load_f_train_stop_daily(p_days IN NUMBER DEFAULT c_default_days);
+	PROCEDURE load_f_train_disruption_daily(p_days IN NUMBER DEFAULT c_default_days);
+    PROCEDURE load_facts_daily (p_days IN NUMBER DEFAULT c_default_days);
+
+    PROCEDURE load_f_train_run_monthly(p_days IN NUMBER DEFAULT c_default_days);
+    PROCEDURE load_facts_monthly (p_days IN NUMBER DEFAULT c_default_days);
+
 END pkg_gold_load;
 /
 
 
 
-create or replace PACKAGE BODY GOLD.pkg_gold_load AS
+create or replace PACKAGE BODY gold.pkg_gold_load AS
+    
+    /**********************************************************************************************************/
+    /***** Zmienne stałe  *****/
+    /**********************************************************************************************************/
+    c_valid_to CONSTANT DATE := DATE '2999-12-31';
+    c_parallel_dml CONSTANT VARCHAR2(100 CHAR) := 'ALTER SESSION DISABLE PARALLEL DML';
+    
     
     
     /**********************************************************************************************************/
@@ -82,6 +96,8 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
         v_step := LOWER( SUBSTR(v_full, INSTR(v_full, '.') + 1) );
         DBMS_OUTPUT.PUT_LINE( RPAD(v_step, 32) || ' -> ' || p_rows || ' wierszy' );
     END log_rows;
+
+
 
     -- ================= WYMIARY GENEROWANE =================
     
@@ -177,7 +193,7 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
     /**********************************************************************************************************/
     /***** load_d_route  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_d_route(p_full_load IN BOOLEAN DEFAULT FALSE) IS
+    PROCEDURE load_d_route(p_full_load IN BOOLEAN DEFAULT c_full_load) IS
     BEGIN
         IF p_full_load THEN
             -- PELNY: cala historia rozkladu (jednorazowo). Skanuje cale schedule_details.
@@ -313,6 +329,8 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
             VALUES (s.cause_code, s.cause_name, pkg_tool.f_now_warsaw);
         log_rows(SQL%ROWCOUNT);
     END load_d_disruption_cause;
+	
+	-- ================= WYMIARY GENEROWANE =================
     
     
     
@@ -322,11 +340,11 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
     /**********************************************************************************************************/
     /***** load_f_train_run_daily  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_f_train_run_daily(p_days IN NUMBER DEFAULT 3) IS
+    PROCEDURE load_f_train_run_daily(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from DATE;
         v_to   DATE;
     BEGIN
-        EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';   -- Autonomous: ORA-12839
+        EXECUTE IMMEDIATE c_parallel_dml;   -- Autonomous: ORA-12839
 
         v_from := TRUNC(SYSDATE) - p_days;
         v_to   := TRUNC(SYSDATE) - 1;
@@ -384,7 +402,7 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
                   and r.operating_date between ttm.valid_from and ttm.valid_to
             left join d_train_type ttc
                    on ttc.category_code = r.category_code and ttc.carrier_code = r.carrier_code
-                  and ttc.valid_to = DATE '2999-12-31'
+                  and ttc.valid_to = c_valid_to
             join d_train_status dts on dts.status_code = r.train_status
         )
         select date_id, route_id, train_type_id, status_id,
@@ -414,11 +432,11 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
     /**********************************************************************************************************/
     /***** load_f_train_stop_daily  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_f_train_stop_daily(p_days IN NUMBER DEFAULT 3) IS
+    PROCEDURE load_f_train_stop_daily(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from DATE;
         v_to   DATE;
     BEGIN
-        EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
+        EXECUTE IMMEDIATE c_parallel_dml;
 
         v_from := TRUNC(SYSDATE) - p_days;
         v_to   := TRUNC(SYSDATE) - 1;
@@ -485,7 +503,7 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
                   and s.operating_date between ttm.valid_from and ttm.valid_to
             left join d_train_type ttc
                    on ttc.category_code = s.category_code and ttc.carrier_code = s.carrier_code
-                  and ttc.valid_to = DATE '2999-12-31'
+                  and ttc.valid_to = c_valid_to
         )
         select date_id, route_id, train_type_id, station_id, hour_id,
                sum(is_arrival)                                                        as arrivals_count,
@@ -515,11 +533,11 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
     /**********************************************************************************************************/
     /***** load_f_train_disruption_daily  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_f_train_disruption_daily(p_days IN NUMBER DEFAULT 3) IS
+    PROCEDURE load_f_train_disruption_daily(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from DATE;
         v_to   DATE;
     BEGIN
-        EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
+        EXECUTE IMMEDIATE c_parallel_dml;
 
         v_from := TRUNC(SYSDATE) - p_days;
         v_to   := TRUNC(SYSDATE) - 1;
@@ -572,7 +590,7 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
                   and x.operating_date between ttm.valid_from and ttm.valid_to
             left join d_train_type ttc
                    on ttc.category_code = sh.category_code and ttc.carrier_code = sh.carrier_code
-                  and ttc.valid_to = DATE '2999-12-31'
+                  and ttc.valid_to = c_valid_to
             left join d_disruption_cause dc_t on dc_t.cause_code = dh.disruption_type_code
             left join d_disruption_cause dc_m on dc_m.cause_code = dh.message
         )
@@ -593,21 +611,83 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
             DBMS_OUTPUT.PUT_LINE('load_f_train_disruption_daily ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
     END load_f_train_disruption_daily;
+	
+	
+	
+	
+	
+	/**********************************************************************************************************/
+    /***** load_f_train_run_monthly  *****/
+    /**********************************************************************************************************/
+	PROCEDURE load_f_train_run_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
+        v_from        DATE;
+        v_to          DATE;
+        v_month_start DATE;
+        v_month_end   DATE;
+    BEGIN
+        EXECUTE IMMEDIATE c_parallel_dml;
+
+        v_from := TRUNC(SYSDATE) - p_days;
+        v_to   := TRUNC(SYSDATE) - 1;
+        -- rozszerz okno do PELNYCH miesiecy (recompute calego miesiaca, tez poprzedniego)
+        v_month_start := TRUNC(v_from, 'MM');
+        v_month_end   := LAST_DAY(v_to);
+
+        -- usun dotkniete miesiace (przeliczamy je od nowa w calosci)
+        DELETE FROM f_train_run_monthly
+         WHERE month IN (
+                   select distinct dd.year*100 + dd.month
+                   from d_date dd
+                   where dd.full_date between v_month_start and v_month_end
+               );
+
+        INSERT INTO f_train_run_monthly
+            (month, route_id, train_type_id, status_id, day_type,
+             runs_count, delayed_count, sum_terminal_delay_min, sum_delayed_delay_min, max_terminal_delay_min, loaded_at)
+        SELECT dd.year*100 + dd.month                                   as month,
+               f.route_id, f.train_type_id, f.status_id,
+               case when dd.is_weekend = 'T' then 'WE' else 'WD' end     as day_type,
+               sum(f.runs_count),
+               sum(f.delayed_count),
+               sum(f.sum_terminal_delay_min),
+               sum(f.sum_delayed_delay_min),
+               max(f.max_terminal_delay_min),
+               pkg_tool.f_now_warsaw
+        from f_train_run_daily f
+        join d_date dd on dd.id = f.date_id
+        where dd.full_date between v_month_start and v_month_end
+        group by dd.year*100 + dd.month,
+                 f.route_id, f.train_type_id, f.status_id,
+                 case when dd.is_weekend = 'T' then 'WE' else 'WD' end;
+
+        log_rows(SQL%ROWCOUNT);
+        COMMIT;
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;
+            DBMS_OUTPUT.PUT_LINE('load_f_train_run_monthly ERROR - ROLLBACK: ' || SQLERRM);
+            RAISE;
+    END load_f_train_run_monthly;
+	
+	
+	-- ================= FAKTY =================
+	
+	
     
     
     
 
     -- ================= ORCHESTRACJA =================
 
-    PROCEDURE load_dimensions (p_route_full IN BOOLEAN DEFAULT FALSE) IS
+    PROCEDURE load_dimensions (p_full_load IN BOOLEAN DEFAULT c_full_load) IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== GOLD dimensions load START ===');
-        EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
+        EXECUTE IMMEDIATE c_parallel_dml;
 
         load_d_date;
         load_d_hour;
         load_d_station;
-        load_d_route(p_route_full);
+        load_d_route(p_full_load);
         load_d_train_type;
         load_d_train_status;
         load_d_disruption_cause;
@@ -623,10 +703,10 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
     
     
     
-    PROCEDURE load_facts_daily (p_days IN NUMBER DEFAULT 3) IS
+    PROCEDURE load_facts_daily (p_days IN NUMBER DEFAULT c_default_days) IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== GOLD facts daily load START ===');
-        EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
+        EXECUTE IMMEDIATE c_parallel_dml;
 
         load_f_train_run_daily(p_days);
         load_f_train_stop_daily(p_days);
@@ -640,9 +720,33 @@ create or replace PACKAGE BODY GOLD.pkg_gold_load AS
             DBMS_OUTPUT.PUT_LINE('=== GOLD facts daily load ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
     END load_facts_daily;
+	
+	
+	
+	PROCEDURE load_facts_monthly (p_days IN NUMBER DEFAULT c_default_days) IS
+	
+		v_type VARCHAR(20 CHAR) := 'facts monthly';
+	
+    BEGIN
+        DBMS_OUTPUT.PUT_LINE('=== GOLD ' || v_type || ' load START ===');
+        EXECUTE IMMEDIATE c_parallel_dml;
+
+        load_f_train_run_monthly(p_days);
+
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('=== GOLD ' || v_type || ' load OK (COMMIT) ===');
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;
+            DBMS_OUTPUT.PUT_LINE('=== GOLD ' || v_type || ' load ERROR - ROLLBACK: ' || SQLERRM);
+            RAISE;
+    END load_facts_monthly;
+	
+	
+	
+	-- ================= ORCHESTRACJA =================
 
 END pkg_gold_load;
-
 /
 
 
