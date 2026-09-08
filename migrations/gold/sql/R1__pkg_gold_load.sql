@@ -67,6 +67,8 @@ create or replace PACKAGE gold.pkg_gold_load AUTHID DEFINER AS
     PROCEDURE load_facts_daily (p_days IN NUMBER DEFAULT c_default_days);
 
     PROCEDURE load_f_train_run_monthly(p_days IN NUMBER DEFAULT c_default_days);
+	PROCEDURE load_f_train_stop_monthly(p_days IN NUMBER DEFAULT c_default_days);
+    PROCEDURE load_f_train_disruption_monthly(p_days IN NUMBER DEFAULT c_default_days);
     PROCEDURE load_facts_monthly (p_days IN NUMBER DEFAULT c_default_days);
 
 END pkg_gold_load;
@@ -670,6 +672,109 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
     END load_f_train_run_monthly;
 	
 	
+	
+	
+	/**********************************************************************************************************/
+    /***** load_f_train_stop_monthly  *****/
+    /**********************************************************************************************************/
+    PROCEDURE load_f_train_stop_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
+        v_from        DATE;
+        v_to          DATE;
+        v_month_start DATE;
+        v_month_end   DATE;
+    BEGIN
+        EXECUTE IMMEDIATE c_parallel_dml;
+        v_from := TRUNC(SYSDATE) - p_days;
+        v_to   := TRUNC(SYSDATE) - 1;
+        v_month_start := TRUNC(v_from, 'MM');
+        v_month_end   := LAST_DAY(v_to);
+
+        DELETE FROM f_train_stop_monthly
+         WHERE month IN (
+                   select distinct dd.year*100 + dd.month
+                   from d_date dd
+                   where dd.full_date between v_month_start and v_month_end
+               );
+
+        INSERT INTO f_train_stop_monthly
+            (month, route_id, train_type_id, station_id, hour_id, day_type,
+             arrivals_count, arrivals_on_time, arrivals_delayed,
+             sum_arrival_delay_min, sum_delayed_delay_min, max_arrival_delay_min, cancelled_count, loaded_at)
+        SELECT dd.year*100 + dd.month                               as month,
+               f.route_id, f.train_type_id, f.station_id, f.hour_id,
+               case when dd.is_weekend = 'T' then 'WE' else 'WD' end as day_type,
+               sum(f.arrivals_count),
+               sum(f.arrivals_on_time),
+               sum(f.arrivals_delayed),
+               sum(f.sum_arrival_delay_min),
+               sum(f.sum_delayed_delay_min),
+               max(f.max_arrival_delay_min),
+               sum(f.cancelled_count),
+               pkg_tool.f_now_warsaw
+        from f_train_stop_daily f
+        join d_date dd on dd.id = f.date_id
+        where dd.full_date between v_month_start and v_month_end
+        group by dd.year*100 + dd.month,
+                 f.route_id, f.train_type_id, f.station_id, f.hour_id,
+                 case when dd.is_weekend = 'T' then 'WE' else 'WD' end;
+        log_rows(SQL%ROWCOUNT);
+        COMMIT;
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;
+            DBMS_OUTPUT.PUT_LINE('load_f_train_stop_monthly ERROR - ROLLBACK: ' || SQLERRM);
+            RAISE;
+    END load_f_train_stop_monthly;
+	
+    
+    
+    
+    /**********************************************************************************************************/
+    /***** load_f_train_disruption_monthly  *****/
+    /**********************************************************************************************************/
+    PROCEDURE load_f_train_disruption_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
+        v_from        DATE;
+        v_to          DATE;
+        v_month_start DATE;
+        v_month_end   DATE;
+    BEGIN
+        EXECUTE IMMEDIATE c_parallel_dml;
+        v_from := TRUNC(SYSDATE) - p_days;
+        v_to   := TRUNC(SYSDATE) - 1;
+        v_month_start := TRUNC(v_from, 'MM');
+        v_month_end   := LAST_DAY(v_to);
+
+        DELETE FROM f_train_disruption_monthly
+         WHERE month IN (
+                   select distinct dd.year*100 + dd.month
+                   from d_date dd
+                   where dd.full_date between v_month_start and v_month_end
+               );
+
+        INSERT INTO f_train_disruption_monthly
+            (month, route_id, station_id, train_type_id, hour_id, cause_id, day_type,
+             occurrences_count, loaded_at)
+        SELECT dd.year*100 + dd.month                               as month,
+               f.route_id, f.station_id, f.train_type_id, f.hour_id, f.cause_id,
+               case when dd.is_weekend = 'T' then 'WE' else 'WD' end as day_type,
+               sum(f.occurrences_count),
+               pkg_tool.f_now_warsaw
+        from f_train_disruption_daily f
+        join d_date dd on dd.id = f.date_id
+        where dd.full_date between v_month_start and v_month_end
+        group by dd.year*100 + dd.month,
+                 f.route_id, f.station_id, f.train_type_id, f.hour_id, f.cause_id,
+                 case when dd.is_weekend = 'T' then 'WE' else 'WD' end;
+        log_rows(SQL%ROWCOUNT);
+        COMMIT;
+    EXCEPTION
+        WHEN OTHERS THEN
+            ROLLBACK;
+            DBMS_OUTPUT.PUT_LINE('load_f_train_disruption_monthly ERROR - ROLLBACK: ' || SQLERRM);
+            RAISE;
+    END load_f_train_disruption_monthly;
+	
+	
 	-- ================= FAKTY =================
 	
 	
@@ -732,6 +837,8 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         EXECUTE IMMEDIATE c_parallel_dml;
 
         load_f_train_run_monthly(p_days);
+		load_f_train_stop_monthly(p_days);
+        load_f_train_disruption_monthly(p_days);
 
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('=== GOLD ' || v_type || ' load OK (COMMIT) ===');

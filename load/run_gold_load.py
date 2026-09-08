@@ -51,6 +51,10 @@ def _load_facts(cur, days: int) -> None:
     cur.callproc("gold.pkg_gold_load.load_facts_daily", [days])
 
 
+def _load_facts_monthly(cur, days: int) -> None:
+    cur.callproc("gold.pkg_gold_load.load_facts_monthly", [days])
+
+
 def main(what: str, route_full: bool, days: int) -> None:
     with db.get_connection() as conn:
         with conn.cursor() as cur:
@@ -59,7 +63,9 @@ def main(what: str, route_full: bool, days: int) -> None:
             if what in ("all", "dims"):
                 _load_dims(cur, route_full)
             if what in ("all", "facts"):
-                _load_facts(cur, days)                     # po wymiarach (fakty od nich zaleza)
+                _load_facts(cur, days)
+            if what in ("all", "facts_monthly"):
+                _load_facts_monthly(cur, days)
 
             _drain_dbms_output(cur)
 
@@ -70,9 +76,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Ladowanie warstwy GOLD (wymiary + fakty).")
     parser.add_argument(
         "--what",
-        choices=["all", "dims", "facts"],
+        choices=["all", "dims", "facts", "facts_monthly"],
         default="all",
-        help="Co zaladowac: all (domyslnie), dims, facts.",
+        help="Co zaladowac: all (domyslnie), dims, facts, facts_monthly.",
     )
     parser.add_argument(
         "--route-full",
