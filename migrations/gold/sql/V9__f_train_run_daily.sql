@@ -14,7 +14,7 @@ CREATE TABLE gold.f_train_run_daily (
     sum_planned_travel_min  NUMBER,   -- suma planowanych czasow przejazdu [min]; avg = /travel_runs_count
     sum_actual_travel_min   NUMBER,   -- suma rzeczywistych czasow przejazdu [min]; avg = /travel_runs_count
     min_actual_travel_min   NUMBER,   -- najszybszy rzeczywisty przejazd [min]
-    max_actual_travel_min   NUMBER    -- najdluzszy rzeczywisty przejazd [min]
+    max_actual_travel_min   NUMBER,    -- najdluzszy rzeczywisty przejazd [min]
 	loaded_at               TIMESTAMP WITH TIME ZONE NOT NULL,
     CONSTRAINT pk_ftrd PRIMARY KEY (date_id, route_id, train_type_id, status_id)
         USING INDEX LOCAL

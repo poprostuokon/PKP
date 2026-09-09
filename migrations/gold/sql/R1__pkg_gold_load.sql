@@ -47,6 +47,7 @@ CREATE OR REPLACE SYNONYM gold.disruption_details 		FOR silver.disruption_detail
 
 
 
+
 create or replace PACKAGE gold.pkg_gold_load AUTHID DEFINER AS
 
     c_default_days CONSTANT NUMBER := 3;
@@ -347,15 +348,16 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         v_to   DATE;
     BEGIN
         EXECUTE IMMEDIATE c_parallel_dml;   -- Autonomous: ORA-12839
-
         v_from := TRUNC(SYSDATE) - p_days;
         v_to   := TRUNC(SYSDATE) - 1;
         DELETE FROM f_train_run_daily
-        WHERE date_id BETWEEN TO_NUMBER(TO_CHAR(v_from,'YYYYMMDD')) AND TO_NUMBER(TO_CHAR(v_to,  'YYYYMMDD'));
+        WHERE date_id BETWEEN TO_NUMBER(TO_CHAR(v_from,'YYYYMMDD')) AND TO_NUMBER(TO_CHAR(v_to,'YYYYMMDD'));
 
         INSERT INTO f_train_run_daily
             (date_id, route_id, train_type_id, status_id,
-             runs_count, delayed_count, sum_terminal_delay_min, sum_delayed_delay_min, max_terminal_delay_min, loaded_at)
+             runs_count, delayed_count, sum_terminal_delay_min, sum_delayed_delay_min, max_terminal_delay_min,
+             travel_runs_count, sum_planned_travel_min, sum_actual_travel_min, min_actual_travel_min, max_actual_travel_min,
+             loaded_at)
         WITH runs AS (       -- jeden wiersz na kurs w oknie + atrybuty z rozkladu
             select oh.id as ophe_id,
                    oh.operating_date,
@@ -383,21 +385,52 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
             join schedule_details f on f.schedule_id=ep.schedule_id and f.order_id=ep.order_id and f.order_number=ep.min_on
             join schedule_details t on t.schedule_id=ep.schedule_id and t.order_id=ep.order_id and t.order_number=ep.max_on
         ),
-        term AS (
+        sched_span AS (      -- PLANOWANE: zegar + offset dnia (kolumny *_at bywaja NULL)
+            select ep.schedule_id, ep.order_id,
+                   dep.departure_time as dep_time, dep.departure_day as dep_day,
+                   arr.arrival_time   as arr_time, arr.arrival_day   as arr_day
+            from ep
+            join schedule_details dep on dep.schedule_id=ep.schedule_id and dep.order_id=ep.order_id and dep.order_number=ep.min_on
+            join schedule_details arr on arr.schedule_id=ep.schedule_id and arr.order_id=ep.order_id and arr.order_number=ep.max_on
+        ),
+        op_span AS (         -- RZECZYWISTE znaczniki: pierwszy/ostatni POTWIERDZONY przystanek
+            select ophe_id,
+                   max(case when rn_first = 1 then actual_departure end) as origin_dep_at,
+                   max(case when rn_last  = 1 then actual_arrival   end) as term_arr_at
+            from (
+                select ophe_id, actual_departure, actual_arrival,
+                       row_number() over (partition by ophe_id order by actual_sequence asc)  as rn_first,
+                       row_number() over (partition by ophe_id order by actual_sequence desc) as rn_last
+                from operation_details
+                where is_confirmed = 1
+            )
+            group by ophe_id
+        ),
+        term AS (            -- opoznienie terminalne = ostatni potwierdzony przystanek
             select ophe_id, nvl(arrival_delay_min, 0) as terminal_delay
             from operation_details
             where is_confirmed = 1
             qualify row_number() over (partition by ophe_id order by actual_sequence desc) = 1
         ),
-        resolved AS (        -- mapowanie na klucze wymiarow
+        resolved AS (        -- mapowanie na klucze wymiarow + czasy przejazdu per kurs [min]
             select r.date_id,
                    dr.id                    as route_id,
-                   coalesce(ttm.id, ttc.id) as train_type_id,   -- SCD2 po dacie + fallback biezaca
+                   coalesce(ttm.id, ttc.id) as train_type_id,
                    dts.id                   as status_id,
-                   tm.terminal_delay
+                   tm.terminal_delay,
+                   -- planowany czas przejazdu [min]: (arrival na terminalu) - (departure z origin), z offsetem dnia
+                   case when ss.dep_time is not null and ss.arr_time is not null
+                        then ( nvl(ss.arr_day,0)*1440 + to_number(substr(ss.arr_time,1,2))*60 + to_number(substr(ss.arr_time,4,2)) )
+                           - ( nvl(ss.dep_day,0)*1440 + to_number(substr(ss.dep_time,1,2))*60 + to_number(substr(ss.dep_time,4,2)) )
+                        end as planned_travel_min,
+                   -- rzeczywisty czas przejazdu [min]
+                   case when os.origin_dep_at is not null and os.term_arr_at is not null
+                        then round((cast(os.term_arr_at as date) - cast(os.origin_dep_at as date)) * 1440) end as actual_travel_min
             from runs r
             left join term       tm on tm.ophe_id = r.ophe_id
+            left join op_span    os on os.ophe_id = r.ophe_id
             left join route_pair rp on rp.schedule_id = r.schedule_id and rp.order_id = r.order_id
+            left join sched_span ss on ss.schedule_id = r.schedule_id and ss.order_id = r.order_id
             join d_route dr on dr.from_station_id = rp.from_station_id and dr.to_station_id = rp.to_station_id
             left join d_train_type ttm
                    on ttm.category_code = r.category_code and ttm.carrier_code = r.carrier_code
@@ -415,9 +448,15 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                case when count(terminal_delay) = 0 then null
                     else nvl(sum(case when terminal_delay >= 6 then terminal_delay end), 0) end     as sum_delayed_delay_min,
                max(terminal_delay)                                                                  as max_terminal_delay_min,
+               -- NOWE miary czasu przejazdu (mianownik = kursy z policzalnym RZECZYWISTYM czasem)
+               case when count(actual_travel_min) = 0 then null else count(actual_travel_min) end   as travel_runs_count,
+               sum(case when actual_travel_min is not null then planned_travel_min end)             as sum_planned_travel_min,
+               sum(actual_travel_min)                                                               as sum_actual_travel_min,
+               min(actual_travel_min)                                                               as min_actual_travel_min,
+               max(actual_travel_min)                                                               as max_actual_travel_min,
                pkg_tool.f_now_warsaw
         from resolved
-        where train_type_id is not null       -- nie wpuszczamy kursow bez zmapowanego typu (NOT NULL w fakcie)
+        where train_type_id is not null
         group by date_id, route_id, train_type_id, status_id;
 
         log_rows(SQL%ROWCOUNT);
@@ -645,7 +684,9 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
 
         INSERT INTO f_train_run_monthly
             (month, route_id, train_type_id, status_id, day_type,
-             runs_count, delayed_count, sum_terminal_delay_min, sum_delayed_delay_min, max_terminal_delay_min, loaded_at)
+             runs_count, delayed_count, sum_terminal_delay_min, sum_delayed_delay_min, max_terminal_delay_min,
+             travel_runs_count, sum_planned_travel_min, sum_actual_travel_min, min_actual_travel_min, max_actual_travel_min,
+             loaded_at)
         SELECT dd.year*100 + dd.month                                   as month,
                f.route_id, f.train_type_id, f.status_id,
                case when dd.is_weekend = 'T' then 'WE' else 'WD' end     as day_type,
@@ -654,6 +695,11 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                sum(f.sum_terminal_delay_min),
                sum(f.sum_delayed_delay_min),
                max(f.max_terminal_delay_min),
+               sum(f.travel_runs_count),                                  -- SUM
+               sum(f.sum_planned_travel_min),                             -- SUM
+               sum(f.sum_actual_travel_min),                              -- SUM
+               min(f.min_actual_travel_min),                              -- MIN
+               max(f.max_actual_travel_min),                              -- MAX
                pkg_tool.f_now_warsaw
         from f_train_run_daily f
         join d_date dd on dd.id = f.date_id
@@ -670,11 +716,11 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
             DBMS_OUTPUT.PUT_LINE('load_f_train_run_monthly ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
     END load_f_train_run_monthly;
-	
-	
-	
-	
-	/**********************************************************************************************************/
+    
+    
+    
+    
+    /**********************************************************************************************************/
     /***** load_f_train_stop_monthly  *****/
     /**********************************************************************************************************/
     PROCEDURE load_f_train_stop_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
@@ -774,7 +820,6 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
             RAISE;
     END load_f_train_disruption_monthly;
 	
-	
 	-- ================= FAKTY =================
 	
 	
@@ -837,7 +882,7 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         EXECUTE IMMEDIATE c_parallel_dml;
 
         load_f_train_run_monthly(p_days);
-		load_f_train_stop_monthly(p_days);
+        load_f_train_stop_monthly(p_days);
         load_f_train_disruption_monthly(p_days);
 
         COMMIT;
