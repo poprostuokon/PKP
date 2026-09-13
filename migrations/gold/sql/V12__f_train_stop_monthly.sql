@@ -20,6 +20,8 @@ CREATE TABLE gold.f_train_stop_monthly (
     CONSTRAINT chk_ftsm_daytype CHECK (day_type IN ('WD','WE'))
 )
 PARTITION BY RANGE (month) INTERVAL (1)
-( PARTITION p_init VALUES LESS THAN (202601) );
+( PARTITION p_init VALUES LESS THAN (202601) )
+STORAGE (INITIAL 64K)
+;
 
 grant select on gold.f_train_stop_monthly to DEV_APP;

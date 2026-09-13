@@ -12,5 +12,9 @@ CREATE TABLE gold.f_train_disruption_daily (
     CONSTRAINT pk_ftdd PRIMARY KEY (date_id, route_id, station_id, train_type_id, hour_id, cause_id)
         USING INDEX LOCAL
 )
-PARTITION BY RANGE (date_id) INTERVAL (1)
-( PARTITION p_init VALUES LESS THAN (20260101) );
+PARTITION BY RANGE (date_id) INTERVAL (100)
+( PARTITION p_init VALUES LESS THAN (20260101) )
+STORAGE (INITIAL 64K)
+;
+
+grant select on gold.F_TRAIN_DISRUPTION_DAILY to DEV_APP;
