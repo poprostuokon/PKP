@@ -20,7 +20,7 @@ from pathlib import Path
 from jsonschema import validate as _js_validate
 from jsonschema import ValidationError
 
-from .paths import err_dir
+from .paths import err_dir, err_live_dir
 
 SCHEMA_DIR = Path(__file__).resolve().parent / "schemas"
 
@@ -36,6 +36,8 @@ SCHEMA_MAP = {
     "stop_types":            "schema_stop_types.json",
     "disruption_types":      "schema_disruption_types.json",
     "train_statuses":        "schema_train_statuses.json",
+    "operations_live":       "schema_operations_live.json",
+    "disruptions_live":      "schema_disruptions_live.json",
 }
 
 
@@ -59,7 +61,7 @@ def validate_payload(feed: str, raw_text: str) -> None:
     _js_validate(instance=data, schema=_load_schema(feed))
 
 
-def validate_or_quarantine(feed: str, raw_text: str, name_base: str, run_ts: str) -> bool:
+def validate_or_quarantine(feed: str, raw_text: str, name_base: str, run_ts: str, err_dir_fn=err_dir) -> bool:
     """
     Waliduje payload. Zwraca:
       True  -> OK, mozna zapisywac do TODO.
@@ -74,7 +76,7 @@ def validate_or_quarantine(feed: str, raw_text: str, name_base: str, run_ts: str
         return True
     except (ValidationError, ValueError) as exc:
         part_date = date.today().strftime("%Y%m%d")
-        qdir = err_dir(part_date)
+        qdir = err_dir_fn(part_date)
         qdir.mkdir(parents=True, exist_ok=True)
         safe = name_base.replace(":", "").replace("/", "_")
         (qdir / f"{safe}_{run_ts}.bad.json").write_text(raw_text, encoding="utf-8")

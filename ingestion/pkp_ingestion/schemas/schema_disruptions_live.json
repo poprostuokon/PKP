@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "disruptions_live",
+  "description": "LIVE disruptions (2 dni, jedna stacja). Required = pola potrzebne do diffa i disruption_tracking_log.",
+  "type": "object",
+  "required": ["generatedAt", "disruptions"],
+  "additionalProperties": true,
+  "properties": {
+    "generatedAt": { "type": "string" },
+    "disruptions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["disruptionId", "affectedRoutes"],
+        "additionalProperties": true,
+        "properties": {
+          "disruptionId": { "type": "integer" },
+          "affectedRoutes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["scheduleId", "operatingDate", "stationId", "sequenceNumber"],
+              "additionalProperties": true,
+              "properties": {
+                "scheduleId":     { "type": "integer" },
+                "operatingDate":  { "type": "string" },
+                "stationId":      { "type": "integer" },
+                "sequenceNumber": { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -11,6 +11,7 @@ CREATE TABLE silver.DISRUPTION_TRACKING_LOG (
 	message				 VARCHAR2(1000 CHAR),						-- może być null
 	-- detekcja zmian
     change_hash          CHAR(64)                  	NOT NULL,   	-- hash pól śledzonych
+	is_active			 BOOLEAN					DEFAULT TRUE NOT NULL,
 	-- czas
     snapshot_ts          TIMESTAMP WITH TIME ZONE  	NOT NULL,
     loaded_at            TIMESTAMP WITH TIME ZONE  	NOT NULL,
@@ -18,7 +19,7 @@ CREATE TABLE silver.DISRUPTION_TRACKING_LOG (
 	--CONSTRAINT fk_dilog_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id)
 )
 PARTITION BY RANGE (operating_date)
-INTERVAL (NUMTODSINTERVAL(1, 'DAY'))
+INTERVAL (NUMTOYMINTERVAL(1, 'MONTH'))
 (
     PARTITION p_anchor VALUES LESS THAN (DATE '2026-01-01')
 );

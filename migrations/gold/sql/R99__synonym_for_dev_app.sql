@@ -1,5 +1,6 @@
 -- ---- synonimy dla DEV_APP ----
 CREATE OR REPLACE SYNONYM DEV_APP.pkg_tool                 FOR maintenance.pkg_tool;
+CREATE OR REPLACE SYNONYM DEV_APP.pkg_maintenance          FOR maintenance.pkg_maintenance;
 CREATE OR REPLACE SYNONYM DEV_APP.def_station             	FOR silver.def_station;
 CREATE OR REPLACE SYNONYM DEV_APP.def_city                	FOR silver.def_city;
 CREATE OR REPLACE SYNONYM DEV_APP.schedule_header         	FOR silver.schedule_header;

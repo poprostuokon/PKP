@@ -101,3 +101,59 @@ def err_dir(part_date: str) -> Path:
 def err_filename(run_ts: str) -> str:
     """Plik sladu bledow danego przebiegu uploadu: err_<YYYYMMDDHH24MISS>.txt."""
     return f"err_{run_ts}.txt"
+
+
+
+# =====================================================================
+# LIVE (micro-batch)
+# =====================================================================
+
+def todo_live_raw_dir() -> Path:
+    """Swiezy pelny snapshot z API (scratch, nadpisywany, NIE do bucketu)."""
+    return DATA_ROOT / ENV / "TODO" / "LIVE" / "RAW"
+
+
+def todo_live_data_dir() -> Path:
+    """Mala delta gotowa do uploadu (lapie ja upload)."""
+    return DATA_ROOT / ENV / "TODO" / "LIVE" / "DATA"
+
+
+def state_live_dir() -> Path:
+    """Baseline + heartbeat_last.json + heartbeat_spool.jsonl."""
+    return DATA_ROOT / ENV / "STATE" / "LIVE"
+
+
+def archive_live_dir(part_date: str) -> Path:
+    """Delty wgrane pomyslnie: Data/<ENV>/ARCHIVE/LIVE/<YYYYMMDD>."""
+    return DATA_ROOT / ENV / "ARCHIVE" / "LIVE" / part_date
+
+
+def err_live_dir(part_date: str) -> Path:
+    """Delty nieudane / kwarantanna live: Data/<ENV>/ERR/LIVE/<YYYYMMDD>."""
+    return DATA_ROOT / ENV / "ERR" / "LIVE" / part_date
+
+
+def state_filename(feed: str) -> str:
+    """Staly plik baseline nadpisywany co tick: state_<feed>.json."""
+    return f"state_{feed}.json"
+
+
+def raw_filename(feed: str) -> str:
+    """Staly plik scratch swiezego snapshotu: <feed>_raw.json."""
+    return f"{feed}_raw.json"
+
+
+def bucket_object_name_live(filename: str) -> str:
+    """
+    Sciezka obiektu live w buckecie:
+      live/data/<type>/date=YYYYMMDD/<plik>
+    Partycja = data ingestii (run_ts[:8]) jak w daily; delta moze miec
+    kilka operatingDate, wlasciwa partycja per rekord jest w DB.
+    """
+    category, subtype, part_date = parse_filename(filename)
+    return f"live/{category}/{subtype}/date={part_date}/{filename}"
+
+
+def bucket_prefix_live(category: str, name: str, part_date: str) -> str:
+    """Prefiks folderu live w buckecie: live/<category>/<name>/date=YYYYMMDD/."""
+    return f"live/{category}/{name}/date={part_date}/"
