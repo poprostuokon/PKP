@@ -23,11 +23,23 @@ from .paths import (
 from .live_diff import load_state, save_state, diff_operations, diff_disruptions
 from .live_heartbeat import write_heartbeat
 from .upload_live import run_upload_live
+import db
+from .stg_load import prepare_stg_live
 
 STATION_ID   = 60103
 TICK_SECONDS = 180
 FEEDS        = ("operations", "disruptions")
 _MAX_PAGES = 50
+
+
+def _load_to_db() -> None:
+    """bucket -> landing -> tracking. Best-effort: blad NIE cofa STATE/uploadu
+    (delta jest w buckecie+ARCHIVE, gate LOADED/FAILED dociagnie ja nastepny cykl)."""
+    with db.get_connection() as conn:
+        prepare_stg_live(conn)                       # bucket live -> stg.land_*_live (commit per plik)
+        with conn.cursor() as cur:
+            cur.callproc("dbms_output.enable", (None,))
+            cur.callproc("silver.pkg_silver_load_live.load_all_live")   # master: COMMIT sam
 
 
 def _lag(gen):
@@ -196,6 +208,14 @@ def run_cycle() -> None:
             err_msg=prep.get("err"),
         )
         print(f"{final:5} {feed:12} n={prep['n']} lag={prep['lag']}")
+
+    # 4) DB: bucket -> landing -> tracking (best-effort; blad nie cofa STATE/uploadu)
+    if any(p["outcome"] == "OK" and p.get("delta_file") in ok_files
+           for p in preps.values()):
+        try:
+            _load_to_db()
+        except Exception:
+            traceback.print_exc()   # delta w buckecie -> dociagniemy nastepny cykl
 
 
 def main() -> None:

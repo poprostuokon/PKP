@@ -24,6 +24,7 @@ grant select on stg.LAND_STOP_TYPES to silver;
 grant select on stg.LAND_COMMERCIAL_CATEGORIES to silver;
 grant select on stg.LAND_DISRUPTION_TYPES to silver;
 
+
 -- ---- synonimy ----
 CREATE OR REPLACE SYNONYM silver.pkg_tool                     FOR maintenance.pkg_tool;
 CREATE OR REPLACE SYNONYM silver.land_schedules              FOR stg.land_schedules;
@@ -36,6 +37,7 @@ CREATE OR REPLACE SYNONYM silver.land_train_statuses       FOR stg.land_train_st
 CREATE OR REPLACE SYNONYM silver.land_stop_types           FOR stg.land_stop_types;
 CREATE OR REPLACE SYNONYM silver.land_commercial_categories FOR stg.land_commercial_categories;
 CREATE OR REPLACE SYNONYM silver.land_disruption_types     FOR stg.land_disruption_types;
+
 
 
 

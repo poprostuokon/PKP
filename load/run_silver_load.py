@@ -15,7 +15,7 @@ from pathlib import Path
 INGESTION_DIR = Path(__file__).resolve().parents[1] / "ingestion"
 sys.path.insert(0, str(INGESTION_DIR))
 
-import db  # noqa: E402  (db.py z ingestion)
+import db  # (db.py z ingestion)
 
 
 def _drain_dbms_output(cursor) -> None:
