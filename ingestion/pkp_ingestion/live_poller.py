@@ -27,6 +27,7 @@ from .upload_live import run_upload_live
 STATION_ID   = 60103
 TICK_SECONDS = 180
 FEEDS        = ("operations", "disruptions")
+_MAX_PAGES = 50
 
 
 def _lag(gen):
@@ -39,22 +40,65 @@ def _lag(gen):
         return None
 
 
+def _fetch_operations_all(client, run_ts) -> dict | None:
+    """
+    Pobiera WSZYSTKIE strony operations (live) i skleja w jeden snapshot.
+    Zwraca {'generatedAt', 'trains':[...]} albo None gdy ktoras strona
+    jest niepoprawna/nieudana (wtedy NIE diffujemy - snapshot bylby czesciowy).
+    generatedAt = z pierwszej strony (strony pobierane sekundy po sobie).
+    """
+    cfg         = DATA_ENDPOINTS_LIVE["operations"]
+    base_params = build_params("operations", endpoints=DATA_ENDPOINTS_LIVE)
+    today       = date.today()
+
+    trains: list = []
+    generated_at = None
+    page = 1
+
+    while page <= _MAX_PAGES:
+        params = {**base_params, "page": page}
+        raw = client.get(cfg["endpoint"], params=params)
+
+        # walidacja strony; zla strona = przerwij caly tick (snapshot czesciowy = ryzyko)
+        if not validate_or_quarantine("operations_live", raw,
+                                      f"operations_{today}_p{page:03d}", run_ts,
+                                      err_dir_fn=err_live_dir):
+            print(f"ERR operations page {page} niepoprawna -> przerywam tick")
+            return None
+
+        doc = json.loads(raw)
+        if page == 1:
+            generated_at = doc.get("generatedAt")
+        trains.extend(doc.get("trains", []))
+
+        pg = doc.get("pagination", {})
+        if not pg.get("hasNextPage", False):
+            break
+        page += 1
+    else:
+        # petla wyczerpala _MAX_PAGES bez hasNextPage=False -> cos nie tak, nie ufaj
+        print(f"ERR operations: przekroczono _MAX_PAGES={_MAX_PAGES} -> przerywam tick")
+        return None
+
+    return {"generatedAt": generated_at, "trains": trains}
+
+
 def _prep_operations(client, run_ts) -> dict:
-    cfg = DATA_ENDPOINTS_LIVE["operations"]
-    raw = client.get(cfg["endpoint"], params=build_params("operations"))
-    if not validate_or_quarantine("operations_live", raw, f"operations_{date.today()}",
-                                  run_ts, err_dir_fn=err_live_dir):
+    curr = _fetch_operations_all(client, run_ts)
+    if curr is None:
         return {"outcome": "ERR", "n": 0, "lag": None}
 
-    curr = json.loads(raw)
-    gen  = curr.get("generatedAt")
+    gen        = curr.get("generatedAt")
     state_path = state_live_dir() / state_filename("operations")
-    prev = load_state(state_path)
+    prev       = load_state(state_path)
 
     if prev.get("generatedAt") and gen and gen <= prev["generatedAt"]:
         return {"outcome": "STALE", "n": 0, "lag": _lag(gen)}
 
-    write_raw(todo_live_raw_dir(), raw_filename("operations"), raw)  # scratch/debug
+    # scratch RAW: caly sklejony snapshot (debug), nie per strona
+    write_raw(todo_live_raw_dir(), raw_filename("operations"),
+              json.dumps(curr, ensure_ascii=False))
+
     delta = diff_operations(prev.get("trains", []), curr.get("trains", []), STATION_ID)
 
     if not delta:
@@ -70,7 +114,7 @@ def _prep_operations(client, run_ts) -> dict:
 
 def _prep_disruptions(client, run_ts) -> dict:
     cfg = DATA_ENDPOINTS_LIVE["disruptions"]
-    raw = client.get(cfg["endpoint"], params=build_params("disruptions"))
+    raw = client.get(cfg["endpoint"], params=build_params("disruptions", endpoints=DATA_ENDPOINTS_LIVE))
     if not validate_or_quarantine("disruptions_live", raw, f"disruptions_{date.today()}",
                                   run_ts, err_dir_fn=err_live_dir):
         return {"outcome": "ERR", "n": 0, "lag": None}

@@ -27,7 +27,8 @@ def resolve_day(default_day: str | None, override: str | None) -> str | None:
 def resolve_range(name: str,
                   day: str | None = None,
                   date_from: str | None = None,
-                  date_to: str | None = None) -> tuple[str | None, str | None]:
+                  date_to: str | None = None,
+                  endpoints=DATA_ENDPOINTS) -> tuple[str | None, str | None]:
     """
     Zwraca (dateFrom, dateTo) w formacie YYYY-MM-DD.
     Priorytet:
@@ -36,7 +37,7 @@ def resolve_range(name: str,
          dateFrom = kotwica - (range_days - 1).
     Endpoint bez daty (default_day=None, brak override) -> (None, None).
     """
-    cfg = DATA_ENDPOINTS[name]
+    cfg = endpoints[name]
 
     # 1) pelny override zakresu
     if date_from or date_to:
@@ -61,10 +62,11 @@ def resolve_range(name: str,
 def build_params(name: str,
                  day: str | None = None,
                  date_from: str | None = None,
-                 date_to: str | None = None) -> dict:
+                 date_to: str | None = None,
+                 endpoints=DATA_ENDPOINTS) -> dict:
     """Buduje parametry endpointu; dateFrom/dateTo z resolve_range. Config nie jest mutowany."""
-    cfg = DATA_ENDPOINTS[name]
-    r_from, r_to = resolve_range(name, day, date_from, date_to)
+    cfg = endpoints[name]
+    r_from, r_to = resolve_range(name, day, date_from, date_to, endpoints=endpoints)
 
     params = {}
     for key, value in cfg["params"].items():
@@ -85,10 +87,11 @@ def build_params(name: str,
 
 
 def business_date(name: str, day: str | None = None,
-                  date_from: str | None = None) -> str | None:
+                  date_from: str | None = None,
+                  endpoints=DATA_ENDPOINTS) -> str | None:
     """
     Data do NAZWY pliku (YYYY-MM-DD). Dla zakresu bierzemy POCZATEK okna (dateFrom),
     zeby nazwa jednoznacznie wskazywala pierwszy dzien danych w pliku.
     """
-    r_from, _ = resolve_range(name, day, date_from)
+    r_from, _ = resolve_range(name, day, date_from, endpoints=endpoints)
     return r_from
