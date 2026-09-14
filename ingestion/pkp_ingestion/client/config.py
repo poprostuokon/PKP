@@ -105,3 +105,33 @@ DATA_ENDPOINTS = {
 
 # Wielkosc strony operations (spojna z params powyzej; uzywana w petli).
 OPERATIONS_PAGE_SIZE = 5000
+
+
+# --- Dane LIVE (micro batch) ---
+# Rozne parametry niz daily: operations flaga szczegolow OFF (tylko wlasna stacja),
+# disruptions okno 2 dni z filtrem stacji. Kotwica = dzis (live patrzy "na teraz").
+DATA_ENDPOINTS_LIVE = {
+    "operations": {
+        "endpoint":  "/api/v1/operations",
+        "params": {
+            "stations":    BASE_STATIONS,
+            "fullRoutes":  "false",    # OFF -> stations[] tylko wlasna stacja (60103)
+            "withPlanned": "true",     # planowe czasy -> opoznienia liczone z live
+            "pageSize":    5000,
+        },
+        "default_day": "None",         # operations bez dat (snapshot ostatnich ~5 dni)
+        "paginated":   True,
+    },
+    "disruptions": {
+        "endpoint":  "/api/v1/disruptions",
+        "params": {
+            "stations":     BASE_STATIONS,   # filtr po stacji (API to przyjmuje)
+            "dictionaries": "false",
+            "dateFrom":     DATE_TOKEN,
+            "dateTo":       DATE_TOKEN,
+        },
+        "default_day": "D",     # kotwica = dzis
+        "range_days":  2,       # okno 2 dni (D-1..D) - laternia na przelom polnocy
+        "paginated":   False,
+    },
+}

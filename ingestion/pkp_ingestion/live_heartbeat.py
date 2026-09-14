@@ -63,7 +63,7 @@ def _flush_spool() -> None:
     if not rows:
         return
 
-    from .db.connection import get_connection      # dopasuj do swojego modulu polaczenia
+    from db import get_connection 
 
     sql = """
         INSERT INTO maintenance.poller_heartbeat
