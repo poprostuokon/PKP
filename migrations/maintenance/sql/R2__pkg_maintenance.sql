@@ -15,6 +15,12 @@ create or replace PACKAGE maintenance.pkg_maintenance AUTHID CURRENT_USER AS
         p_min_mb     IN NUMBER   DEFAULT 16,
         p_min_used   IN NUMBER   DEFAULT 50
     );
+	
+	PROCEDURE p_gen_table_move_schema(
+        p_schema     IN VARCHAR2,
+        p_min_mb     IN NUMBER DEFAULT 8,    -- pomijaj male tabele
+        p_max_full   IN NUMBER DEFAULT 50    -- MOVE gdy % pelnych blokow < tego (rozlazla)
+    );
     
     PROCEDURE p_gen_index_rebuild_schema(
         p_schema     IN VARCHAR2,
@@ -144,6 +150,67 @@ create or replace PACKAGE BODY maintenance.pkg_maintenance AS
         DBMS_OUTPUT.PUT_LINE('gen_schema '||v_sch
             ||' | do kompresji='||v_cnt||' pominieto(prog)='||v_skip);
     END p_gen_compress_schema;
+	
+	
+	
+	-- % blokow PELNYCH wzgledem zaalokowanych (full-heavy = gesta, low = rozlazla)
+    FUNCTION f_full_pct(p_sch VARCHAR2, p_tab VARCHAR2) RETURN NUMBER IS
+        unf NUMBER; unfb NUMBER; f1 NUMBER; f1b NUMBER; f2 NUMBER; f2b NUMBER;
+        f3 NUMBER; f3b NUMBER; f4 NUMBER; f4b NUMBER; fb NUMBER; fbb NUMBER;
+        tot NUMBER;
+    BEGIN
+        DBMS_SPACE.SPACE_USAGE(p_sch,p_tab,'TABLE',
+            unf,unfb,f1,f1b,f2,f2b,f3,f3b,f4,f4b,fb,fbb);
+        tot := fb+f1+f2+f3+f4+unf;
+        IF tot=0 THEN RETURN NULL; END IF;
+        RETURN ROUND(100*fb/tot,1);
+    EXCEPTION WHEN OTHERS THEN RETURN NULL;
+    END f_full_pct;
+
+    PROCEDURE p_gen_table_move_schema(
+        p_schema     IN VARCHAR2,
+        p_min_mb     IN NUMBER DEFAULT 8,
+        p_max_full   IN NUMBER DEFAULT 50
+    ) IS
+        v_sch   VARCHAR2(128) := UPPER(p_schema);
+        v_mb    NUMBER; v_full NUMBER;
+        v_cmd   VARCHAR2(1000);
+        v_cnt   PLS_INTEGER := 0; v_skip PLS_INTEGER := 0;
+    BEGIN
+        FOR t IN (
+            SELECT tab.table_name, seg.bytes/1024/1024 AS mb
+              FROM dba_tables tab
+              JOIN dba_segments seg
+                ON seg.owner=tab.owner AND seg.segment_name=tab.table_name
+               AND seg.segment_type='TABLE'          -- tylko heap, nie partycjonowane
+             WHERE tab.owner=v_sch
+               AND tab.partitioned='NO'
+               AND tab.temporary='N'
+               AND tab.iot_type IS NULL              -- pomijaj IOT
+        ) LOOP
+            v_mb := ROUND(t.mb,2);
+            IF v_mb < p_min_mb THEN
+                v_skip := v_skip+1;
+                CONTINUE;
+            END IF;
+
+            v_full := f_full_pct(v_sch, t.table_name);
+            -- MOVE gdy rozlazla: malo pelnych blokow (lub nie da sie zmierzyc -> pomijamy dla bezpieczenstwa)
+            IF v_full IS NOT NULL AND v_full < p_max_full THEN
+                v_cmd := 'ALTER TABLE "'||v_sch||'"."'||t.table_name||'" '
+                       ||'MOVE UPDATE INDEXES';
+                INSERT INTO maintenance.sql_exec_queue(sql_) VALUES (v_cmd);
+                v_cnt := v_cnt+1;
+            ELSE
+                v_skip := v_skip+1;
+            END IF;
+        END LOOP;
+
+        COMMIT;
+        DBMS_OUTPUT.PUT_LINE('gen_table_move '||v_sch
+            ||' | do move='||v_cnt||' pominieto='||v_skip);
+    END p_gen_table_move_schema;
+	
     
     
     

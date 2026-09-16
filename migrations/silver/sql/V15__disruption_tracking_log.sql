@@ -18,6 +18,7 @@ CREATE TABLE silver.DISRUPTION_TRACKING_LOG (
     CONSTRAINT pk_dilog_id PRIMARY KEY (operating_date, id) USING INDEX LOCAL,
 	--CONSTRAINT fk_dilog_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id)
 )
+STORAGE (INITIAL 64K)
 PARTITION BY RANGE (operating_date)
 INTERVAL (NUMTOYMINTERVAL(1, 'MONTH'))
 (

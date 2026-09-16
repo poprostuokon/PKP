@@ -22,8 +22,10 @@ CREATE TABLE silver.operation_tracking_log (
     CONSTRAINT pk_optrlog_id PRIMARY KEY (operating_date, id) USING INDEX LOCAL,	-- dzieki temu gdy usuniemy partycje nie trzeba odświeżać indeksu, gdyż w tej konfiguracji jest "lokalny"
 	CONSTRAINT fk_optrlog_dsta_id FOREIGN KEY (dsta_id) REFERENCES silver.def_station(id)
 )
+STORAGE (INITIAL 64K)
 PARTITION BY RANGE (operating_date)
-INTERVAL (NUMTODSINTERVAL(1, 'DAY'))
+INTERVAL (NUMTOYMINTERVAL(1, 'MONTH'))
+
 (
     PARTITION p_anchor VALUES LESS THAN (DATE '2026-01-01')
 );

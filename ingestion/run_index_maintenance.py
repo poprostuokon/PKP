@@ -70,7 +70,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--schemas",
         nargs="+",
-        default=["SILVER", "GOLD"],
+        default=["SILVER", "GOLD", 'MAINTENANCE'],
         help="Schematy do przeszukania. Domyslnie: SILVER GOLD.",
     )
     parser.add_argument(
