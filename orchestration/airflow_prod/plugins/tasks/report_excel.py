@@ -55,7 +55,7 @@ REPORTS_DIR = str(_REPO_ROOT / "data" / ENV / "RAPORT")
 
 # -- Konfiguracja raportu -----------------------------------------------------
 # Schematy uwzgledniane w raporcie zajetosci. UZUPELNIJ/POPRAW pod swoja baze.
-REPORT_SCHEMAS = ["SILVER", "GOLD", "MAINTENANCE"]
+REPORT_SCHEMAS = ["SILVER", "GOLD", "MAINTENANCE", "STG"]
 
 # Ile najwiekszych obiektow pokazac per schemat (None = wszystkie).
 TOP_OBJECTS_PER_SCHEMA = None

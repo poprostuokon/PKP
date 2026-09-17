@@ -27,7 +27,8 @@ png/*/*
 
 # Data files — ignoruj zawartość ale zachowaj strukturę folderów
 data/**
-!data/
+!data/**/
+!data/**/.gitkeep
 
 
 # IDE
@@ -53,3 +54,34 @@ logs/
 # Airflow prod
 airflow_prod/.env
 airflow_prod/logs/
+
+
+# ── Ogólne klucze i sekrety ───────────────────────────
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.sso
+secrets.*
+credentials*
+config_local.py
+
+
+# ── OCI CLI / klucze API ──────────────────────────────
+.oci/
+*_api_key.pem
+oci_api_key*.pem
+
+
+# ── Wallet Oracle ADB (cała zawartość zipa z konsoli) ─
+cwallet.sso
+ewallet.p12
+ewallet.pem
+keystore.jks
+truststore.jks
+tnsnames.ora
+sqlnet.ora
+ojdbc.properties
+wallet/                
+Wallet_*/             
