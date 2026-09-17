@@ -11,14 +11,14 @@ Wola MAINTENANCE.PKG_MAINTENANCE. Polaczenie z ingestion/db.py.
     python run_table_maintenance.py --min-mb 4 --max-full 40
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 
 INGESTION_DIR = Path(__file__).resolve().parents[1] / "ingestion"
 sys.path.insert(0, str(INGESTION_DIR))
 
-import db  # noqa: E402
+import db
 
 
 def _drain_dbms_output(cursor) -> None:
@@ -32,22 +32,21 @@ def _drain_dbms_output(cursor) -> None:
 
 
 def main(schemas: list[str], min_mb: int, max_full: int) -> None:
-    with db.get_connection() as conn:
-        with conn.cursor() as cur:
-            cur.callproc("dbms_output.enable", (None,))
+    with db.get_connection() as conn, conn.cursor() as cur:
+        cur.callproc("dbms_output.enable", (None,))
 
-            cur.callproc("maintenance.pkg_maintenance.p_clear_queue")
+        cur.callproc("maintenance.pkg_maintenance.p_clear_queue")
 
-            for sch in schemas:
-                cur.callproc(
-                    "maintenance.pkg_maintenance.p_gen_table_move_schema",
-                    [sch, min_mb, max_full],
-                )
+        for sch in schemas:
+            cur.callproc(
+                "maintenance.pkg_maintenance.p_gen_table_move_schema",
+                [sch, min_mb, max_full],
+            )
 
-            try:
-                cur.callproc("maintenance.pkg_maintenance.p_run_compress_queue")
-            finally:
-                _drain_dbms_output(cur)
+        try:
+            cur.callproc("maintenance.pkg_maintenance.p_run_compress_queue")
+        finally:
+            _drain_dbms_output(cur)
 
     print(f"Table maintenance: zakonczono (schemas={schemas}, "
           f"min_mb={min_mb}, max_full={max_full}).")

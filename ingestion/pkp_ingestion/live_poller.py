@@ -9,22 +9,28 @@ Uruchomienie: python -m pkp_ingestion.live_poller
 import json
 import time
 import traceback
-from datetime import datetime, timezone, date
+from datetime import date, datetime, timezone
+
+import db
 
 from .client.api_client import PkpApiClient
 from .client.config import DATA_ENDPOINTS_LIVE
-from .params import build_params
-from .validation import validate_or_quarantine
-from .storage.local_writer import write_raw
-from .paths import (
-    todo_live_raw_dir, todo_live_data_dir, state_live_dir,
-    raw_filename, state_filename, data_filename, err_live_dir,
-)
-from .live_diff import load_state, save_state, diff_operations, diff_disruptions
+from .live_diff import diff_disruptions, diff_operations, load_state, save_state
 from .live_heartbeat import write_heartbeat
-from .upload_live import run_upload_live
-import db
+from .params import build_params
+from .paths import (
+    data_filename,
+    err_live_dir,
+    raw_filename,
+    state_filename,
+    state_live_dir,
+    todo_live_data_dir,
+    todo_live_raw_dir,
+)
 from .stg_load import prepare_stg_live
+from .storage.local_writer import write_raw
+from .upload_live import run_upload_live
+from .validation import validate_or_quarantine
 
 STATION_ID   = 60103
 TICK_SECONDS = 180

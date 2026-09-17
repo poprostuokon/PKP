@@ -9,15 +9,14 @@ Bez paginacji: jedna odpowiedz = jeden plik.
 """
 
 from datetime import date, datetime
-from pathlib import Path
 
 from ..client.api_client import PkpApiClient
 from ..client.config import DATA_ENDPOINTS
 from ..params import build_params, business_date
+from ..paths import data_filename, todo_data_dir
+from ..prune import keep_latest_todo
 from ..storage.local_writer import write_raw
 from ..validation import validate_or_quarantine
-from ..prune import keep_latest_todo
-from ..paths import todo_data_dir, data_filename
 
 
 def fetch_disruptions(client, run_ts, day=None, date_from=None, date_to=None):

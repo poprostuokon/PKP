@@ -9,9 +9,12 @@ Timeout (connect, read/write) + strojony retry - spojne z OciUploader.
 import oci
 
 from ..settings import (
-    OCI_PROFILE, OCI_BUCKET,
-    OCI_CONNECT_TIMEOUT, OCI_READ_TIMEOUT,
-    OCI_RETRY_MAX_ATTEMPTS, OCI_RETRY_TOTAL_SECONDS,
+    OCI_BUCKET,
+    OCI_CONNECT_TIMEOUT,
+    OCI_PROFILE,
+    OCI_READ_TIMEOUT,
+    OCI_RETRY_MAX_ATTEMPTS,
+    OCI_RETRY_TOTAL_SECONDS,
 )
 
 

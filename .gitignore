@@ -10,6 +10,9 @@ ENV/
 OCI/
 Database/
 test_api/
+*.egg-info/
+build/
+dist/
 
 
 # API Keys & Secrets

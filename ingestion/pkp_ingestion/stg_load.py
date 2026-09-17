@@ -15,14 +15,14 @@ Polaczenie do bazy jest wstrzykiwane z zewnatrz (db.get_connection()),
 zeby ten modul nie byl zwiazany z konkretnym zrodlem polaczenia.
 """
 
-from datetime import date, datetime, timezone, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 import oracledb
 
-from .storage.oci_reader import OciReader
+from .client.config import DATA_ENDPOINTS, DICTIONARY_ENDPOINTS, SPECIAL_DICTIONARIES
 from .paths import bucket_prefix, bucket_prefix_live
-from .client.config import DICTIONARY_ENDPOINTS, SPECIAL_DICTIONARIES, DATA_ENDPOINTS
 from .settings import OCI_BUCKET_LIVE
+from .storage.oci_reader import OciReader
 
 # Feedy = (kategoria w buckecie, nazwa feedu == czlon nazwy tabeli land_<name>)
 DICT_FEEDS = list(DICTIONARY_ENDPOINTS) + list(SPECIAL_DICTIONARIES)

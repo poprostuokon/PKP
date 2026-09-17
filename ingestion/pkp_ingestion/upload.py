@@ -15,18 +15,17 @@ import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
-
-from .storage.oci_uploader import OciUploader
-from .prune import prune_archive
 from .paths import (
-    todo_dict_dir,
-    todo_data_dir,
-    bucket_object_name,
-    parse_filename,
     archive_dir,
+    bucket_object_name,
     err_dir,
     err_filename,
+    parse_filename,
+    todo_data_dir,
+    todo_dict_dir,
 )
+from .prune import prune_archive
+from .storage.oci_uploader import OciUploader
 
 
 def _collect_todo_files() -> list[Path]:

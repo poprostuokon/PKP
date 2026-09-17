@@ -54,7 +54,7 @@ def parse_filename(filename: str) -> tuple[str, str, str]:
       <type>_<date>_<ts>[_pNNN].json        -> ("data", <type>, ts[:8])
     data partycji = pierwsze 8 cyfr run_ts (data ingestii).
     """
-    stem = filename[:-5] if filename.endswith(".json") else filename
+    stem = filename.removesuffix(".json")
     m = _TS_RE.search(stem)
     if not m:
         raise ValueError(f"Brak run_ts w nazwie pliku: {filename}")

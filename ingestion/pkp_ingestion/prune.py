@@ -9,7 +9,7 @@ po run_ts, wiec wszystkie strony _pNNN danego runu zostaja razem.
 from collections import defaultdict
 from pathlib import Path
 
-from .paths import archive_dir, parse_filename, _TS_RE
+from .paths import _TS_RE, archive_dir, parse_filename
 
 
 def prune_archive(part_date: str) -> None:

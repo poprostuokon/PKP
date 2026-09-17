@@ -8,7 +8,7 @@ Jedno miejsce, z ktorego reszta paczki bierze klucz API, srodowisko i katalog Da
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv, find_dotenv
+from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())  # wczytuje .env
 

@@ -15,15 +15,13 @@ Na start: run_carriers (tylko carriers). run_all_dictionaries obejmuje wszystkie
 """
 
 from datetime import datetime
-from pathlib import Path
 
 from ..client.api_client import PkpApiClient
 from ..client.config import DICTIONARY_ENDPOINTS, SPECIAL_DICTIONARIES
+from ..paths import dict_filename, todo_dict_dir
+from ..prune import keep_latest_todo
 from ..storage.local_writer import write_raw
 from ..validation import validate_or_quarantine
-from ..prune import keep_latest_todo
-from ..paths import todo_dict_dir, dict_filename
-
 
 
 def fetch_dictionary(name, cfg, client, run_ts):

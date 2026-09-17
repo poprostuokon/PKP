@@ -18,10 +18,10 @@ from pathlib import Path
 from ..client.api_client import PkpApiClient
 from ..client.config import DATA_ENDPOINTS
 from ..params import build_params
+from ..paths import data_filename, todo_data_dir
+from ..prune import keep_latest_todo
 from ..storage.local_writer import write_raw
 from ..validation import validate_or_quarantine
-from ..prune import keep_latest_todo
-from ..paths import todo_data_dir, data_filename
 
 
 def fetch_operations(client: PkpApiClient, run_ts: str, ingest_date: str) -> list[Path]:

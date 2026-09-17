@@ -7,7 +7,6 @@ po COMMIT wyczysc spool. Idempotencja: PK (run_ts, feed).
 """
 
 import json
-import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -63,7 +62,7 @@ def _flush_spool() -> None:
     if not rows:
         return
 
-    from db import get_connection 
+    from db import get_connection
 
     sql = """
         INSERT INTO maintenance.poller_heartbeat

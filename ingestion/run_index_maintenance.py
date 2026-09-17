@@ -14,15 +14,15 @@ Uruchamiaj z katalogu 'load':
     python run_index_maintenance.py --min-pct 10 --min-del 25
 """
 
-import sys
 import argparse
+import sys
 from pathlib import Path
 
 # reuzycie db.py z ingestion (wspolne polaczenie + .env)
 INGESTION_DIR = Path(__file__).resolve().parents[1] / "ingestion"
 sys.path.insert(0, str(INGESTION_DIR))
 
-import db  # noqa: E402  (db.py z ingestion)
+import db
 
 
 def _drain_dbms_output(cursor) -> None:
@@ -37,27 +37,26 @@ def _drain_dbms_output(cursor) -> None:
 
 
 def main(schemas: list[str], min_pct: int, min_del: int) -> None:
-    with db.get_connection() as conn:
-        with conn.cursor() as cur:
-            cur.callproc("dbms_output.enable", (None,))   # None = bufor bez limitu
+    with db.get_connection() as conn, conn.cursor() as cur:
+        cur.callproc("dbms_output.enable", (None,))   # None = bufor bez limitu
 
-            # 1) czyscimy kolejke exec (tymczasowa tabela sql_exec_queue)
-            cur.callproc("maintenance.pkg_maintenance.p_clear_queue")
+        # 1) czyscimy kolejke exec (tymczasowa tabela sql_exec_queue)
+        cur.callproc("maintenance.pkg_maintenance.p_clear_queue")
 
-            # 2) generujemy kandydatow per schemat (dopisuja do tej samej kolejki)
-            for sch in schemas:
-                cur.callproc(
-                    "maintenance.pkg_maintenance.p_gen_index_rebuild_schema",
-                    [sch, min_pct, min_del],
-                )
+        # 2) generujemy kandydatow per schemat (dopisuja do tej samej kolejki)
+        for sch in schemas:
+            cur.callproc(
+                "maintenance.pkg_maintenance.p_gen_index_rebuild_schema",
+                [sch, min_pct, min_del],
+            )
 
-            # 3) wykonujemy kolejke (rebuild + log do sql_exec_queue_log).
-            #    p_run_compress_queue rzuca blad gdy cokolwiek padlo -> drain w finally,
-            #    zeby log DBMS_OUTPUT wypisal sie ZAWSZE, a wyjatek i tak wyleci po nim.
-            try:
-                cur.callproc("maintenance.pkg_maintenance.p_run_compress_queue")
-            finally:
-                _drain_dbms_output(cur)
+        # 3) wykonujemy kolejke (rebuild + log do sql_exec_queue_log).
+        #    p_run_compress_queue rzuca blad gdy cokolwiek padlo -> drain w finally,
+        #    zeby log DBMS_OUTPUT wypisal sie ZAWSZE, a wyjatek i tak wyleci po nim.
+        try:
+            cur.callproc("maintenance.pkg_maintenance.p_run_compress_queue")
+        finally:
+            _drain_dbms_output(cur)
 
     print(f"Index maintenance: zakonczono (schemas={schemas}, "
           f"min_pct={min_pct}, min_del={min_del}).")

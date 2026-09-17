@@ -18,8 +18,8 @@ from ..settings import API_KEY
 from .config import (
     BASE_URL,
     DEFAULT_TIMEOUT,
-    RETRY_MAX_ATTEMPTS,
     RETRY_BACKOFF_BASE,
+    RETRY_MAX_ATTEMPTS,
     RETRYABLE_STATUS,
 )
 

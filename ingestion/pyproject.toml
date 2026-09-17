@@ -11,8 +11,9 @@ dependencies = [
     "requests>=2.31",
     "python-dotenv>=1.0",
     "oci>=2.120",
+    "oracledb>=2.0",
+    "jsonschema>=4.0",
 ]
 
 [tool.setuptools.packages.find]
-# szukamy pakietu pkp_ingestion w biezacym katalogu (ingestion/)
 include = ["pkp_ingestion*"]

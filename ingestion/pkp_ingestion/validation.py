@@ -14,13 +14,13 @@ Uzycie w domenie (jedna linijka zamiast bloku try/except):
 
 import json
 from datetime import date
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 
-from jsonschema import validate as _js_validate
 from jsonschema import ValidationError
+from jsonschema import validate as _js_validate
 
-from .paths import err_dir, err_live_dir
+from .paths import err_dir
 
 SCHEMA_DIR = Path(__file__).resolve().parent / "schemas"
 
@@ -41,7 +41,7 @@ SCHEMA_MAP = {
 }
 
 
-@lru_cache(maxsize=None)
+@cache
 def _load_schema(feed: str) -> dict:
     fname = SCHEMA_MAP.get(feed)
     if fname is None:

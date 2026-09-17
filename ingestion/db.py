@@ -11,8 +11,7 @@ Wszystkie wartosci sterowane z .env.
 import os
 
 import oracledb
-from pathlib import Path
-from dotenv import load_dotenv, find_dotenv
+from dotenv import find_dotenv, load_dotenv
 
 load_dotenv(find_dotenv())
 
@@ -44,7 +43,6 @@ def get_connection() -> oracledb.Connection:
 
 if __name__ == "__main__":
     # Szybki test polaczenia
-    with get_connection() as conn:
-        with conn.cursor() as cur:
-            cur.execute("SELECT USER, SYSTIMESTAMP FROM dual")
-            print("Polaczono jako:", cur.fetchone())
+    with get_connection() as conn, conn.cursor() as cur:
+        cur.execute("SELECT USER, SYSTIMESTAMP FROM dual")
+        print("Polaczono jako:", cur.fetchone())
