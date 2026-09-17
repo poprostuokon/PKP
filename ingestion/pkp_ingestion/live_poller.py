@@ -39,7 +39,7 @@ def _load_to_db() -> None:
         prepare_stg_live(conn)                       # bucket live -> stg.land_*_live (commit per plik)
         with conn.cursor() as cur:
             cur.callproc("dbms_output.enable", (None,))
-            cur.callproc("silver.pkg_silver_load_live.load_all_live")   # master: COMMIT sam
+            cur.callproc("silver.pkg_silver_load_live.p_load_all_live")   # master: COMMIT sam
 
 
 def _lag(gen):

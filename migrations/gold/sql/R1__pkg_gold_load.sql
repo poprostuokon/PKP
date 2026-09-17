@@ -53,24 +53,24 @@ create or replace PACKAGE gold.pkg_gold_load AUTHID DEFINER AS
     c_default_days CONSTANT NUMBER := 3;
     c_full_load CONSTANT BOOLEAN := FALSE;
 
-    PROCEDURE load_d_date;
-    PROCEDURE load_d_hour;
-    PROCEDURE load_d_station;
-    PROCEDURE load_d_route (p_full_load IN BOOLEAN DEFAULT c_full_load);
-    PROCEDURE load_d_train_type;
-    PROCEDURE load_d_train_status;
-    PROCEDURE load_d_disruption_cause;
-    PROCEDURE load_dimensions (p_full_load IN BOOLEAN DEFAULT c_full_load);
+    PROCEDURE p_load_d_date;
+    PROCEDURE p_load_d_hour;
+    PROCEDURE p_load_d_station;
+    PROCEDURE p_load_d_route (p_full_load IN BOOLEAN DEFAULT c_full_load);
+    PROCEDURE p_load_d_train_type;
+    PROCEDURE p_load_d_train_status;
+    PROCEDURE p_load_d_disruption_cause;
+    PROCEDURE p_load_dimensions (p_full_load IN BOOLEAN DEFAULT c_full_load);
 
-    PROCEDURE load_f_train_run_daily(p_days IN NUMBER DEFAULT c_default_days);
-	PROCEDURE load_f_train_stop_daily(p_days IN NUMBER DEFAULT c_default_days);
-	PROCEDURE load_f_train_disruption_daily(p_days IN NUMBER DEFAULT c_default_days);
-    PROCEDURE load_facts_daily (p_days IN NUMBER DEFAULT c_default_days);
+    PROCEDURE p_load_f_train_run_daily(p_days IN NUMBER DEFAULT c_default_days);
+	PROCEDURE p_load_f_train_stop_daily(p_days IN NUMBER DEFAULT c_default_days);
+	PROCEDURE p_load_f_train_disruption_daily(p_days IN NUMBER DEFAULT c_default_days);
+    PROCEDURE p_load_facts_daily (p_days IN NUMBER DEFAULT c_default_days);
 
-    PROCEDURE load_f_train_run_monthly(p_days IN NUMBER DEFAULT c_default_days);
-	PROCEDURE load_f_train_stop_monthly(p_days IN NUMBER DEFAULT c_default_days);
-    PROCEDURE load_f_train_disruption_monthly(p_days IN NUMBER DEFAULT c_default_days);
-    PROCEDURE load_facts_monthly (p_days IN NUMBER DEFAULT c_default_days);
+    PROCEDURE p_load_f_train_run_monthly(p_days IN NUMBER DEFAULT c_default_days);
+    PROCEDURE p_load_f_train_stop_monthly(p_days IN NUMBER DEFAULT c_default_days);
+    PROCEDURE p_load_f_train_disruption_monthly(p_days IN NUMBER DEFAULT c_default_days);
+    PROCEDURE p_load_facts_monthly (p_days IN NUMBER DEFAULT c_default_days);
 
 END pkg_gold_load;
 /
@@ -88,17 +88,17 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
     
     
     /**********************************************************************************************************/
-    /***** log_rows  *****/
+    /***** p_log_rows  *****/
     /**********************************************************************************************************/
     -- log do DBMS_OUTPUT; nazwa kroku = wolajaca procedura (z call stacku)
-    PROCEDURE log_rows(p_rows IN NUMBER) IS
+    PROCEDURE p_log_rows(p_rows IN NUMBER) IS
         v_full VARCHAR2(200);
         v_step VARCHAR2(128);
     BEGIN
         v_full := UTL_CALL_STACK.concatenate_subprogram( UTL_CALL_STACK.subprogram(2) );
         v_step := LOWER( SUBSTR(v_full, INSTR(v_full, '.') + 1) );
         DBMS_OUTPUT.PUT_LINE( RPAD(v_step, 32) || ' -> ' || p_rows || ' wierszy' );
-    END log_rows;
+    END p_log_rows;
 
 
 
@@ -106,9 +106,9 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
     
     
     /**********************************************************************************************************/
-    /***** load_d_date  *****/
+    /***** p_load_d_date  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_d_date IS
+    PROCEDURE p_load_d_date IS
         v_start DATE := TRUNC(SYSDATE, 'YYYY');                     -- 1 stycznia roku biezacego
         v_end   DATE := ADD_MONTHS(TRUNC(SYSDATE,'YYYY'), 24) - 1;  -- 31 grudnia roku przyszlego
     BEGIN
@@ -137,15 +137,15 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         WHERE NOT EXISTS (
             SELECT 1 FROM d_date x WHERE x.id = TO_NUMBER(TO_CHAR(g.d,'YYYYMMDD'))
         );
-        log_rows(SQL%ROWCOUNT);
-    END load_d_date;
+        p_log_rows(SQL%ROWCOUNT);
+    END p_load_d_date;
 
     
     
     /**********************************************************************************************************/
-    /***** load_d_hour  *****/
+    /***** p_load_d_hour  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_d_hour IS
+    PROCEDURE p_load_d_hour IS
     BEGIN
         INSERT INTO d_hour (id, hour_label, part_of_day, loaded_at)
         SELECT g.h,
@@ -160,8 +160,8 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                pkg_tool.f_now_warsaw
         FROM ( SELECT LEVEL - 1 AS h FROM dual CONNECT BY LEVEL <= 24 ) g
         WHERE NOT EXISTS ( SELECT 1 FROM d_hour x WHERE x.id = g.h );
-        log_rows(SQL%ROWCOUNT);
-    END load_d_hour;
+        p_log_rows(SQL%ROWCOUNT);
+    END p_load_d_hour;
 
 
 
@@ -170,9 +170,9 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
     -- ================= WYMIARY ZE SILVER (MERGE + no-op skip) =================
     
     /**********************************************************************************************************/
-    /***** load_d_station  *****/
+    /***** p_load_d_station  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_d_station IS
+    PROCEDURE p_load_d_station IS
     BEGIN
         MERGE INTO d_station d
         USING (
@@ -188,15 +188,15 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         WHEN NOT MATCHED THEN
             INSERT (id, station_name, city_name, loaded_at)
             VALUES (s.id, s.station_name, s.city_name, pkg_tool.f_now_warsaw);
-        log_rows(SQL%ROWCOUNT);
-    END load_d_station;
+        p_log_rows(SQL%ROWCOUNT);
+    END p_load_d_station;
 
 
 
     /**********************************************************************************************************/
-    /***** load_d_route  *****/
+    /***** p_load_d_route  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_d_route(p_full_load IN BOOLEAN DEFAULT c_full_load) IS
+    PROCEDURE p_load_d_route(p_full_load IN BOOLEAN DEFAULT c_full_load) IS
     BEGIN
         IF p_full_load THEN
             -- PELNY: cala historia rozkladu (jednorazowo). Skanuje cale schedule_details.
@@ -251,16 +251,16 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                 VALUES (s.from_station_id, s.to_station_id, pkg_tool.f_now_warsaw);
         END IF;
 
-        log_rows(SQL%ROWCOUNT);
-    END load_d_route;
+        p_log_rows(SQL%ROWCOUNT);
+    END p_load_d_route;
 
     
     
     
     /**********************************************************************************************************/
-    /***** load_d_train_type  *****/
+    /***** p_load_d_train_type  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_d_train_type IS
+    PROCEDURE p_load_d_train_type IS
     BEGIN
         -- SCD2: kazda kategoria x kazda wersja przewoznika (valid_from/valid_to z def_carrier)
         MERGE INTO d_train_type d
@@ -288,16 +288,16 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         WHEN NOT MATCHED THEN
             INSERT (category_code, category_name, speed_category_code, carrier_code, carrier_name, valid_from, valid_to, loaded_at)
             VALUES (s.category_code, s.category_name, s.speed_category_code, s.carrier_code, s.carrier_name, s.valid_from, s.valid_to, pkg_tool.f_now_warsaw);
-        log_rows(SQL%ROWCOUNT);
-    END load_d_train_type;
+        p_log_rows(SQL%ROWCOUNT);
+    END p_load_d_train_type;
 
     
     
     
     /**********************************************************************************************************/
-    /***** load_d_train_status  *****/
+    /***** p_load_d_train_status  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_d_train_status IS
+    PROCEDURE p_load_d_train_status IS
     BEGIN
         MERGE INTO d_train_status d
         USING (
@@ -309,16 +309,16 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         WHEN NOT MATCHED THEN
             INSERT (status_code, status_name, loaded_at)
             VALUES (s.status_code, s.status_name, pkg_tool.f_now_warsaw);
-        log_rows(SQL%ROWCOUNT);
-    END load_d_train_status;
+        p_log_rows(SQL%ROWCOUNT);
+    END p_load_d_train_status;
 
     
     
     
     /**********************************************************************************************************/
-    /***** load_d_disruption_cause  *****/
+    /***** p_load_d_disruption_cause  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_d_disruption_cause IS
+    PROCEDURE p_load_d_disruption_cause IS
     BEGIN
         MERGE INTO d_disruption_cause d
         USING (
@@ -330,8 +330,8 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         WHEN NOT MATCHED THEN
             INSERT (cause_code, cause_name, loaded_at)
             VALUES (s.cause_code, s.cause_name, pkg_tool.f_now_warsaw);
-        log_rows(SQL%ROWCOUNT);
-    END load_d_disruption_cause;
+        p_log_rows(SQL%ROWCOUNT);
+    END p_load_d_disruption_cause;
 	
 	-- ================= WYMIARY GENEROWANE =================
     
@@ -341,9 +341,9 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
     -- ================= FAKTY =================
     
     /**********************************************************************************************************/
-    /***** load_f_train_run_daily  *****/
+    /***** p_load_f_train_run_daily  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_f_train_run_daily(p_days IN NUMBER DEFAULT c_default_days) IS
+    PROCEDURE p_load_f_train_run_daily(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from DATE;
         v_to   DATE;
     BEGIN
@@ -459,21 +459,21 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         where train_type_id is not null
         group by date_id, route_id, train_type_id, status_id;
 
-        log_rows(SQL%ROWCOUNT);
+        p_log_rows(SQL%ROWCOUNT);
         COMMIT;
     EXCEPTION
         WHEN OTHERS THEN
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('load_f_train_run_daily ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_f_train_run_daily;
+    END p_load_f_train_run_daily;
     
     
     
     /**********************************************************************************************************/
-    /***** load_f_train_stop_daily  *****/
+    /***** p_load_f_train_stop_daily  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_f_train_stop_daily(p_days IN NUMBER DEFAULT c_default_days) IS
+    PROCEDURE p_load_f_train_stop_daily(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from DATE;
         v_to   DATE;
     BEGIN
@@ -560,21 +560,21 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         where train_type_id is not null
         group by date_id, route_id, train_type_id, station_id, hour_id;
 
-        log_rows(SQL%ROWCOUNT);
+        p_log_rows(SQL%ROWCOUNT);
         COMMIT;
     EXCEPTION
         WHEN OTHERS THEN
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('load_f_train_stop_daily ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_f_train_stop_daily;
+    END p_load_f_train_stop_daily;
 
 
 
     /**********************************************************************************************************/
-    /***** load_f_train_disruption_daily  *****/
+    /***** p_load_f_train_disruption_daily  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_f_train_disruption_daily(p_days IN NUMBER DEFAULT c_default_days) IS
+    PROCEDURE p_load_f_train_disruption_daily(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from DATE;
         v_to   DATE;
     BEGIN
@@ -644,23 +644,23 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
           and hour_id       is not null
         group by date_id, route_id, station_id, train_type_id, hour_id, cause_id;
 
-        log_rows(SQL%ROWCOUNT);
+        p_log_rows(SQL%ROWCOUNT);
         COMMIT;
     EXCEPTION
         WHEN OTHERS THEN
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('load_f_train_disruption_daily ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_f_train_disruption_daily;
+    END p_load_f_train_disruption_daily;
 	
 	
 	
 	
 	
 	/**********************************************************************************************************/
-    /***** load_f_train_run_monthly  *****/
+    /***** p_load_f_train_run_monthly  *****/
     /**********************************************************************************************************/
-	PROCEDURE load_f_train_run_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
+	PROCEDURE p_load_f_train_run_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from        DATE;
         v_to          DATE;
         v_month_start DATE;
@@ -708,22 +708,22 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                  f.route_id, f.train_type_id, f.status_id,
                  case when dd.is_weekend = 'T' then 'WE' else 'WD' end;
 
-        log_rows(SQL%ROWCOUNT);
+        p_log_rows(SQL%ROWCOUNT);
         COMMIT;
     EXCEPTION
         WHEN OTHERS THEN
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('load_f_train_run_monthly ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_f_train_run_monthly;
+    END p_load_f_train_run_monthly;
     
     
     
     
     /**********************************************************************************************************/
-    /***** load_f_train_stop_monthly  *****/
+    /***** p_load_f_train_stop_monthly  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_f_train_stop_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
+    PROCEDURE p_load_f_train_stop_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from        DATE;
         v_to          DATE;
         v_month_start DATE;
@@ -763,22 +763,22 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         group by dd.year*100 + dd.month,
                  f.route_id, f.train_type_id, f.station_id, f.hour_id,
                  case when dd.is_weekend = 'T' then 'WE' else 'WD' end;
-        log_rows(SQL%ROWCOUNT);
+        p_log_rows(SQL%ROWCOUNT);
         COMMIT;
     EXCEPTION
         WHEN OTHERS THEN
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('load_f_train_stop_monthly ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_f_train_stop_monthly;
+    END p_load_f_train_stop_monthly;
 	
     
     
     
     /**********************************************************************************************************/
-    /***** load_f_train_disruption_monthly  *****/
+    /***** p_load_f_train_disruption_monthly  *****/
     /**********************************************************************************************************/
-    PROCEDURE load_f_train_disruption_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
+    PROCEDURE p_load_f_train_disruption_monthly(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from        DATE;
         v_to          DATE;
         v_month_start DATE;
@@ -811,14 +811,14 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         group by dd.year*100 + dd.month,
                  f.route_id, f.station_id, f.train_type_id, f.hour_id, f.cause_id,
                  case when dd.is_weekend = 'T' then 'WE' else 'WD' end;
-        log_rows(SQL%ROWCOUNT);
+        p_log_rows(SQL%ROWCOUNT);
         COMMIT;
     EXCEPTION
         WHEN OTHERS THEN
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('load_f_train_disruption_monthly ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_f_train_disruption_monthly;
+    END p_load_f_train_disruption_monthly;
 	
 	-- ================= FAKTY =================
 	
@@ -829,18 +829,18 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
 
     -- ================= ORCHESTRACJA =================
 
-    PROCEDURE load_dimensions (p_full_load IN BOOLEAN DEFAULT c_full_load) IS
+    PROCEDURE p_load_dimensions (p_full_load IN BOOLEAN DEFAULT c_full_load) IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== GOLD dimensions load START ===');
         EXECUTE IMMEDIATE c_parallel_dml;
 
-        load_d_date;
-        load_d_hour;
-        load_d_station;
-        load_d_route(p_full_load);
-        load_d_train_type;
-        load_d_train_status;
-        load_d_disruption_cause;
+        p_load_d_date;
+        p_load_d_hour;
+        p_load_d_station;
+        p_load_d_route(p_full_load);
+        p_load_d_train_type;
+        p_load_d_train_status;
+        p_load_d_disruption_cause;
 
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('=== GOLD dimensions load OK (COMMIT) ===');
@@ -849,18 +849,18 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('=== GOLD dimensions load ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_dimensions;
+    END p_load_dimensions;
     
     
     
-    PROCEDURE load_facts_daily (p_days IN NUMBER DEFAULT c_default_days) IS
+    PROCEDURE p_load_facts_daily (p_days IN NUMBER DEFAULT c_default_days) IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== GOLD facts daily load START ===');
         EXECUTE IMMEDIATE c_parallel_dml;
 
-        load_f_train_run_daily(p_days);
-        load_f_train_stop_daily(p_days);
-        load_f_train_disruption_daily(p_days);
+        p_load_f_train_run_daily(p_days);
+        p_load_f_train_stop_daily(p_days);
+        p_load_f_train_disruption_daily(p_days);
 
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('=== GOLD facts daily load OK (COMMIT) ===');
@@ -869,11 +869,11 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('=== GOLD facts daily load ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_facts_daily;
+    END p_load_facts_daily;
 	
 	
 	
-	PROCEDURE load_facts_monthly (p_days IN NUMBER DEFAULT c_default_days) IS
+	PROCEDURE p_load_facts_monthly (p_days IN NUMBER DEFAULT c_default_days) IS
 	
 		v_type VARCHAR(20 CHAR) := 'facts monthly';
 	
@@ -881,9 +881,9 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         DBMS_OUTPUT.PUT_LINE('=== GOLD ' || v_type || ' load START ===');
         EXECUTE IMMEDIATE c_parallel_dml;
 
-        load_f_train_run_monthly(p_days);
-        load_f_train_stop_monthly(p_days);
-        load_f_train_disruption_monthly(p_days);
+        p_load_f_train_run_monthly(p_days);
+        p_load_f_train_stop_monthly(p_days);
+        p_load_f_train_disruption_monthly(p_days);
 
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('=== GOLD ' || v_type || ' load OK (COMMIT) ===');
@@ -892,7 +892,7 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('=== GOLD ' || v_type || ' load ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_facts_monthly;
+    END p_load_facts_monthly;
 	
 	
 	

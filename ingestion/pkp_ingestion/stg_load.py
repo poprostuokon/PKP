@@ -50,25 +50,28 @@ def _loaded_objects(cur, prefix: str) -> set[str]:
     return {row[0] for row in cur.fetchall()}
 
 
+
 def _log_manifest(cur, object_name, feed, load_mode, part_date, status, nbytes, err_msg):
-    """Upsert wpisu manifestu po object_name (PK): FAILED -> LOADED przy retry."""
-    cur.setinputsizes()  # czyscimy ewentualny bind CLOB z ladowania
+    cur.setinputsizes()
+    # najpierw UPDATE
     cur.execute(
-        """
-        MERGE INTO maintenance.stg_load_log t
-        USING (SELECT :obj AS object_name FROM dual) s
-        ON (t.object_name = s.object_name)
-        WHEN MATCHED THEN UPDATE SET
-            status = :st, bytes = :b, err_msg = :em, loaded_at = :ts,
-            feed = :fd, load_mode = :lm, part_date = :pd
-        WHEN NOT MATCHED THEN INSERT
-            (object_name, feed, load_mode, part_date, status, bytes, err_msg, loaded_at)
-            VALUES (:obj, :fd, :lm, :pd, :st, :b, :em, :ts)
-        """,
+        """UPDATE maintenance.stg_load_log
+           SET status=:st, bytes=:b, err_msg=:em, loaded_at=:ts,
+               feed=:fd, load_mode=:lm, part_date=:pd
+           WHERE object_name=:obj""",
         obj=object_name, fd=feed, lm=load_mode,
         pd=datetime.strptime(part_date, "%Y%m%d").date(),
         st=status, b=nbytes, em=err_msg, ts=datetime.now(timezone.utc),
     )
+    if cur.rowcount == 0:               # nie było — wstaw
+        cur.execute(
+            """INSERT INTO maintenance.stg_load_log
+               (object_name, feed, load_mode, part_date, status, bytes, err_msg, loaded_at)
+               VALUES (:obj,:fd,:lm,:pd,:st,:b,:em,:ts)""",
+            obj=object_name, fd=feed, lm=load_mode,
+            pd=datetime.strptime(part_date, "%Y%m%d").date(),
+            st=status, b=nbytes, em=err_msg, ts=datetime.now(timezone.utc),
+        )
 
 
 def prepare_stg(connection, day: str | None = None, load_mode: str = "DAILY") -> None:

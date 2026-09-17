@@ -34,7 +34,7 @@ def main() -> None:
         with conn.cursor() as cur:
             cur.callproc("dbms_output.enable", (None,))   # None = bufor bez limitu
             # load_all robi COMMIT / ROLLBACK po swojej stronie
-            cur.callproc("silver.pkg_silver_load.load_all")
+            cur.callproc("silver.pkg_silver_load.p_load_all")
             _drain_dbms_output(cur)
     print("Silver load: zakonczono.")
 

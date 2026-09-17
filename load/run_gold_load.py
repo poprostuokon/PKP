@@ -4,8 +4,8 @@ run_gold_load.py
 Ladowanie warstwy GOLD przez pakiet PL/SQL GOLD.PKG_GOLD_LOAD.
 
 Jeden runner na caly gold - etapami sterowanymi flaga --what:
-  * dims   -> LOAD_DIMENSIONS  (wszystkie wymiary; --route-full = pelny d_route)
-  * facts  -> LOAD_FACTS_DAILY (recompute okna --days ostatnich dni)
+  * dims   -> p_LOAD_DIMENSIONS  (wszystkie wymiary; --route-full = pelny d_route)
+  * facts  -> p_LOAD_FACTS_DAILY (recompute okna --days ostatnich dni)
   * all    -> dims, potem facts (fakty zaleza od wymiarow)
 
 Kazdy master PL/SQL robi COMMIT / ROLLBACK po swojej stronie.
@@ -43,16 +43,16 @@ def _drain_dbms_output(cursor) -> None:
 
 def _load_dims(cur, route_full: bool) -> None:
     # flaga steruje tylko trybem d_route (FALSE = dzienny, TRUE = cala historia)
-    cur.callproc("gold.pkg_gold_load.load_dimensions", [route_full])
+    cur.callproc("gold.pkg_gold_load.p_load_dimensions", [route_full])
 
 
 def _load_facts(cur, days: int) -> None:
     # recompute okna ostatnich 'days' dni (DELETE + INSERT per doba)
-    cur.callproc("gold.pkg_gold_load.load_facts_daily", [days])
+    cur.callproc("gold.pkg_gold_load.p_load_facts_daily", [days])
 
 
 def _load_facts_monthly(cur, days: int) -> None:
-    cur.callproc("gold.pkg_gold_load.load_facts_monthly", [days])
+    cur.callproc("gold.pkg_gold_load.p_load_facts_monthly", [days])
 
 
 def main(what: str, route_full: bool, days: int) -> None:
