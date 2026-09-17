@@ -11,7 +11,7 @@ import time
 import traceback
 from datetime import date, datetime, timezone
 
-import db
+import db # noqa: E402
 
 from .client.api_client import PkpApiClient
 from .client.config import DATA_ENDPOINTS_LIVE

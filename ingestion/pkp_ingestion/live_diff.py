@@ -80,7 +80,8 @@ def diff_operations(prev_trains, curr_trains, station_id: int) -> list[dict]:
             continue                                          # zamrozony
         elif _sha256(_canon(_op_tracked(p, station_id))) == h:
             continue                                          # bez zmian
-        rec = dict(t); rec["changeHash"] = h
+        rec = dict(t)
+        rec["changeHash"] = h
         out.append(rec)
     return out
 
@@ -115,7 +116,8 @@ def diff_disruptions(prev_disruptions, curr_disruptions, ended_min_date=None):
         hh = h(row)
         if p is not None and h(p) == hh:
             continue
-        rec = dict(row); rec["changeHash"] = hh
+        rec = dict(row)
+        rec["changeHash"] = hh
         changed.append(rec)
 
     ended = [row for bk, row in prev.items()

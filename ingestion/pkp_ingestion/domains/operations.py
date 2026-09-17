@@ -46,8 +46,10 @@ def fetch_operations(client: PkpApiClient, run_ts: str, ingest_date: str) -> lis
         if not validate_or_quarantine("operations", raw, f"operations_{ingest_date}_p{page:03d}", run_ts):
             # zla strona -> pomijamy ja, ale petla leci dalej po nastepne strony
             pagination = json.loads(raw).get("pagination", {}) if raw else {}
-            if not pagination.get("hasNextPage"): break
-            page += 1; continue
+            if not pagination.get("hasNextPage"): 
+                break
+            page += 1 
+            continue
         out_path = write_raw(todo_data_dir(), filename, raw)
         saved.append(out_path)
 

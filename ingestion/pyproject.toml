@@ -17,3 +17,11 @@ dependencies = [
 
 [tool.setuptools.packages.find]
 include = ["pkp_ingestion*"]
+
+[tool.ruff]
+target-version = "py312"
+
+[tool.ruff.lint]
+# na start łagodnie: błędy pyflakes (F) + podstawy pycodestyle (E)
+select = ["E", "F"]
+ignore = ["E501"]   # nie czepiaj się długości linii
