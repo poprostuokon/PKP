@@ -24,6 +24,7 @@ DATA_ROOT               = Path(os.getenv("PKP_DATA_ROOT", "Data"))
 
 # --- OCI Object Storage (upload bronze) ---
 OCI_PROFILE             = os.getenv("PKP_OCI_PROFILE", "DEFAULT")   # profil z ~/.oci/config
+OCI_CONFIG_FILE         = os.getenv("PKP_OCI_CONFIG_FILE")  # None lokalnie -> domyslny ~/.oci/config; /oci/config.docker w kontenerze
 OCI_BUCKET              = os.getenv("PKP_OCI_BUCKET", "bronze-pkp")  # bucketu daily
 OCI_BUCKET_LIVE         = os.getenv("PKP_OCI_BUCKET_LIVE", "bronze-pkp-live")   # bucketu live
 

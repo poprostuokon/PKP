@@ -1,0 +1,12 @@
+services:
+  poller-dev:
+    image: pkp-poller:latest
+    build: .
+    container_name: pkp-poller-dev
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    volumes:
+      - C:\BAOK\python\stream_mpk\Data:/app/ingestion/Data
+      - C:\BAOK\python\stream_mpk\OCI\Wallet_PKPDEV:/wallet:ro
+      - C:\Users\bartlomiej.okoniewsk\.oci:/oci:ro

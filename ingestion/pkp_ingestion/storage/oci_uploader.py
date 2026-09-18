@@ -19,6 +19,7 @@ from ..settings import (
     OCI_BUCKET,
     OCI_CONNECT_TIMEOUT,
     OCI_PROFILE,
+    OCI_CONFIG_FILE,
     OCI_RETRY_MAX_ATTEMPTS,
     OCI_RETRY_TOTAL_SECONDS,
     OCI_UPLOAD_TIMEOUT,
@@ -27,7 +28,10 @@ from ..settings import (
 
 class OciUploader:
     def __init__(self, profile: str = OCI_PROFILE, bucket: str = OCI_BUCKET):
-        config = oci.config.from_file(profile_name=profile)
+        config = oci.config.from_file(
+            file_location=OCI_CONFIG_FILE or oci.config.DEFAULT_LOCATION,
+            profile_name=profile,
+        )
         self.client = oci.object_storage.ObjectStorageClient(
             config,
             timeout=(OCI_CONNECT_TIMEOUT, OCI_UPLOAD_TIMEOUT),

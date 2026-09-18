@@ -13,6 +13,7 @@ test_api/
 *.egg-info/
 build/
 dist/
+tests/
 
 
 # API Keys & Secrets
@@ -20,6 +21,16 @@ dist/
 !.env.example
 *.key
 config_local.py
+.env.docker
+!.env.example
+!.env.docker.example
+
+
+
+
+
+
+
 
 # Data files
 *.csv
@@ -88,3 +99,5 @@ sqlnet.ora
 ojdbc.properties
 wallet/                
 Wallet_*/             
+
+
