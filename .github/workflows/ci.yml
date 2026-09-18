@@ -38,7 +38,7 @@ jobs:
 
       - name: Odtworz wallet z sekretu
         run: |
-          echo "${{ secrets.PKP_WALLET_ZIP_B64 }}" | base64 -d > wallet.zip
+          echo "${{ secrets.PKP_WALLET_PKPDEV_ZIP_B64 }}" | base64 -d > wallet.zip
           mkdir wallet && unzip -q wallet.zip -d wallet
 
       - name: Flyway validate (5 projektow)
