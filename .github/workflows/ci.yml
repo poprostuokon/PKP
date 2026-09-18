@@ -16,6 +16,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install ./ pytest ruff
+      - run: pip-audit || true
       - run: ruff check .
       - run: pytest
 
