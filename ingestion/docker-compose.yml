@@ -1,11 +1,33 @@
+name: pkp-poller-live
+
 services:
   poller-dev:
     image: pkp-poller:latest
-    build: .
     container_name: pkp-poller-dev
     restart: unless-stopped
+
+    # ── Rotacja logów: kontener nie zapcha dysku ──────────────────
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"      # jeden plik logów max 20 MB
+        max-file: "2"        # max 2 pliki → twardy limit 40 MB
+
     env_file:
       - .env.docker
+
+    # ── Bezpiecznik pamięci: poller nie zje całego RAM-u ──────────
+    mem_limit: 512m
+    cpus: 0.5
+
+    # ── Healthcheck: żywy = świeży heartbeat_last.json ────────────
+    healthcheck:
+      test: ["CMD-SHELL", "find /app/ingestion/Data/DEV/STATE/LIVE/heartbeat_last.json -mmin -10 | grep -q . || exit 1"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 3m
+
     volumes:
       - C:\BAOK\python\stream_mpk\Data:/app/ingestion/Data
       - C:\BAOK\python\stream_mpk\OCI\Wallet_PKPDEV:/wallet:ro

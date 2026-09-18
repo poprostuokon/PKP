@@ -113,7 +113,7 @@ def prepare_stg(connection, day: str | None = None, load_mode: str = "DAILY") ->
         for object_name in new_objects:
             try:
                 doc = reader.download_text(object_name)
-                cur.setinputsizes(doc=oracledb.DB_TYPE_CLOB)  # duze JSON -> CLOB
+                cur.setinputsizes(doc=oracledb.DB_TYPE_LONG)   # thin-safe: dlugi str bez limitu VARCHAR2
                 cur.execute(
                     f"INSERT INTO stg.{table} (payload) VALUES (JSON(:doc))",
                     doc=doc,
@@ -185,7 +185,7 @@ def prepare_stg_live(connection, day: str | None = None) -> None:
             obj_part = _part_date_from_object(object_name, today_str)
             try:
                 doc = reader.download_text(object_name)
-                cur.setinputsizes(doc=oracledb.DB_TYPE_CLOB)
+                cur.setinputsizes(doc=oracledb.DB_TYPE_LONG)   # thin-safe: dlugi str bez limitu VARCHAR2
                 cur.execute(
                     f"INSERT INTO stg.{table} (payload) VALUES (JSON(:doc))",
                     doc=doc,

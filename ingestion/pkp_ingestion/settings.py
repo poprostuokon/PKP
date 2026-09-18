@@ -30,7 +30,7 @@ OCI_BUCKET_LIVE         = os.getenv("PKP_OCI_BUCKET_LIVE", "bronze-pkp-live")   
 
 # --- OCI: timeout + retry uploadu ---
 OCI_CONNECT_TIMEOUT     = int(os.getenv("PKP_OCI_CONNECT_TIMEOUT", "10"))
-OCI_READ_TIMEOUT        = int(os.getenv("PKP_OCI_READ_TIMEOUT", "60"))
+OCI_READ_TIMEOUT        = int(os.getenv("PKP_OCI_READ_TIMEOUT", "120"))
 OCI_UPLOAD_TIMEOUT      = int(os.getenv("PKP_OCI_UPLOAD_TIMEOUT", "300"))
 OCI_RETRY_MAX_ATTEMPTS  = int(os.getenv("PKP_OCI_RETRY_MAX_ATTEMPTS", "5"))
 OCI_RETRY_TOTAL_SECONDS = int(os.getenv("PKP_OCI_RETRY_TOTAL_SECONDS", "600"))
