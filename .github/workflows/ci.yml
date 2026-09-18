@@ -26,3 +26,29 @@ jobs:
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
+  
+  flyway-validate:
+    runs-on: ubuntu-latest
+    env:
+      FLYWAY_URL: "jdbc:oracle:thin:@pkpdev_high?TNS_ADMIN=/repo/wallet"
+      FLYWAY_USER: DEV_APP
+      FLYWAY_PASSWORD: ${{ secrets.PKP_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Odtworz wallet z sekretu
+        run: |
+          echo "${{ secrets.PKP_WALLET_ZIP_B64 }}" | base64 -d > wallet.zip
+          mkdir wallet && unzip -q wallet.zip -d wallet
+
+      - name: Flyway validate (5 projektow)
+        run: |
+          for p in admin stg maintenance silver gold; do
+            echo "=== validate: $p ==="
+            docker run --rm -v ${{ github.workspace }}:/repo redgate/flyway:11 \
+              -configFiles=/repo/migrations/$p/conf/flyway.conf \
+              -locations=filesystem:/repo/migrations/$p/sql \
+              -url="$FLYWAY_URL" -user="$FLYWAY_USER" -password="$FLYWAY_PASSWORD" \
+              -ignoreMigrationPatterns="*:pending" \
+              validate
+          done
