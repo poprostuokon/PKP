@@ -128,6 +128,7 @@ def generate_steps_excel(run_date: str, pipeline_run_id: int, conn) -> str:
         SELECT step_name, status, start_time, end_time
         FROM   maintenance.pipeline_run_step
         WHERE  pipeline_run_id = :run_id
+          AND  step_name <> 'send_report'
         ORDER  BY start_time
         """,
         {"run_id": pipeline_run_id},

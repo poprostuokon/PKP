@@ -8,11 +8,11 @@ version = "0.1.0"
 description = "Ingestion bronze dla danych ruchu pociagow PKP PLK (Wroclaw Glowny)"
 requires-python = ">=3.10"
 dependencies = [
-    "requests>=2.31",
-    "python-dotenv>=1.0",
-    "oci>=2.120",
-    "oracledb>=2.0",
-    "jsonschema>=4.0",
+    "requests==2.34.2",
+    "python-dotenv==1.2.2",
+    "oci==2.183.0",
+    "oracledb==4.0.2",
+    "jsonschema==4.26.0",
 ]
 
 [tool.setuptools.packages.find]

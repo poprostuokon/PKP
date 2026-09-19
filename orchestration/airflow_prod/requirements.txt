@@ -1,8 +1,8 @@
-oracledb>=2.0
-oci>=2.120
-jsonschema>=4.0
-requests>=2.31
-python-dotenv>=1.0
-openpyxl>=3.1
-reportlab>=4.0
-mailersend>=2.0
+oracledb==4.0.2
+oci==2.183.0
+jsonschema==4.26.0
+requests==2.34.2
+python-dotenv==1.2.2
+openpyxl==3.1.5
+reportlab==5.0.1
+mailersend==2.0.3
