@@ -1,4 +1,4 @@
-CREATE TABLE stg.land_disruptions (
+CREATE TABLE IF NOT EXISTS stg.land_disruptions (
     payload     JSON,
     loaded_at   TIMESTAMP WITH TIME ZONE DEFAULT SYSTIMESTAMP NOT NULL
 );

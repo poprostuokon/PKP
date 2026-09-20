@@ -14,26 +14,26 @@ CREATE OR REPLACE SYNONYM silver.land_disruptions_live FOR stg.land_disruptions_
 
 
 CREATE OR REPLACE PACKAGE silver.pkg_silver_load_live AUTHID DEFINER AS
-    PROCEDURE load_operation_tracking;
-    PROCEDURE load_disruption_tracking;
-    PROCEDURE load_all_live;
+    PROCEDURE p_load_operation_tracking;
+    PROCEDURE p_load_disruption_tracking;
+    PROCEDURE p_load_all_live;
 END pkg_silver_load_live;
 /
 
 CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load_live AS
 
-    PROCEDURE log_rows(p_rows IN NUMBER) IS
+    PROCEDURE p_log_rows(p_rows IN NUMBER) IS
         v_full VARCHAR2(200);
         v_step VARCHAR2(128);
     BEGIN
         v_full := UTL_CALL_STACK.concatenate_subprogram(UTL_CALL_STACK.subprogram(2));
         v_step := LOWER(SUBSTR(v_full, INSTR(v_full, '.') + 1));
         DBMS_OUTPUT.PUT_LINE('  ' || RPAD(v_step, 28) || ' rows=' || p_rows);
-    END log_rows;
+    END p_log_rows;
 
 
     -- ================= OPERATIONS: INSERT ONLY NEW =================
-    PROCEDURE load_operation_tracking IS
+    PROCEDURE p_load_operation_tracking IS
     BEGIN
         INSERT INTO operation_tracking_log
             (schedule_id, order_id, train_order_id, operating_date, dsta_id,
@@ -78,14 +78,14 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load_live AS
                   AND t.dsta_id = j.station_id
                   AND t.change_hash = j.change_hash
           );
-        log_rows(SQL%ROWCOUNT);
-    END load_operation_tracking;
+        p_log_rows(SQL%ROWCOUNT);
+    END p_load_operation_tracking;
 
 
     -- ================= DISRUPTIONS: SCD2 =================
     -- Klucz dopasowania: (operating_date, schedule_id, train_order_id[null-safe], dsta_id, sequence_number)
     -- order_id zapisywany, ale NIE w kluczu (niestabilny).
-    PROCEDURE load_disruption_tracking IS
+    PROCEDURE p_load_disruption_tracking IS
     BEGIN
         -- 1) CHANGED: dezaktywuj stara aktywna wersje (inny hash)
         UPDATE disruption_tracking_log t SET t.is_active = FALSE
@@ -167,16 +167,16 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load_live AS
                   AND t.dsta_id = s.station_id
                   AND t.sequence_number = s.sequence_number
           );
-        log_rows(SQL%ROWCOUNT);
-    END load_disruption_tracking;
+        p_log_rows(SQL%ROWCOUNT);
+    END p_load_disruption_tracking;
 
 
-    PROCEDURE load_all_live IS
+    PROCEDURE p_load_all_live IS
     BEGIN
         DBMS_OUTPUT.PUT_LINE('=== SILVER LIVE load START ===');
         EXECUTE IMMEDIATE 'ALTER SESSION DISABLE PARALLEL DML';
-        load_operation_tracking;
-        load_disruption_tracking;
+        p_load_operation_tracking;
+        p_load_disruption_tracking;
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('=== SILVER LIVE load OK (COMMIT) ===');
     EXCEPTION
@@ -184,7 +184,7 @@ CREATE OR REPLACE PACKAGE BODY silver.pkg_silver_load_live AS
             ROLLBACK;
             DBMS_OUTPUT.PUT_LINE('=== SILVER LIVE load ERROR - ROLLBACK: ' || SQLERRM);
             RAISE;
-    END load_all_live;
+    END p_load_all_live;
 
 END pkg_silver_load_live;
 /

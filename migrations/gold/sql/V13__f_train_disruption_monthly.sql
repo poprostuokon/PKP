@@ -1,4 +1,4 @@
-CREATE TABLE gold.f_train_disruption_monthly (
+CREATE TABLE IF NOT EXISTS gold.f_train_disruption_monthly (
     -- ziarno (klucz zlozony)
     month              NUMBER(6)            NOT NULL,   -- YYYYMM (klucz partycji)
     route_id           NUMBER               NOT NULL,   -- -> d_route

@@ -1,4 +1,4 @@
-CREATE TABLE silver.def_station (
+CREATE TABLE IF NOT EXISTS silver.def_station (
     id             NUMBER                	 NOT NULL,   -- klucz naturalny z API
     name           VARCHAR2(200 CHAR)        NOT NULL,
     dcit_id        NUMBER,                               -- → silver.def_city.id

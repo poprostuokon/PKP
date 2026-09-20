@@ -1,4 +1,4 @@
-CREATE TABLE gold.f_train_stop_daily (
+CREATE TABLE IF NOT EXISTS gold.f_train_stop_daily (
     -- ziarno (klucz złożony)
     date_id                NUMBER            NOT NULL,   -- YYYYMMDD -> d_date (klucz partycji)
     route_id               NUMBER            NOT NULL,   -- -> d_route

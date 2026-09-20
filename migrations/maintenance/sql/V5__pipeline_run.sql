@@ -7,7 +7,7 @@
 -- SILNIK:   Oracle 23ai (Autonomous Database)
 -- =============================================================================
 
-CREATE TABLE maintenance.pipeline_run (
+CREATE TABLE IF NOT EXISTS maintenance.pipeline_run (
     id           NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     run_date     DATE                     NOT NULL,               -- data logiczna runu (z set_run_date)
     dag_run_id   VARCHAR2(250)            NOT NULL,               -- run_id z Airflow (scheduled__... / manual__...)
@@ -21,7 +21,7 @@ CREATE TABLE maintenance.pipeline_run (
         UNIQUE (dag_run_id)                                       -- jeden rekord na dag_run_id (guard na dubel z set_run_date)
 );
 
-CREATE INDEX idx_pipeline_run_date
+CREATE INDEX maintenance.idx_pipeline_run_date
     ON maintenance.pipeline_run (run_date);
 
 COMMENT ON TABLE  maintenance.pipeline_run IS

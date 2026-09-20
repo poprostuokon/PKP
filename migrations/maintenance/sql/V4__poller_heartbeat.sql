@@ -1,4 +1,4 @@
-CREATE TABLE maintenance.poller_heartbeat (
+CREATE TABLE IF NOT EXISTS maintenance.poller_heartbeat (
     run_ts         TIMESTAMP                 NOT NULL,   -- start ticku (processing time) = klucz idempotencji
     feed           VARCHAR2(30 CHAR)         NOT NULL,   -- operations / disruptions
     outcome        VARCHAR2(10 CHAR)         NOT NULL,   -- OK / EMPTY / STALE / ERR

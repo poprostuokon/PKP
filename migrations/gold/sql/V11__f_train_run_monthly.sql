@@ -1,4 +1,4 @@
-CREATE TABLE gold.F_TRAIN_RUN_MONTHLY (
+CREATE TABLE IF NOT EXISTS gold.F_TRAIN_RUN_MONTHLY (
     -- ziarno (klucz zlozony)
     month                   NUMBER(6)        NOT NULL,   -- YYYYMM (klucz partycji)
     route_id                NUMBER           NOT NULL,   -- -> d_route

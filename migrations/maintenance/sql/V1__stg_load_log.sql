@@ -1,4 +1,4 @@
-CREATE TABLE maintenance.stg_load_log (
+CREATE TABLE IF NOT EXISTS maintenance.stg_load_log (
     object_name   VARCHAR2(1024 CHAR)      NOT NULL,   -- pelna sciezka w buckecie (klucz)
     feed          VARCHAR2(30 CHAR)        NOT NULL,   -- schedules/operations/disruptions/dict:<name>
     load_mode     VARCHAR2(30 CHAR)        NOT NULL,   -- DAILY / LIVE
@@ -10,6 +10,6 @@ CREATE TABLE maintenance.stg_load_log (
     CONSTRAINT pk_stgload PRIMARY KEY (object_name),
     CONSTRAINT chk_stgload_status CHECK (status IN ('LOADED','FAILED'))
 );
-CREATE INDEX ix_stgload_day ON maintenance.stg_load_log (part_date, feed);
+CREATE INDEX maintenance.ix_stgload_day ON maintenance.stg_load_log (part_date, feed);
 
 grant select, insert, update on maintenance.stg_load_log to DEV_APP;

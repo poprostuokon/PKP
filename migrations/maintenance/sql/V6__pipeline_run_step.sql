@@ -8,7 +8,7 @@
 -- SILNIK:   Oracle 23ai (Autonomous Database)
 -- =============================================================================
 
-CREATE TABLE maintenance.pipeline_run_step (
+CREATE TABLE IF NOT EXISTS maintenance.pipeline_run_step (
     id                NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     pipeline_run_id   NUMBER                   NOT NULL,
     step_name         VARCHAR2(200)            NOT NULL,          -- task_id z Airflow
@@ -24,10 +24,10 @@ CREATE TABLE maintenance.pipeline_run_step (
         CHECK (status IN ('PENDING','SUCCESS','ERROR','SKIPPED'))
 );
 
-CREATE INDEX idx_run_step_run_id
+CREATE INDEX maintenance.idx_run_step_run_id
     ON maintenance.pipeline_run_step (pipeline_run_id);
 
-CREATE INDEX idx_run_step_status
+CREATE INDEX maintenance.idx_run_step_status
     ON maintenance.pipeline_run_step (status);
 
 COMMENT ON TABLE  maintenance.pipeline_run_step IS

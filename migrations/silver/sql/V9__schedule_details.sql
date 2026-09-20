@@ -1,4 +1,4 @@
-CREATE TABLE silver.schedule_details (
+CREATE TABLE IF NOT EXISTS silver.schedule_details (
     schedule_id     	NUMBER     						NOT NULL,   -- edycja rozkladu (np. 2026)
     order_id        	NUMBER      					NOT NULL,   -- wersja tresci planu
     -- pozycja na trasie
