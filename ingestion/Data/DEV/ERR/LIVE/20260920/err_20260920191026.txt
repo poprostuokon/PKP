@@ -1,0 +1,38 @@
+[2026-09-20T17:10:27.087716+00:00] UPLOAD LIVE ERROR
+  plik      : disruptions_20260920_20260920191023.json
+  wyjatek   : ValueError: Parameter bucketName cannot be None, whitespace or empty string
+  traceback :
+Traceback (most recent call last):
+  File "C:\BAOK\python\stream_mpk\ingestion\pkp_ingestion\upload_live.py", line 71, in run_upload_live
+    uploader.upload_file(path, object_name)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\BAOK\python\stream_mpk\ingestion\pkp_ingestion\storage\oci_uploader.py", line 66, in upload_file
+    resp = self.client.put_object(
+        namespace_name=self.namespace,
+    ...<4 lines>...
+        retry_strategy=self._retry,   # ponawianie bledow przejsciowych
+    )
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\object_storage\object_storage_client.py", line 6113, in put_object
+    raise ValueError(f'Parameter {k} cannot be None, whitespace or empty string')
+ValueError: Parameter bucketName cannot be None, whitespace or empty string
+
+------------------------------------------------------------
+[2026-09-20T17:10:27.139687+00:00] UPLOAD LIVE ERROR
+  plik      : operations_20260920_20260920191023.json
+  wyjatek   : ValueError: Parameter bucketName cannot be None, whitespace or empty string
+  traceback :
+Traceback (most recent call last):
+  File "C:\BAOK\python\stream_mpk\ingestion\pkp_ingestion\upload_live.py", line 71, in run_upload_live
+    uploader.upload_file(path, object_name)
+    ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\BAOK\python\stream_mpk\ingestion\pkp_ingestion\storage\oci_uploader.py", line 66, in upload_file
+    resp = self.client.put_object(
+        namespace_name=self.namespace,
+    ...<4 lines>...
+        retry_strategy=self._retry,   # ponawianie bledow przejsciowych
+    )
+  File "C:\BAOK\python\stream_mpk\venv_pkp\Lib\site-packages\oci\object_storage\object_storage_client.py", line 6113, in put_object
+    raise ValueError(f'Parameter {k} cannot be None, whitespace or empty string')
+ValueError: Parameter bucketName cannot be None, whitespace or empty string
+
+------------------------------------------------------------

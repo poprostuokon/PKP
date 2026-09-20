@@ -21,9 +21,14 @@ tests/
 !.env.example
 *.key
 config_local.py
-.env.docker
-!.env.example
-!.env.docker.example
+.env.docker.dev
+.env.docker.prod
+.env.dev
+.env.prod
+!.env.dev.example
+!.env.prod.example
+!.env.docker.dev.example
+!.env.docker.prod.example
 
 
 

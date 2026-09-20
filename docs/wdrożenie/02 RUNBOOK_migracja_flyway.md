@@ -55,9 +55,9 @@ $env:FLYWAY_PASSWORD="<haslo>"
 - Kolejność `R__` = **alfabetyczna po nazwie**, po wszystkich `V`. Zależności koduje się numerem w opisie, z zero-paddingiem:
 
 ```
-R__001_pkg_silver_load.sql
-R__002_def_audit_triggers.sql   # triggery po pakiecie (używają pkg_tool)
-R__099_synonyms.sql             # jeśli synonimy wydzielone — na końcu
+R__01_pkg_silver_load.sql
+R__02_def_audit_triggers.sql   # triggery po pakiecie (używają pkg_tool)
+R__99_synonyms.sql             # jeśli synonimy wydzielone — na końcu
 ```
 
 > Zero-padding obowiązkowy: `R__10` sortuje się PRZED `R__2`. Zawsze `R__01`, `R__02`, …

@@ -9,11 +9,15 @@ Wszystkie wartosci sterowane z .env.
 """
 
 import os
+from pathlib import Path
 
 import oracledb
 from dotenv import find_dotenv, load_dotenv
 
-load_dotenv(find_dotenv())
+#load_dotenv(find_dotenv())
+app_env = os.getenv("APP_ENV", "prod")
+env_file = Path(__file__).resolve().parent / f".env.{app_env}"
+load_dotenv(env_file, override=False)
 
 #load_dotenv(Path(__file__).with_name(".env"))  
 
