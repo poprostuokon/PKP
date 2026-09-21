@@ -32,33 +32,32 @@ jobs:
               migrate
           }
 
-# ── KOLEJNY KLOCEK: PROD (za bramką Approve) ──────────────────────────────
-#  migrate-prod:
-#    needs: migrate-dev
-#    runs-on: [self-hosted, optiplex]
-#    environment: prod          # <- wymaga Approve; skonfiguruj w Settings -> Environments -> prod (required reviewer = Ty)
-#    env:
-#      FLYWAY_URL: "jdbc:oracle:thin:@pkpprod_high?TNS_ADMIN=/wallet"
-#      FLYWAY_USER: ADMIN
-#      FLYWAY_PASSWORD: ${{ secrets.PKP_ADMIN_PASSWORD_PROD }}
-#      WALLET_DIR: C:\BAOK\python\stream_mpk\OCI\Wallet_PKPPROD
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Flyway migrate (5 projektow) na PKPPROD
-#        shell: powershell
-#        run: |
-#          foreach ($p in "admin","stg","maintenance","silver","gold") {
-#            Write-Host "=== migrate: $p ==="
-#            docker run --rm `
-#              -v "${{ github.workspace }}:/repo" `
-#              -v "${env:WALLET_DIR}:/wallet:ro" `
-#              redgate/flyway:11 `
-#              "-configFiles=/repo/migrations/$p/conf/flyway.conf" `
-#              "-locations=filesystem:/repo/migrations/$p/sql" `
-#              -url="$env:FLYWAY_URL" -user="$env:FLYWAY_USER" -password="$env:FLYWAY_PASSWORD" `
-#              -baselineOnMigrate=true -baselineVersion=0 `   # <- TYLKO przy świeżej instancji; usuń po 1. migracji
-#              migrate
-#          }
+ #── PROD (za bramką Approve) ──────────────────────────────
+  migrate-prod:
+    needs: migrate-dev
+    runs-on: [self-hosted, optiplex]
+    environment: prod          # Approve gate
+    env:
+      FLYWAY_URL: "jdbc:oracle:thin:@pkpprod_high?TNS_ADMIN=/wallet"
+      FLYWAY_USER: ADMIN
+      FLYWAY_PASSWORD: ${{ secrets.PKP_ADMIN_PASSWORD_PROD }}
+      WALLET_DIR: C:\BAOK\python\stream_mpk\OCI\Wallet_PKPPROD
+    steps:
+      - uses: actions/checkout@v4
+      - name: Flyway migrate (5 projektow) na PKPPROD
+        shell: powershell
+        run: |
+          foreach ($p in "admin","stg","maintenance","silver","gold") {
+            Write-Host "=== migrate: $p ==="
+            docker run --rm `
+              -v "${{ github.workspace }}:/repo" `
+              -v "${env:WALLET_DIR}:/wallet:ro" `
+              redgate/flyway:11 `
+              "-configFiles=/repo/migrations/$p/conf/flyway.conf" `
+              "-locations=filesystem:/repo/migrations/$p/sql" `
+              -url="$env:FLYWAY_URL" -user="$env:FLYWAY_USER" -password="$env:FLYWAY_PASSWORD" `
+              migrate
+          }
 
 # ── KOLEJNY KLOCEK: DEPLOY kontenerów na Optiplexie ───────────────────────
 #  deploy:
