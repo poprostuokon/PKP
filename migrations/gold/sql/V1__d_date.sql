@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS gold.d_date (
+CREATE TABLE gold.d_date (
     id     		NUMBER                    NOT NULL,   -- klucz naturalny YYYYMMDD (np. 20260820)
     full_date   DATE                      NOT NULL,
     year        NUMBER(4)                 NOT NULL,

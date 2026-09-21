@@ -8,7 +8,7 @@
 -- SILNIK:   Oracle 23ai (Autonomous Database)
 -- =============================================================================
 
-CREATE TABLE IF NOT EXISTS maintenance.pipeline_run_step (
+CREATE TABLE maintenance.pipeline_run_step (
     id                NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     pipeline_run_id   NUMBER                   NOT NULL,
     step_name         VARCHAR2(200)            NOT NULL,          -- task_id z Airflow

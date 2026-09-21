@@ -2,7 +2,7 @@
 -- Kolejka komend do wykonania. TRUNCATE na starcie generatora.
 -- Executor czyta wszystkie wiersze i odpala command.
 -- =====================================================================
-CREATE TABLE IF NOT EXISTS maintenance.sql_exec_queue (
+CREATE TABLE maintenance.sql_exec_queue (
     sql_   CLOB                     NOT NULL   -- gotowy ALTER ... MOVE ... COMPRESS
 );
 

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS silver.disruption_details (
+CREATE TABLE silver.disruption_details (
     schedule_id          NUMBER                		NOT NULL,
     order_id             NUMBER                		NOT NULL,
     train_order_id       NUMBER                		,

@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS silver.operation_details (
+CREATE TABLE silver.operation_details (
     ophe_id  			 NUMBER      NOT NULL,
     -- pozycja na trasie
     planned_sequence     NUMBER   NOT NULL,   	-- plannedSequenceNumber

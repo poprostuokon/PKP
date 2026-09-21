@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS silver.def_carrier (
+CREATE TABLE silver.def_carrier (
     code        VARCHAR2(20 CHAR)         NOT NULL,   -- klucz naturalny (KD, IC, AR...)
     name        VARCHAR2(200 CHAR)        NOT NULL,
     valid_from  DATE                      NOT NULL,   -- z API

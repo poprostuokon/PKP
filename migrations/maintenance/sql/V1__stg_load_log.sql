@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS maintenance.stg_load_log (
+CREATE TABLE maintenance.stg_load_log (
     object_name   VARCHAR2(1024 CHAR)      NOT NULL,   -- pelna sciezka w buckecie (klucz)
     feed          VARCHAR2(30 CHAR)        NOT NULL,   -- schedules/operations/disruptions/dict:<name>
     load_mode     VARCHAR2(30 CHAR)        NOT NULL,   -- DAILY / LIVE

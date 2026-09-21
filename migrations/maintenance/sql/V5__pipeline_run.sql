@@ -7,7 +7,7 @@
 -- SILNIK:   Oracle 23ai (Autonomous Database)
 -- =============================================================================
 
-CREATE TABLE IF NOT EXISTS maintenance.pipeline_run (
+CREATE TABLE maintenance.pipeline_run (
     id           NUMBER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     run_date     DATE                     NOT NULL,               -- data logiczna runu (z set_run_date)
     dag_run_id   VARCHAR2(250)            NOT NULL,               -- run_id z Airflow (scheduled__... / manual__...)
