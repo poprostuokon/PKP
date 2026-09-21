@@ -26,6 +26,7 @@ jobs:
               "-configFiles=/repo/migrations/$p/conf/flyway.conf" `
               "-locations=filesystem:/repo/migrations/$p/sql" `
               -url="$env:FLYWAY_URL" -user="$env:FLYWAY_USER" -password="$env:FLYWAY_PASSWORD" `
+              -baselineOnMigrate=true -baselineVersion=0 `
               migrate
           }
 
