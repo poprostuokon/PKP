@@ -3,6 +3,7 @@ from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.trigger_rule import TriggerRule
+from airflow.decorators import task
 
 from audit import (
     SET_RUN_DATE_TASK, create_pipeline_run,
@@ -121,6 +122,23 @@ def t_send_report(**context):
         conn.close()
     send_report(**context)
 
+# task do utrzymania instancji DEV jako "używana"
+@task(task_id="keepalive_dev", trigger_rule="all_done")
+def keepalive_dev():
+    import os, oracledb
+    dsn = os.environ.get("KEEPALIVE_DEV_DSN")
+    if not dsn:
+        print("keepalive_dev: brak konfiguracji DEV — pomijam"); return
+    w = os.environ["KEEPALIVE_DEV_WALLET_DIR"]
+    with oracledb.connect(
+        user=os.environ["KEEPALIVE_DEV_USER"],
+        password=os.environ["KEEPALIVE_DEV_PASSWORD"],
+        dsn=os.environ["KEEPALIVE_DEV_DSN"],
+        config_dir=w, wallet_location=w,
+        wallet_password=os.environ["KEEPALIVE_DEV_WALLET_PASSWORD"],
+    ) as c, c.cursor() as cur:
+        cur.execute("SELECT 1 FROM dual"); cur.fetchone()
+
 
 default_args = {
     "pre_execute":         on_task_start,
@@ -179,4 +197,4 @@ with DAG(
         t >> finalize_ok
         t >> finalize_err
 
-    [finalize_ok, finalize_err] >> prepare_report >> send_report
+    [finalize_ok, finalize_err] >> prepare_report >> send_report >> keepalive_dev()

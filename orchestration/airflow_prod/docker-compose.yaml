@@ -37,11 +37,18 @@ x-airflow-common: &airflow-common
     SENDER_EMAIL: ${SENDER_EMAIL}
     REPORT_EMAIL: ${REPORT_EMAIL}
     SENDER_NAME: ${SENDER_NAME}
+    # --- keepalive DEV ---
+    KEEPALIVE_DEV_DSN: ${KEEPALIVE_DEV_DSN}
+    KEEPALIVE_DEV_USER: ${KEEPALIVE_DEV_USER}
+    KEEPALIVE_DEV_PASSWORD: ${KEEPALIVE_DEV_PASSWORD}
+    KEEPALIVE_DEV_WALLET_DIR: ${KEEPALIVE_DEV_WALLET_DIR}
+    KEEPALIVE_DEV_WALLET_PASSWORD: ${KEEPALIVE_DEV_WALLET_PASSWORD}
   volumes:
     - ../..:/opt/airflow/repo
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ${PKP_WALLET_HOST_DIR}:/wallet:ro
+    - ${PKP_WALLET_DEV_HOST_DIR}:/wallet_dev:ro
     - ${OCI_CONFIG_HOST_DIR}:/oci:ro
   logging: &default-logging
     driver: "json-file"
