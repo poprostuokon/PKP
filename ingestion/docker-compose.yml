@@ -3,7 +3,7 @@ name: pkp-poller-live
 services:
   poller-dev:
     image: pkp-poller:latest
-    container_name: pkp-poller-dev
+    container_name: pkp-poller-dev-live
     restart: unless-stopped
 
     # ── Rotacja logów: kontener nie zapcha dysku ──────────────────
@@ -29,13 +29,13 @@ services:
       start_period: 3m
 
     volumes:
-      - C:\BAOK\python\stream_mpk\Data:/app/ingestion/Data
-      - C:\BAOK\python\stream_mpk\OCI\Wallet_PKPDEV:/wallet:ro
-      - C:\Users\bartlomiej.okoniewsk\.oci:/oci:ro
+      - ${PKP_DATA_HOST_DIR}:/app/ingestion/Data
+      - ${PKP_WALLET_HOST_DIR}:/wallet:ro
+      - ${OCI_CONFIG_HOST_DIR}:/oci:ro
 
   poller-prod:
     image: pkp-poller:latest
-    container_name: pkp-poller-prod
+    container_name: pkp-poller-prod-live
     restart: unless-stopped
 
     # ── Rotacja logów: kontener nie zapcha dysku ──────────────────
@@ -61,6 +61,6 @@ services:
       start_period: 3m
 
     volumes:
-      - C:\BAOK\python\stream_mpk\Data:/app/ingestion/Data
-      - C:\BAOK\python\stream_mpk\OCI\Wallet_PKPPROD:/wallet:ro
-      - C:\Users\bartlomiej.okoniewsk\.oci:/oci:ro
+      - ${PKP_DATA_HOST_DIR}:/app/ingestion/Data
+      - ${PKP_WALLET_HOST_DIR}:/wallet:ro
+      - ${OCI_CONFIG_HOST_DIR}:/oci:ro

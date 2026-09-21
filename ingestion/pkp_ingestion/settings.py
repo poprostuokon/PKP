@@ -8,7 +8,7 @@ Jedno miejsce, z ktorego reszta paczki bierze klucz API, srodowisko i katalog Da
 import os
 from pathlib import Path
 
-from dotenv import find_dotenv, load_dotenv
+from dotenv import load_dotenv
 
 #load_dotenv(find_dotenv())  # wczytuje .env
 app_env = os.getenv("APP_ENV", "prod")          # 'dev' albo 'prod'
@@ -23,7 +23,7 @@ API_KEY                 = os.environ["PKP_API_KEY"]          # wymagany; brak ->
 ENV                     = os.getenv("PKP_ENV")
 
 # Katalog bazowy struktury Data (domyslnie 'Data' w biezacym katalogu).
-DATA_ROOT               = Path(os.getenv("PKP_DATA_ROOT", "Data"))
+DATA_ROOT               = Path(os.getenv("PKP_DATA_ROOT"))
 
 # --- OCI Object Storage (upload bronze) ---
 OCI_PROFILE             = os.getenv("PKP_OCI_PROFILE", "DEFAULT")   # profil z ~/.oci/config

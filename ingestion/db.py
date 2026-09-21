@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 
 import oracledb
-from dotenv import find_dotenv, load_dotenv
+from dotenv import load_dotenv
 
 #load_dotenv(find_dotenv())
 app_env = os.getenv("APP_ENV", "prod")

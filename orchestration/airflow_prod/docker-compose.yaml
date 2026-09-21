@@ -1,13 +1,11 @@
-# Airflow PKP — Oracle ADB (wallet + OCI), bez Selenium
-# Start:  docker compose up airflow-init   (raz)
-#         docker compose up -d
-# Stop:   docker compose down
-
-name: pkp-airflow-daily
+# Airflow PKP — sterowanie DEV/PROD przez --env-file + -p
+# DEV:  docker compose --env-file .env.docker.dev  -p pkp-airflow-daily-dev  up -d
+# PROD: docker compose --env-file .env.docker.prod -p pkp-airflow-daily-prod up -d
+# init RAZ na środowisko:  <to samo> up airflow-init
 
 x-airflow-common: &airflow-common
   build:
-    context: ../..                      # KORZEN repo (żeby COPY orchestration/... działał)
+    context: ../..
     dockerfile: orchestration/airflow_prod/Dockerfile
   environment: &airflow-env
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${AIRFLOW_DB_USER}:${AIRFLOW_DB_PASSWORD}@postgres-airflow:5432/${AIRFLOW_DB_NAME}
@@ -20,10 +18,9 @@ x-airflow-common: &airflow-common
     AIRFLOW__LOGGING__DELETE_LOCAL_LOGS: 'true'
     AIRFLOW__LOGGING__MAX_LOG_AGE_IN_DAYS: '30'
     TZ: Europe/Warsaw
-    # kod PKP: całe repo pod /opt/airflow/repo -> import db, pkp_ingestion itd.
     PYTHONPATH: /opt/airflow/repo/ingestion:/opt/airflow/repo/load:/opt/airflow/repo/orchestration/airflow_prod/plugins
-    # sekrety/ścieżki PKP (kontenerowe, jak w pollerze)
-    PKP_ENV: DEV
+    # --- PKP: instancja sterowana env-file ---
+    PKP_ENV: ${PKP_ENV}
     PKP_API_KEY: ${PKP_API_KEY}
     PKP_DATA_ROOT: /opt/airflow/repo/Data
     PKP_WALLET_DIR: /wallet
@@ -31,23 +28,24 @@ x-airflow-common: &airflow-common
     PKP_DB_USER: ${PKP_DB_USER}
     PKP_DB_PASSWORD: ${PKP_DB_PASSWORD}
     PKP_DB_DSN: ${PKP_DB_DSN}
-    PKP_OCI_PROFILE: DEFAULT
+    PKP_OCI_PROFILE: ${PKP_OCI_PROFILE:-DEFAULT}
     PKP_OCI_CONFIG_FILE: /oci/config.docker
-    # mail (raport)
+    PKP_OCI_BUCKET: ${PKP_OCI_BUCKET}
+    PKP_OCI_BUCKET_LIVE: ${PKP_OCI_BUCKET_LIVE}
+    # --- mail (raport) ---
     MAILERSEND_API_KEY: ${MAILERSEND_API_KEY}
     SENDER_EMAIL: ${SENDER_EMAIL}
     REPORT_EMAIL: ${REPORT_EMAIL}
     SENDER_NAME: ${SENDER_NAME}
   volumes:
-    - ../..:/opt/airflow/repo                                   # CAŁE repo
+    - ../..:/opt/airflow/repo
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
-    - C:\BAOK\python\stream_mpk\OCI\Wallet_PKPDEV:/wallet:ro
-    - C:\Users\bartlomiej.okoniewsk\.oci:/oci:ro
+    - ${PKP_WALLET_HOST_DIR}:/wallet:ro
+    - ${OCI_CONFIG_HOST_DIR}:/oci:ro
   logging: &default-logging
     driver: "json-file"
     options: { max-size: "20m", max-file: "3" }
-    
 
 services:
 
@@ -85,7 +83,7 @@ services:
     <<: *airflow-common
     command: webserver
     ports:
-      - "8081:8080"
+      - "${AIRFLOW_PORT:-8081}:8080"
     depends_on:
       postgres-airflow:
         condition: service_healthy
