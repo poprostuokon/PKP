@@ -17,14 +17,14 @@ jobs:
       - name: Flyway info (5 projektow) na PKPDEV
         shell: powershell
         run: |
-          foreach ($p in "admin","stg","maintenance","silver","gold") {
+                    foreach ($p in "admin","stg","maintenance","silver","gold") {
             Write-Host "=== info: $p ==="
             docker run --rm `
               -v "${{ github.workspace }}:/repo" `
               -v "${env:WALLET_DIR}:/wallet:ro" `
               redgate/flyway:11 `
-              -configFiles=/repo/migrations/$p/conf/flyway.conf `
-              -locations=filesystem:/repo/migrations/$p/sql `
+              "-configFiles=/repo/migrations/$p/conf/flyway.conf" `
+              "-locations=filesystem:/repo/migrations/$p/sql" `
               -url="$env:FLYWAY_URL" -user="$env:FLYWAY_USER" -password="$env:FLYWAY_PASSWORD" `
               info
           }
