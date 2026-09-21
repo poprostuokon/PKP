@@ -17,7 +17,7 @@ jobs:
       - name: Flyway info (5 projektow) na PKPDEV
         shell: powershell
         run: |
-                    foreach ($p in "admin","stg","maintenance","silver","gold") {
+          foreach ($p in "admin","stg","maintenance","silver","gold") {
             Write-Host "=== info: $p ==="
             docker run --rm `
               -v "${{ github.workspace }}:/repo" `
