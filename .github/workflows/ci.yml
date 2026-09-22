@@ -1,3 +1,13 @@
+# ──────────────────────────────────────────────────────────────────────────
+# CI — brama jakości. Uruchamiana automatycznie na push / pull_request.
+# Trzy niezależne joby:
+#   test            - pip-audit, ruff (lint), pytest
+#   gitleaks        - skan sekretów w historii repo
+#   flyway-validate - walidacja migracji (5 projektow) na PKPDEV, read-only
+# Runner GitHub-hosted (ubuntu) - efemeryczny, więc wallet z sekretu base64.
+# Nic nie wdraża ani nie zmienia w bazie; samo wdrożenie robi cd.yml.
+# ──────────────────────────────────────────────────────────────────────────
+
 name: CI
 
 on:

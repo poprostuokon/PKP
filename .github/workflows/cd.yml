@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Flyway migrate (5 projektow) na PKPDEV
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass -Command "& '{0}'"
         run: |
           foreach ($p in "admin","stg","maintenance","silver","gold") {
             Write-Host "=== migrate: $p ==="
@@ -50,7 +50,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Flyway migrate (5 projektow) na PKPPROD
-        shell: powershell
+        shell: powershell -ExecutionPolicy Bypass -Command "& '{0}'"
         run: |
           foreach ($p in "admin","stg","maintenance","silver","gold") {
             Write-Host "=== migrate: $p ==="
