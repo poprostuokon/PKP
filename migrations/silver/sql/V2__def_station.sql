@@ -1,3 +1,11 @@
+-- =============================================================================
+-- silver.def_station
+-- -----------------------------------------------------------------------------
+-- Słownik SILVER: stacje kolejowe wraz z powiązaniem do miasta (def_city).
+-- Flaga is_active oznacza, czy stacja nadal występuje w API (false, gdy zniknie),
+-- a first_seen_at znaczy pierwsze pojawienie się w danych. Klucz to id z API.
+-- =============================================================================
+
 CREATE TABLE silver.def_station (
     id             NUMBER                	 NOT NULL,   -- klucz naturalny z API
     name           VARCHAR2(200 CHAR)        NOT NULL,

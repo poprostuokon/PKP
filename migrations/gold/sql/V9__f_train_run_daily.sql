@@ -1,3 +1,12 @@
+-- =============================================================================
+-- gold.f_train_run_daily
+-- -----------------------------------------------------------------------------
+-- Fakt GOLD: dzienne podsumowanie kursow pociagow, w podziale na trase, typ
+-- pociagu i status. Miary obejmuja liczbe kursow, opoznienia na stacji koncowej
+-- (suma, max, liczba spoznionych wg progow UTK) oraz czasy przejazdu (planowe
+-- i rzeczywiste). Zrodlo dla miesiecznego roll-upu. Partycjonowane po dacie.
+-- =============================================================================
+
 CREATE TABLE gold.f_train_run_daily (
     -- ziarno (klucz złożony)
     date_id                 NUMBER           NOT NULL,   -- YYYYMMDD -> d_date (klucz partycji)

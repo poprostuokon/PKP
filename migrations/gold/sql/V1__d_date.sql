@@ -1,3 +1,11 @@
+-- =============================================================================
+-- gold.d_date
+-- -----------------------------------------------------------------------------
+-- Wymiar GOLD: kalendarz z atrybutami daty - rok, kwartał, miesiąc (z nazwą),
+-- dzień, dzień tygodnia (ISO, z nazwą), tydzień ISO oraz flaga weekendu.
+-- Służy do analiz czasowych i grupowania faktów. Klucz id w formacie YYYYMMDD.
+-- =============================================================================
+
 CREATE TABLE gold.d_date (
     id     		NUMBER                    NOT NULL,   -- klucz naturalny YYYYMMDD (np. 20260820)
     full_date   DATE                      NOT NULL,

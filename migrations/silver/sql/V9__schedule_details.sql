@@ -1,3 +1,13 @@
+-- =============================================================================
+-- silver.schedule_details
+-- -----------------------------------------------------------------------------
+-- Warstwa SILVER: pozycje rozkładu jazdy - jeden wiersz na przystanek kursu.
+-- Zawiera kolejność na trasie, stację, planowe czasy i dane przyjazdu oraz
+-- odjazdu (godzina, offset dnia przez północ, peron, tor, kategoria, nr pociągu)
+-- i typ postoju. Godziny walidowane formatem HH24:MI:SS. Klucz: edycja + wersja
+-- + kolejność przystanku.
+-- =============================================================================
+
 CREATE TABLE silver.schedule_details (
     schedule_id     	NUMBER     						NOT NULL,   -- edycja rozkladu (np. 2026)
     order_id        	NUMBER      					NOT NULL,   -- wersja tresci planu

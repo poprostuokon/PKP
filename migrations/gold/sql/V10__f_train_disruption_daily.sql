@@ -1,3 +1,12 @@
+-- =============================================================================
+-- gold.f_train_disruption_daily
+-- -----------------------------------------------------------------------------
+-- Fakt GOLD: dzienna liczba utrudnien w ruchu pociagow, w podziale na trase,
+-- stacje, typ pociagu, godzine planowa i przyczyne. Miara occurrences_count
+-- to liczba dotknietych przystankow. Zrodlo dla miesiecznego roll-upu.
+-- Partycjonowane po dacie (YYYYMMDD).
+-- =============================================================================
+
 CREATE TABLE gold.f_train_disruption_daily (
     -- ziarno (klucz złożony)
     date_id            NUMBER               NOT NULL,   -- YYYYMMDD -> d_date (klucz partycji)

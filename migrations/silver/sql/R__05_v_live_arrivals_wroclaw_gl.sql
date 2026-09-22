@@ -1,3 +1,13 @@
+-- =============================================================================
+-- silver.v_live_arrivals_wroclaw_gl
+-- -----------------------------------------------------------------------------
+-- Widok LIVE: tablica najbliższych przyjazdów pociągów na stację Wrocław Główny
+-- (okno od -5 min do +8 godz). Dla każdego kursu bierze najnowszą wersję z logu
+-- śledzenia i łączy ją z rozkładem: stacja początkowa, stacje pośrednie, peron,
+-- tor, opóźnienia oraz status (planowy / opóźniony / przyjechał / odjechał /
+-- odwołany). Dołącza też aktywne komunikaty o utrudnieniach dla danego kursu.
+-- =============================================================================
+
 CREATE OR REPLACE VIEW silver.v_live_arrivals_wroclaw_gl AS
 WITH live_rank AS (
     -- najnowsza wersja live per kurs na Twojej stacji (append -> max snapshot_ts)

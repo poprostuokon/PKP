@@ -1,3 +1,11 @@
+-- =============================================================================
+-- silver.disruption_details
+-- -----------------------------------------------------------------------------
+-- Warstwa SILVER: pozycje utrudnień - powiązanie utrudnienia (disruption_header)
+-- z konkretnym przystankiem kursu (stacja + kolejność). Jeden wiersz na dotknięty
+-- przystanek. Klucz obcy do nagłówka utrudnienia z kaskadowym usuwaniem.
+-- =============================================================================
+
 CREATE TABLE silver.disruption_details (
     schedule_id          NUMBER                		NOT NULL,
     order_id             NUMBER                		NOT NULL,

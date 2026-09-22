@@ -1,10 +1,15 @@
--- =====================================================================
--- PKG_SILVER_LOAD_LIVE - ladowanie trackingu LIVE z landing _live.
--- operations: INSERT ONLY NEW po change_hash (append wersji).
--- disruptions: SCD2 - deactivate + insert (changed) oraz deactivate (ended).
--- change_hash liczy POLLER (SHA-256); tu tylko zapisujemy/porownujemy.
--- Owner: SILVER. AUTHID DEFINER. Repeatable migration Flyway.
--- =====================================================================
+-- =============================================================================
+-- silver.pkg_silver_load_live
+-- -----------------------------------------------------------------------------
+-- Pakiet ładujący dane LIVE ze stagingu do warstwy SILVER (tracking). Parsuje
+-- JSON z tabel landing i zasila logi śledzenia:
+--   * p_load_operation_tracking  - operacje: dopisuje tylko nowe wersje kursów
+--     (insert-only wg change_hash),
+--   * p_load_disruption_tracking - utrudnienia w modelu SCD2: dezaktywuje stare
+--     wersje, wstawia nowe (changed) i zamyka zakończone (ended),
+--   * p_load_all_live            - master: uruchamia oba kroki w jednej transakcji
+--     (COMMIT na sukces, ROLLBACK na błąd).
+-- =============================================================================
 
 grant select on stg.LAND_OPERATIONS_LIVE  to silver;
 grant select on stg.LAND_DISRUPTIONS_LIVE to silver;

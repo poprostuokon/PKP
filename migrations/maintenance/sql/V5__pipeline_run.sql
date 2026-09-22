@@ -1,10 +1,10 @@
 -- =============================================================================
--- MIGRACJA: V5__pipeline_run.sql
--- PROJEKT:  PKP Wrocław Główny
--- SCHEMAT:  maintenance
--- OPIS:     Tabela audytowa — nagłówek pojedynczego uruchomienia daily pipeline.
---           Rekord zakładany na starcie (set_run_date), domykany na końcu.
--- SILNIK:   Oracle 23ai (Autonomous Database)
+-- maintenance.pipeline_run
+-- -----------------------------------------------------------------------------
+-- Tabela audytowa: nagłówek pojedynczego uruchomienia dziennego pipeline'u.
+-- Jeden wiersz na run (identyfikowany przez dag_run_id z Airflow). Rekord
+-- zakładany na starcie ze statusem PENDING, domykany na końcu czasem zakończenia
+-- i statusem końcowym (SUCCESS / PARTIAL_SUCCESS / ERROR).
 -- =============================================================================
 
 CREATE TABLE maintenance.pipeline_run (

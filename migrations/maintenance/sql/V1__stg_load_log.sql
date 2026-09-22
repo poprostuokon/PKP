@@ -1,3 +1,12 @@
+-- =============================================================================
+-- maintenance.stg_load_log
+-- -----------------------------------------------------------------------------
+-- Tabela audytowa ładowania stagingu: jeden wiersz na plik z bucketu (klucz to
+-- pełna ścieżka obiektu). Steruje idempotencją - plik oznaczony LOADED jest
+-- pomijany przy kolejnych przebiegach, FAILED podlega ponowieniu. Zapisuje feed,
+-- tryb (DAILY / LIVE), datę partycji, status, rozmiar i ewentualny błąd.
+-- =============================================================================
+
 CREATE TABLE maintenance.stg_load_log (
     object_name   VARCHAR2(1024 CHAR)      NOT NULL,   -- pelna sciezka w buckecie (klucz)
     feed          VARCHAR2(30 CHAR)        NOT NULL,   -- schedules/operations/disruptions/dict:<name>

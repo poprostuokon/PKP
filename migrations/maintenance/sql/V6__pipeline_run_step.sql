@@ -1,11 +1,10 @@
 -- =============================================================================
--- MIGRACJA: V6__pipeline_run_step.sql
--- PROJEKT:  PKP Wrocław Główny
--- SCHEMAT:  maintenance
--- OPIS:     Tabela audytowa — pojedynczy krok (task) runu. Zapisywana przez
---           callbacki Airflow (pre_execute / success / failure / skipped).
---           Źródło prawdy dla timingu, statusu i stack trace w raporcie.
--- SILNIK:   Oracle 23ai (Autonomous Database)
+-- maintenance.pipeline_run_step
+-- -----------------------------------------------------------------------------
+-- Tabela audytowa: pojedynczy krok (task Airflow) w ramach dziennego runu.
+-- Jeden wiersz na krok, powiązany z pipeline_run przez klucz obcy. Zapisuje
+-- czasy startu i zakończenia, status (PENDING / SUCCESS / ERROR / SKIPPED) oraz
+-- pełny opis błędu. Uzupełnia nagłówek runu o szczegóły przebiegu krok po kroku.
 -- =============================================================================
 
 CREATE TABLE maintenance.pipeline_run_step (

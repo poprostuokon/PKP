@@ -1,3 +1,12 @@
+-- =============================================================================
+-- maintenance.poller_heartbeat
+-- -----------------------------------------------------------------------------
+-- Tabela monitoringu pollera LIVE: jeden wiersz na tick i feed (operations /
+-- disruptions). Zapisuje wynik cyklu (OK / EMPTY / STALE / ERR), liczbę rekordów
+-- w delcie, opóźnienie danych (lag), czas trwania cyklu oraz ewentualny błąd.
+-- Klucz (run_ts, feed) zapewnia idempotencję zapisu ze spoola.
+-- =============================================================================
+
 CREATE TABLE maintenance.poller_heartbeat (
     run_ts         TIMESTAMP                 NOT NULL,   -- start ticku (processing time) = klucz idempotencji
     feed           VARCHAR2(30 CHAR)         NOT NULL,   -- operations / disruptions

@@ -1,3 +1,12 @@
+-- =============================================================================
+-- gold.f_train_stop_daily
+-- -----------------------------------------------------------------------------
+-- Fakt GOLD: dzienna punktualnosc przyjazdow na przystankach, w podziale na
+-- trase, typ pociagu, stacje i godzine planowa. Miary obejmuja liczbe
+-- przyjazdow (na czas / spoznionych wg progow UTK), odwolane przystanki oraz
+-- sumy i max opoznien. Zrodlo dla miesiecznego roll-upu. Partycjonowane po dacie.
+-- =============================================================================
+
 CREATE TABLE gold.f_train_stop_daily (
     -- ziarno (klucz złożony)
     date_id                NUMBER            NOT NULL,   -- YYYYMMDD -> d_date (klucz partycji)

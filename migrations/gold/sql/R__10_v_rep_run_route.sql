@@ -1,11 +1,11 @@
 -- =====================================================================
 -- V_REP_RUN_ROUTE - profil opoznienia POJEDYNCZEGO kursu wzdluz trasy.
 --
--- Zrodlo: SILVER (operations + rozklad) - dane per kurs zostaja na silver.
--- Grain: kurs (ophe_id) x przystanek. BEZ agregacji.
--- Wykres: os X = stop_seq/station_name, os Y = eff_arrival_delay_min (0 = na czas).
--- Filtrujesz: operating_date -> national_number/ophe_id (konkretny kurs).
--- Zasada: confirmed + null = 0 (potwierdzony bez opoznienia = 0 min).
+-- Zrodlo: operacje (wykonanie) + rozklad planowy, laczone w warstwie GOLD.
+-- Grain: kurs (ophe_id) x przystanek - jeden wiersz na przystanek. BEZ agregacji.
+-- Wykres: os X = stop_seq / station_name, os Y = eff_arrival_delay_min (0 = na czas).
+-- Filtrowanie: operating_date -> national_number / ophe_id (konkretny kurs).
+-- Zasada: przystanek potwierdzony bez opoznienia = 0 min (confirmed + NULL -> 0).
 -- =====================================================================
 CREATE OR REPLACE VIEW gold.v_rep_run_route AS
 select

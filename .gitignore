@@ -7,7 +7,6 @@ __pycache__/
 venv*/
 env/
 ENV/
-OCI/
 Database/
 test_api/
 *.egg-info/
@@ -101,8 +100,13 @@ keystore.jks
 truststore.jks
 tnsnames.ora
 sqlnet.ora
-ojdbc.properties
-wallet/                
-Wallet_*/             
+ojdbc.properties           
 
+
+# ── OCI: pokaż folder + README + pustą strukturę, ukryj sekrety ──
+OCI/**
+!OCI/**/
+!OCI/README.md
+!OCI/**/.gitkeep
+Wallet_*.zip
 

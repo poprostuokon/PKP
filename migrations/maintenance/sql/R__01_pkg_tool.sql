@@ -1,6 +1,11 @@
--- MAINTENANCE.PKG_TOOL - pakiet funkcji narzedziowych.
--- json_obj_to_kv: zamienia obiekt JSON {"k":"v",...} na tablice [{"k":..,"v":..}],
--- zeby dalo sie ja rozbic JSON_TABLE (iteracja kluczy obiektu).
+-- =============================================================================
+-- maintenance.pkg_tool
+-- -----------------------------------------------------------------------------
+-- Pakiet funkcji narzędziowych używanych w warstwach przetwarzania. Zawiera:
+--   * f_json_obj_to_kv - zamienia obiekt JSON {"k":"v"} na tablicę par
+--     [{"k":..,"v":..}], by dało się ją rozbić przez JSON_TABLE (iteracja kluczy),
+--   * f_now_warsaw - bieżący czas w strefie Europe/Warsaw.
+-- =============================================================================
 
 CREATE OR REPLACE PACKAGE maintenance.pkg_tool AS
     FUNCTION f_json_obj_to_kv(p_json IN CLOB) RETURN CLOB;

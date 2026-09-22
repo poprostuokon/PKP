@@ -1,3 +1,12 @@
+-- =============================================================================
+-- gold.f_train_disruption_monthly
+-- -----------------------------------------------------------------------------
+-- Fakt GOLD: miesieczna liczba utrudnien w ruchu pociagow, w podziale na trase,
+-- stacje, typ pociagu, godzine, przyczyne i typ dnia (roboczy/weekend).
+-- Miara occurrences_count to roll-up z faktu dziennego. Partycjonowane po
+-- miesiacu (YYYYMM), z automatycznym tworzeniem partycji.
+-- =============================================================================
+
 CREATE TABLE gold.f_train_disruption_monthly (
     -- ziarno (klucz zlozony)
     month              NUMBER(6)            NOT NULL,   -- YYYYMM (klucz partycji)

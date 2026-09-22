@@ -1,3 +1,12 @@
+-- =============================================================================
+-- gold.f_train_stop_monthly
+-- -----------------------------------------------------------------------------
+-- Fakt GOLD: miesieczna punktualnosc przyjazdow na przystankach, w podziale na
+-- trase, typ pociagu, stacje, godzine i typ dnia (roboczy/weekend). Miary
+-- (liczby przyjazdow, na czas, spoznionych, odwolanych oraz sumy i max opoznien)
+-- to roll-up z faktu dziennego. Partycjonowane po miesiacu (YYYYMM).
+-- =============================================================================
+
 CREATE TABLE gold.f_train_stop_monthly (
     -- ziarno (klucz zlozony)
     month                   NUMBER(6)        NOT NULL,   -- YYYYMM (klucz partycji)

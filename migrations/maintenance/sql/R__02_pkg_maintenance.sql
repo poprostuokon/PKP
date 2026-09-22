@@ -1,9 +1,17 @@
--- =====================================================================
--- MAINTENANCE.PKG_MAINTENANCE
--- Kompresja partycji przez MOVE. Generator wypelnia kolejke gotowymi
--- ALTER-ami, executor je odpala (blad jednej komendy nie przerywa reszty).
--- AUTHID CURRENT_USER -> dziala z prawami DEV_APP (ALTER ANY TABLE).
--- =====================================================================
+-- =============================================================================
+-- maintenance.pkg_maintenance
+-- -----------------------------------------------------------------------------
+-- Pakiet utrzymaniowy warstwy bazodanowej: analizuje obiekty i generuje polecenia
+-- reorganizacyjne do wspólnej kolejki (sql_exec_queue), po czym wykonuje je i
+-- loguje wynik. Procedury:
+--   * p_clear_queue            - czyści kolejkę poleceń,
+--   * p_gen_compress_schema    - kompresja partycji w oknie czasowym wg progów,
+--   * p_gen_table_move_schema  - MOVE tabel heap, które uległy fragmentacji,
+--   * p_gen_index_rebuild_schema - REBUILD indeksów wg progów degradacji/kompresji,
+--   * p_run_compress_queue     - uniwersalny executor kolejki DDL (z logowaniem).
+-- Progi (rozmiar, % pełnych bloków, PCTSAVE, del_pct) sterowane parametrami.
+-- =============================================================================
+
 create or replace PACKAGE maintenance.pkg_maintenance AUTHID CURRENT_USER AS
 
     PROCEDURE p_clear_queue;

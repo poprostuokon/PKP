@@ -1,4 +1,11 @@
-CREATE TABLE IF silver.def_train_status (
+-- =============================================================================
+-- silver.def_train_status
+-- -----------------------------------------------------------------------------
+-- Słownik SILVER: statusy kursu pociągu (np. S, P, X). Mapuje kod z API na
+-- nazwę opisową. Klucz to kod statusu.
+-- =============================================================================
+
+CREATE TABLE silver.def_train_status (
     code        VARCHAR2(20 CHAR)         NOT NULL,   -- klucz naturalny (S, P, X...)
     name        VARCHAR2(200 CHAR)        NOT NULL, 
     loaded_at   TIMESTAMP WITH TIME ZONE  NOT NULL,

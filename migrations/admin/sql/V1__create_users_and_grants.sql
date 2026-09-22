@@ -1,3 +1,27 @@
+-- =============================================================================
+-- V1__create_users_and_grants.sql
+-- -----------------------------------------------------------------------------
+-- Bootstrap uprawnien na Oracle Autonomous DB (ADB). Uruchamiane RAZ, jako ADMIN,
+-- przed pierwsza migracja Flyway. Tworzy schematy warstw hurtowni i konto
+-- deweloperskie, po czym nadaje mu uprawnienia do pracy na tych schematach.
+--
+-- Schematy (warstwy pipeline'u):
+--   stg         - landing surowych danych z bucketu (bronze -> staging)
+--   silver      - dane oczyszczone / tracking
+--   gold        - wymiary i fakty (warstwa analityczna)
+--   maintenance - narzedzia utrzymaniowe (kolejka DDL, logi, reorg tabel/indeksow)
+-- Schematy sa NO AUTHENTICATION - nie loguje sie do nich bezposrednio; wlascicielem
+-- obiektow jest schemat, a pracuje na nich konto dev_app przez GRANT-y ANY.
+--
+-- dev_app - konto aplikacyjne/deweloperskie (login), przez ktore Python (ingestion/
+--   db.py) i Flyway operuja na wszystkich warstwach. Dostaje uprawnienia obiektowe
+--   (CREATE/ALTER/DROP/DML) per schemat oraz SELECT na widokach slownikowych SYS.DBA_*
+--   (potrzebne warstwie maintenance do analizy fragmentacji tabel/indeksow).
+--
+-- Uwaga: <haslo> dla dev_app podstaw recznie.
+-- =============================================================================
+
+
 -- schematy
 CREATE USER IF NOT EXISTS stg   NO AUTHENTICATION;
 CREATE USER IF NOT EXISTS silver NO AUTHENTICATION;

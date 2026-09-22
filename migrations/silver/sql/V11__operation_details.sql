@@ -1,3 +1,12 @@
+-- =============================================================================
+-- silver.operation_details
+-- -----------------------------------------------------------------------------
+-- Warstwa SILVER: pozycje wykonania kursu - jeden wiersz na przystanek. Zawiera
+-- kolejność na trasie, stację, rzeczywiste czasy przyjazdu/odjazdu, status
+-- przystanku (potwierdzony/odwołany) oraz miary liczone przy ładowaniu
+-- (opóźnienia i czas postoju). Klucz obcy do nagłówka kursu (kaskadowe usuwanie).
+-- =============================================================================
+
 CREATE TABLE silver.operation_details (
     ophe_id  			 NUMBER      NOT NULL,
     -- pozycja na trasie

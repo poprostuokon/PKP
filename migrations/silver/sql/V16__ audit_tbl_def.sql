@@ -1,3 +1,11 @@
+-- =============================================================================
+-- silver.audit_tbl_def
+-- -----------------------------------------------------------------------------
+-- Tabela audytowa SILVER: rejestr zmian wartości w słownikach (tabele def_*).
+-- Jeden wiersz na zmienioną kolumnę - zapisuje nazwę tabeli i klucz biznesowy
+-- rekordu, zmienioną kolumnę, wartość starą i nową oraz czas i autora zmiany.
+-- =============================================================================
+
 CREATE TABLE silver.AUDIT_TBL_DEF (
     audit_id     NUMBER GENERATED ALWAYS AS IDENTITY,
     table_name   VARCHAR2(30 CHAR)        NOT NULL,   

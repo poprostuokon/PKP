@@ -1,3 +1,11 @@
+-- =============================================================================
+-- silver.def_carrier
+-- -----------------------------------------------------------------------------
+-- Słownik SILVER: przewoźnicy kolejowi (np. KD, IC, AR), wersjonowani w czasie.
+-- Okres obowiązywania wersji wyznaczają valid_from i valid_to (2999-12-31 =
+-- otwarty). Klucz to kod przewoźnika + data początku wersji.
+-- =============================================================================
+
 CREATE TABLE silver.def_carrier (
     code        VARCHAR2(20 CHAR)         NOT NULL,   -- klucz naturalny (KD, IC, AR...)
     name        VARCHAR2(200 CHAR)        NOT NULL,

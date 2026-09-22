@@ -1,3 +1,22 @@
+-- =============================================================================
+-- Synonimy prywatne dla konta DEV_APP
+-- -----------------------------------------------------------------------------
+-- Tworzy synonimy w schemacie DEV_APP wskazujace na obiekty warstw SILVER, GOLD
+-- i MAINTENANCE. Dzieki nim kod aplikacyjny (Python, raporty, wywolania pakietow)
+-- odwoluje sie do obiektow po krotkiej nazwie, bez prefiksu schematu wlasciciela -
+-- np. operation_header zamiast silver.operation_header.
+--
+-- Zakres:
+--   * pakiety utrzymaniowe (pkg_tool, pkg_maintenance) ze schematu MAINTENANCE,
+--   * tabele slownikowe, rozkladowe i operacyjne warstwy SILVER,
+--   * wymiary i fakty (dzienne oraz miesieczne) warstwy GOLD,
+--   * widoki diagnostyczne (trace) i raportowe oraz pakiet ladujacy GOLD.
+--
+-- Uruchamiane po utworzeniu obiektow docelowych; CREATE OR REPLACE pozwala
+-- odtwarzac synonimy wielokrotnie bez bledu. Warunek dzialania: DEV_APP ma
+-- nadane uprawnienia do obiektow docelowych (patrz skrypt z grantami).
+-- =============================================================================
+
 -- ---- synonimy dla DEV_APP ----
 CREATE OR REPLACE SYNONYM DEV_APP.pkg_tool                 FOR maintenance.pkg_tool;
 CREATE OR REPLACE SYNONYM DEV_APP.pkg_maintenance          FOR maintenance.pkg_maintenance;

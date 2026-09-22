@@ -1,3 +1,11 @@
+-- =============================================================================
+-- silver.def_commercial_category
+-- -----------------------------------------------------------------------------
+-- Słownik SILVER: handlowe kategorie pociągów (np. Os, IC, EC, EIC) powiązane
+-- z przewoźnikiem. Zawiera nazwę kategorii i opcjonalną kategorię prędkości.
+-- Klucz to para kod kategorii + kod przewoźnika.
+-- =============================================================================
+
 CREATE TABLE silver.def_commercial_category (
     code                 VARCHAR2(20 CHAR)         NOT NULL,   -- Os, IC, EC, EIC...
     name                 VARCHAR2(200 CHAR),

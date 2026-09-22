@@ -1,3 +1,13 @@
+-- =============================================================================
+-- silver.v_live_departures_wroclaw_gl
+-- -----------------------------------------------------------------------------
+-- Widok LIVE: tablica najbliższych odjazdów pociągów ze stacji Wrocław Główny
+-- (okno od -5 min do +8 godz). Dla każdego kursu bierze najnowszą wersję z logu
+-- śledzenia i łączy ją z rozkładem: stacja docelowa, stacje pośrednie, peron,
+-- tor, opóźnienie oraz status (planowy / opóźniony / odjechał / odwołany).
+-- Dołącza też aktywne komunikaty o utrudnieniach dla danego kursu.
+-- =============================================================================
+
 CREATE OR REPLACE VIEW silver.V_LIVE_DEPARTURES_WROCLAW_GL AS
 WITH live_rank AS (
     -- najnowsza wersja live per kurs na Twojej stacji (append -> max snapshot_ts)

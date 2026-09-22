@@ -1,3 +1,12 @@
+-- =============================================================================
+-- gold.f_train_run_monthly
+-- -----------------------------------------------------------------------------
+-- Fakt GOLD: miesieczne podsumowanie kursow pociagow, w podziale na trase, typ
+-- pociagu, status i typ dnia (roboczy/weekend). Miary obejmuja liczbe kursow,
+-- opoznienia koncowe (suma, max, liczba spoznionych) oraz czasy przejazdu
+-- (planowe i rzeczywiste). Roll-up z faktu dziennego, partycjonowane po miesiacu.
+-- =============================================================================
+
 CREATE TABLE gold.F_TRAIN_RUN_MONTHLY (
     -- ziarno (klucz zlozony)
     month                   NUMBER(6)        NOT NULL,   -- YYYYMM (klucz partycji)
