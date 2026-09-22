@@ -50,7 +50,7 @@ CREATE OR REPLACE PACKAGE silver.pkg_silver_load AUTHID DEFINER AS
     PROCEDURE p_load_def_commercial_category;
     PROCEDURE p_load_def_train_status;
     PROCEDURE p_load_def_disruption_cause;
-    -- fakty -- CD test 2026-09-21
+    -- fakty
     PROCEDURE p_load_schedule_header;
     PROCEDURE p_load_schedule_details;
     PROCEDURE p_load_operation_header;

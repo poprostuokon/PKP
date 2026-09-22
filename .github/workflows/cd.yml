@@ -1,3 +1,11 @@
+# ──────────────────────────────────────────────────────────────────────────
+# CD — wdrożenie schematu bazy (Flyway) na DEV, następnie PROD.
+# Uruchamiane ręcznie (workflow_dispatch). Działa na self-hosted runnerze
+# (Optiplex) — wallet brany z lokalnego dysku, hasła z GitHub Secrets,
+# ścieżki/URL z GitHub Variables. PROD za bramką Approve (environment: prod).
+# Kolejność: migrate-dev -> [akceptacja] -> migrate-prod.
+# ──────────────────────────────────────────────────────────────────────────
+
 name: CD
 
 on:
@@ -7,20 +15,18 @@ jobs:
   migrate-dev:
     runs-on: [self-hosted, optiplex]
     env:
-      FLYWAY_URL: "jdbc:oracle:thin:@pkpdev_high?TNS_ADMIN=/wallet"
-      FLYWAY_USER: ADMIN
+      FLYWAY_URL: "${{ vars.PKP_FLYWAY_URL_DEV }}"
+      FLYWAY_USER: ${{ vars.PKP_FLYWAY_USER_DEV }} 
       FLYWAY_PASSWORD: ${{ secrets.PKP_ADMIN_PASSWORD_DEV }}
-      WALLET_DIR: C:\BAOK\python\stream_mpk\OCI\Wallet_PKPDEV
+      WALLET_DIR: ${{ vars.PKP_WALLET_DIR_LOCAL_DEV }} 
     steps:
       - uses: actions/checkout@v4
 
       - name: Flyway migrate (5 projektow) na PKPDEV
         shell: powershell
         run: |
-          $baseline = @{ admin=1; stg=12; maintenance=6; silver=16; gold=13 }
           foreach ($p in "admin","stg","maintenance","silver","gold") {
-            $bv = $baseline[$p]
-            Write-Host "=== migrate: $p (baseline $bv) ==="
+            Write-Host "=== migrate: $p ==="
             docker run --rm `
               -v "${{ github.workspace }}:/repo" `
               -v "${env:WALLET_DIR}:/wallet:ro" `
@@ -28,7 +34,6 @@ jobs:
               "-configFiles=/repo/migrations/$p/conf/flyway.conf" `
               "-locations=filesystem:/repo/migrations/$p/sql" `
               -url="$env:FLYWAY_URL" -user="$env:FLYWAY_USER" -password="$env:FLYWAY_PASSWORD" `
-              -baselineOnMigrate=true "-baselineVersion=$bv" `
               migrate
           }
 
@@ -38,10 +43,10 @@ jobs:
     runs-on: [self-hosted, optiplex]
     environment: prod          # Approve gate
     env:
-      FLYWAY_URL: "jdbc:oracle:thin:@pkpprod_high?TNS_ADMIN=/wallet"
-      FLYWAY_USER: ADMIN
+      FLYWAY_URL: "${{ vars.PKP_FLYWAY_URL_PROD }}"
+      FLYWAY_USER: ${{ vars.PKP_FLYWAY_USER_PROD }} 
       FLYWAY_PASSWORD: ${{ secrets.PKP_ADMIN_PASSWORD_PROD }}
-      WALLET_DIR: C:\BAOK\python\stream_mpk\OCI\Wallet_PKPPROD
+      WALLET_DIR: ${{ vars.PKP_WALLET_DIR_LOCAL_PROD }}
     steps:
       - uses: actions/checkout@v4
       - name: Flyway migrate (5 projektow) na PKPPROD
@@ -58,17 +63,3 @@ jobs:
               -url="$env:FLYWAY_URL" -user="$env:FLYWAY_USER" -password="$env:FLYWAY_PASSWORD" `
               migrate
           }
-
-# ── KOLEJNY KLOCEK: DEPLOY kontenerów na Optiplexie ───────────────────────
-#  deploy:
-#    needs: migrate-prod
-#    runs-on: [self-hosted, optiplex]
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Build + up (poller + airflow, ten sam obraz)
-#        shell: powershell
-#        working-directory: C:\BAOK\python\stream_mpk
-#        run: |
-#          docker build -t pkp-poller:latest ingestion
-#          docker compose --env-file ingestion\.env.docker.prod -p pkp-poller-prod-live up -d --force-recreate poller-prod
-#          docker compose --env-file orchestration\airflow_prod\.env.docker.prod -p pkp-airflow-daily-prod up -d --force-recreate

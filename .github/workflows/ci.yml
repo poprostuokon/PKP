@@ -31,8 +31,8 @@ jobs:
   flyway-validate:
     runs-on: ubuntu-latest
     env:
-      FLYWAY_URL: "jdbc:oracle:thin:@pkpdev_high?TNS_ADMIN=/repo/wallet"
-      FLYWAY_USER: DEV_APP
+      FLYWAY_URL: "${{ vars.PKP_FLYWAY_URL_DEV }}"
+      FLYWAY_USER: ${{ vars.PKP_FLYWAY_USER_DEVELOPER }}
       FLYWAY_PASSWORD: ${{ secrets.PKP_DB_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
