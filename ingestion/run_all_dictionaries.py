@@ -2,7 +2,7 @@
 run_all_dictionaries.py
 -----------------------
 Entrypoint: pobranie wszystkich slownikow DEF do TODO
-(5 z bezposrednim endpointem + 2 specjalne).
+(proste z DICTIONARY_ENDPOINTS + specjalne z SPECIAL_DICTIONARIES).
 Uruchamiaj z katalogu 'ingestion':  python run_all_dictionaries.py
 """
 

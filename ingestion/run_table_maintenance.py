@@ -1,12 +1,12 @@
 """
 run_table_maintenance.py
 ------------------------
-Reorganizacja (MOVE) zwyklych tabel, ktore sie rozlazly (niski % pelnych blokow).
-Odzyskuje miejsce jak reczne ALTER TABLE ... MOVE (np. stg_load_log 47MB -> 0.2MB).
+Reorganizacja (MOVE) zwyklych tabel, ktore sie "rozlazly" (niski % pelnych blokow).
+Odzyskuje miejsce jak reczne ALTER TABLE ... MOVE.
 
-Wola MAINTENANCE.PKG_MAINTENANCE. Polaczenie z ingestion/db.py.
+Woła MAINTENANCE.PKG_MAINTENANCE. Polaczenie z ingestion/db.py.
 
-    python run_table_maintenance.py                       # SILVER GOLD MAINTENANCE, progi 8/50
+    python run_table_maintenance.py                       
     python run_table_maintenance.py --schemas MAINTENANCE
     python run_table_maintenance.py --min-mb 4 --max-full 40
 """
@@ -44,6 +44,7 @@ def main(schemas: list[str], min_mb: int, max_full: int) -> None:
             )
 
         try:
+            # p_run_compress_queue = uniwersalny executor kolejki DDL (tu: MOVE, nie kompresja)
             cur.callproc("maintenance.pkg_maintenance.p_run_compress_queue")
         finally:
             _drain_dbms_output(cur)

@@ -22,7 +22,7 @@ services:
 
     # ── Healthcheck: żywy = świeży heartbeat_last.json ────────────
     healthcheck:
-      test: ["CMD-SHELL", "find /app/ingestion/Data/DEV/STATE/LIVE/heartbeat_last.json -mmin -10 | grep -q . || exit 1"]
+      test: ["CMD-SHELL", "find /app/ingestion/Data/$PKP_ENV/STATE/LIVE/heartbeat_last.json -mmin -10 | grep -q . || exit 1"]
       interval: 5m
       timeout: 10s
       retries: 3
@@ -54,7 +54,7 @@ services:
 
     # ── Healthcheck: żywy = świeży heartbeat_last.json ────────────
     healthcheck:
-      test: ["CMD-SHELL", "find /app/ingestion/Data/PROD/STATE/LIVE/heartbeat_last.json -mmin -10 | grep -q . || exit 1"]
+      test: ["CMD-SHELL", "find /app/ingestion/Data/$PKP_ENV/STATE/LIVE/heartbeat_last.json -mmin -10 | grep -q . || exit 1"]
       interval: 5m
       timeout: 10s
       retries: 3

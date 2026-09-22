@@ -2,14 +2,14 @@
 run_index_maintenance.py
 ------------------------
 Konserwacja indeksow: czysci kolejke, generuje ALTER INDEX ... REBUILD COMPRESS
-ADVANCED LOW dla indeksow SILVER i GOLD, ktore przekroczyly prog PCTSAVE lub
+ADVANCED LOW dla indeksow SILVER, GOLD i MAINTENANCE, ktore przekroczyly prog PCTSAVE lub
 del_pct, po czym wykonuje kolejke.
 
 Wola MAINTENANCE.PKG_MAINTENANCE (dostepny jako DEV_APP).
 Polaczenie reuzywane z ingestion/db.py (wspolna infra + jeden .env).
 
 Uruchamiaj z katalogu 'load':
-    python run_index_maintenance.py                      # silver + gold, progi domyslne (15/15)
+    python run_index_maintenance.py                      # SILVER GOLD MAINTENANCE, progi domyslne (15/15)
     python run_index_maintenance.py --schemas SILVER     # tylko silver
     python run_index_maintenance.py --min-pct 10 --min-del 25
 """
@@ -54,6 +54,7 @@ def main(schemas: list[str], min_pct: int, min_del: int) -> None:
         #    p_run_compress_queue rzuca blad gdy cokolwiek padlo -> drain w finally,
         #    zeby log DBMS_OUTPUT wypisal sie ZAWSZE, a wyjatek i tak wyleci po nim.
         try:
+            # p_run_compress_queue = uniwersalny executor kolejki DDL (tu: REBUILD indeksów)
             cur.callproc("maintenance.pkg_maintenance.p_run_compress_queue")
         finally:
             _drain_dbms_output(cur)
@@ -64,13 +65,13 @@ def main(schemas: list[str], min_pct: int, min_del: int) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Konserwacja indeksow SILVER/GOLD (rebuild + kompresja wg progow)."
+        description="Konserwacja indeksow SILVER/GOLD/MAINTENANCE (rebuild + kompresja wg progow)."
     )
     parser.add_argument(
         "--schemas",
         nargs="+",
         default=["SILVER", "GOLD", 'MAINTENANCE'],
-        help="Schematy do przeszukania. Domyslnie: SILVER GOLD.",
+        help="Schematy do przeszukania. Domyslnie: SILVER GOLD MAINTENANCE.",
     )
     parser.add_argument(
         "--min-pct",

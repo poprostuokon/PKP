@@ -1,7 +1,8 @@
 """
 run_prepare_stg.py
 ------------------
-Entrypoint: zapelnia tabele landing STG danymi z bucketu (truncate + load).
+Entrypoint: zapelnia landing STG danymi z bucketu - tylko NOWE pliki dnia
+(gate przez stg_load_log; feed z nowa delta: truncate + load, bez nowych: pominiety).
 Uruchamiaj z katalogu 'ingestion':  python run_prepare_stg.py
 (opcjonalnie prepare_stg(conn, "20260731") dla konkretnego dnia)
 """

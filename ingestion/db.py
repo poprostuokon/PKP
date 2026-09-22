@@ -20,11 +20,11 @@ app_env = os.getenv("APP_ENV", "prod")
 env_file = Path(__file__).resolve().parent / f".env.{app_env}"
 load_dotenv(env_file, override=False)
 
-WALLET_DIR = os.environ["PKP_WALLET_DIR"]   # folder z rozpakowanym walletem (tnsnames/sqlnet/cwallet.sso)
-WALLET_PASSWORD = os.environ["PKP_WALLET_PASSWORD"]  # haslo walletu (opcjonalne)
+WALLET_DIR = os.environ["PKP_WALLET_DIR"]               # folder z rozpakowanym walletem (tnsnames/sqlnet/cwallet.sso)
+WALLET_PASSWORD = os.environ["PKP_WALLET_PASSWORD"]     # None gdy SSO (cwallet.sso bez hasla)
 DB_USER = os.environ["PKP_DB_USER"]
 DB_PASSWORD = os.environ["PKP_DB_PASSWORD"]
-DB_DSN = os.environ["PKP_DB_DSN"]           # np. pkpdev_high (z tnsnames.ora)
+DB_DSN = os.environ["PKP_DB_DSN"]                       # np. pkpdev_high (z tnsnames.ora)
 
 
 
@@ -32,7 +32,7 @@ def get_connection() -> oracledb.Connection:
     """
     Polaczenie do bazy; wallet podany inline (thin mode).
     Jesli wallet ma tylko cwallet.sso (SSO) - haslo walletu nie jest potrzebne.
-    Gdyby uzywal ewallet.pem - dodaj wallet_password=... ponizej.
+    wallet_password przekazywany zawsze; dla SSO (cwallet.sso) jest None i ignorowany.
     """
     return oracledb.connect(
         user=DB_USER,
