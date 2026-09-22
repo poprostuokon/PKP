@@ -10,6 +10,10 @@ Wartosci sa atrapami (test/DEV) - testy nie lacza sie z API ani z baza.
 """
 
 import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # -> ingestion/
 
 for k, v in {
     "APP_ENV": "dev", "PKP_API_KEY": "test", "PKP_ENV": "DEV",
