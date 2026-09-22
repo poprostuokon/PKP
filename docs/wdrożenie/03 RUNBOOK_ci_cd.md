@@ -19,7 +19,7 @@ poprawność migracji bez modyfikacji środowisk. CD wykonuje wdrożenie schemat
 | Aspekt | CI (`ci.yml`) | CD (`cd.yml`) |
 |---|---|---|
 | Wyzwalacz | `push` / `pull_request` (automatyczny) | `workflow_dispatch` (ręczny) |
-| Środowisko wykonania | GitHub-hosted (`ubuntu-latest`) | self-hosted runner (Optiplex, label `optiplex`) |
+| Środowisko wykonania | GitHub-hosted (`ubuntu-latest`) | self-hosted runner (label `optiplex`) |
 | Zakres | testy jednostkowe, lint, `flyway validate` | `flyway migrate` na DEV, następnie PROD |
 | Baza danych | PKPDEV | PKPDEV → PKPPROD |
 | Dostęp do wallet | z sekretu (base64) | z lokalnego dysku runnera |
@@ -178,67 +178,11 @@ docker run --rm -e FLYWAY_PASSWORD ... redgate/flyway:11 -url=... -user=... migr
 
 Poniższe przypadki zostały zidentyfikowane i rozwiązane podczas wdrożenia.
 
-### Niekompatybilna składnia `CREATE TABLE IF NOT EXISTS`
-
-Oracle nie obsługuje konstrukcji `CREATE TABLE IF NOT EXISTS`. Parser Flyway zgłasza
-`Incomplete statement`, blokując cały projekt. Dodatkowe ryzyko: narzędzia klienckie
-mogą błędnie zinterpretować składnię i utworzyć tabelę o nazwie `IF`, pozostawiając
-właściwą tabelę nieutworzoną.
-
-Rozwiązanie: usunięcie `IF NOT EXISTS` ze wszystkich plików `V`. Idempotentność w
-Flyway zapewnia historia migracji, a nie składnia SQL — zastosowany plik `V` nie jest
-uruchamiany ponownie. Weryfikacja:
-
-```powershell
-Select-String -Path .\migrations\*\sql\*.sql -Pattern "IF NOT EXISTS"
-```
-
-### Niepusty schemat bez historii migracji
-
-Objaw: `Found non-empty schema(s) but no schema history table`. Komunikat dotyczy braku
-tabeli historii Flyway (metadanych), a nie tabel aplikacyjnych. Rozwiązaniem jest
-inicjalizacja punktu bazowego przez `-baselineOnMigrate=true`, przy czym parametr
-`-baselineVersion` określa wersję, do której migracje są uznawane za już zastosowane.
-
-Środowisko DEV zawierało tabele utworzone bez rejestracji w historii Flyway. Ustawienie
-`baselineVersion=0` na niepustej bazie prowadzi do próby ponownego utworzenia
-istniejących tabel (`ORA-00955: name already used`). Rozwiązaniem jest baseline
-ustawiony indywidualnie dla każdego projektu na wartość równą najwyższej istniejącej
-wersji migracji:
-
-```powershell
-$baseline = @{ admin=1; stg=12; maintenance=6; silver=16; gold=13 }
-# -baselineOnMigrate=true "-baselineVersion=$($baseline[$p])"
-```
-
-Odczyt najwyższej wersji migracji dla każdego projektu:
-
-```powershell
-foreach ($p in "admin","stg","maintenance","silver","gold") {
-  $m = Get-ChildItem ".\migrations\$p\sql\V*.sql" |
-    ForEach-Object { [int]($_.Name -replace '^V(\d+)__.*','$1') } | Measure-Object -Maximum
-  Write-Host "$p = $($m.Maximum)"
-}
-```
-
-Baseline inicjalizowany jest wyłącznie przy braku tabeli historii. Jeżeli w wyniku
-wcześniejszych nieudanych prób powstały tabele historii z błędną wersją bazową, należy
-je uprzednio usunąć (jako `ADMIN`):
-
-```sql
-BEGIN
-  FOR t IN (SELECT owner, table_name FROM dba_tables
-            WHERE lower(table_name) LIKE 'flyway_schema_history%') LOOP
-    EXECUTE IMMEDIATE 'DROP TABLE '||t.owner||'."'||t.table_name||'" PURGE';
-  END LOOP;
-END;
-/
-```
 
 ### Niezgodność sum kontrolnych
 
 Objaw: `Migration checksum mismatch for migration version N`. Przyczyną była modyfikacja
-treści plików `V` (usunięcie `IF NOT EXISTS`) już po ich zastosowaniu na produkcji.
+treści plików `V` już po ich zastosowaniu na produkcji.
 Polecenie `repair` synchronizuje sumy kontrolne w historii z aktualną treścią plików;
 nie wykonuje kodu SQL ani nie modyfikuje danych i struktury:
 
@@ -255,18 +199,10 @@ foreach ($p in "admin","stg","maintenance","silver","gold") {
 }
 ```
 
-Alternatywnie pętlę `repair` można umieścić w `cd.yml` przed `migrate` — operacja jest
-idempotentna.
-
-### Rozróżnienie DEV / PROD
-
-- **DEV** — tabele istniejące bez historii; wymaga baseline indywidualnego dla projektu.
-- **PROD** — posiada kompletną historię migracji od pierwszego wdrożenia; stosuje
-  standardowe `migrate` bez inicjalizacji baseline.
 
 ---
 
-## 7. Wdrożenie kontenerów — zakres przeładowania
+## 7. Wdrożenie kontenerów — zakres przeładowania (Opcjonalne)
 
 Migracja schematu nie wymaga restartu kontenerów. Ponowne uruchomienie jest konieczne
 wyłącznie przy zmianie kodu aplikacji:
