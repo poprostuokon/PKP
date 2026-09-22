@@ -49,7 +49,7 @@ x-airflow-common: &airflow-common
     - ./logs:/opt/airflow/logs
     - ${PKP_WALLET_HOST_DIR}:/wallet:ro
     - ${PKP_WALLET_DEV_HOST_DIR}:/wallet_dev:ro
-    - ${OCI_CONFIG_HOST_DIR}:/oci:ro
+    - ${PKP_OCI_CONFIG_HOST_DIR}:/oci:ro
   logging: &default-logging
     driver: "json-file"
     options: { max-size: "20m", max-file: "3" }

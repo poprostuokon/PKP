@@ -1,4 +1,18 @@
+# =============================================================================
+# pkp_daily.py — dzienny DAG Airflow dla pipeline'u PKP
+# -----------------------------------------------------------------------------
+# Orkiestracja pełnego przebiegu dobowego (cron 04:00):
+#   ingest (słowniki, rozkłady, operacje, utrudnienia) -> upload do OCI ->
+#   staging -> SILVER -> GOLD (wymiary + fakty dzienne) -> maintenance
+#   (reorg tabel i indeksów) -> raport (Excel/PDF na maila).
+#
+# Każdy krok jest audytowany w maintenance.pipeline_run(_step) przez callbacki
+# (start/success/failure/skipped); finalize_success / finalize_error domykają
+# run. keepalive_dev na końcu podtrzymuje instancję DEV (zapytanie SELECT 1),
+# by Always Free ADB nie usnęła z braku aktywności.
 # pkp_daily.py — dzienny pipeline PKP: ingest -> upload -> stg -> silver -> gold -> maintenance -> raport
+# =============================================================================
+
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -151,7 +165,7 @@ with DAG(
     dag_id="pkp_daily",
     description="PKP dzienny: ingest -> upload -> stg -> silver -> gold -> maintenance -> raport",
     start_date=datetime(2026, 9, 1),
-    schedule="0 4 * * *",
+    schedule="0 8 * * *",
     catchup=False,
     max_active_runs=1,
     default_args=default_args,

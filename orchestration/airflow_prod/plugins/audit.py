@@ -16,10 +16,13 @@
 #   }
 # oraz pierwszy task:
 #   PythonOperator(task_id=SET_RUN_DATE_TASK, python_callable=create_pipeline_run)
-# a domkniecie runu:
-#   PythonOperator(task_id="finalize_pipeline",
-#                  python_callable=finalize_pipeline_success,   # lub _error
-#                  trigger_rule="all_done")
+# a domkniecie runu — dwa osobne taski (jak w pkp_daily.py):
+#   PythonOperator(task_id="finalize_success",
+#                  python_callable=finalize_pipeline_success,
+#                  trigger_rule="all_success")
+#   PythonOperator(task_id="finalize_error",
+#                  python_callable=finalize_pipeline_error,
+#                  trigger_rule="one_failed")
 # -----------------------------------------------------------------------------
 
 import sys

@@ -31,7 +31,7 @@ services:
     volumes:
       - ${PKP_DATA_HOST_DIR}:/app/ingestion/Data
       - ${PKP_WALLET_HOST_DIR}:/wallet:ro
-      - ${OCI_CONFIG_HOST_DIR}:/oci:ro
+      - ${PKP_OCI_CONFIG_HOST_DIR}:/oci:ro
 
   poller-prod:
     image: pkp-poller:latest
@@ -63,4 +63,4 @@ services:
     volumes:
       - ${PKP_DATA_HOST_DIR}:/app/ingestion/Data
       - ${PKP_WALLET_HOST_DIR}:/wallet:ro
-      - ${OCI_CONFIG_HOST_DIR}:/oci:ro
+      - ${PKP_OCI_CONFIG_HOST_DIR}:/oci:ro

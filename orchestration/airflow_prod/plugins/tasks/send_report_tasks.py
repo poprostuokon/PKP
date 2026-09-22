@@ -25,6 +25,11 @@ try:
 except ImportError:
     from tasks.report_excel import ENV, REPORTS_DIR
 
+try:
+    from audit import SET_RUN_DATE_TASK
+except ImportError:
+    SET_RUN_DATE_TASK = "set_run_date"   # fallback, gdy audit niedostępny standalone
+
 
 ATTACHMENT_PATTERNS = [
     "summary_*.pdf",
@@ -43,7 +48,7 @@ def _collect_attachments() -> list[str]:
 def _resolve_run_date(context) -> str:
     ti = context.get("ti")
     if ti is not None:
-        val = ti.xcom_pull(task_ids="set_run_date", key="run_date")
+        val = ti.xcom_pull(task_ids=SET_RUN_DATE_TASK, key="run_date")
         if val:
             return val
     return date.today().isoformat()

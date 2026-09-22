@@ -6,7 +6,7 @@
 #                                        najwieksze obiekty wg MB
 #
 # Pliki sa TYMCZASOWE: katalog jest czyszczony przed kazdym generowaniem.
-# Lokalizacja: <root stream_mpk>/data/<ENV>/RAPORT, gdzie <ENV> = DEV/PROD
+# Lokalizacja: <root repo>/data/<ENV>/RAPORT, gdzie <ENV> = DEV/PROD
 # wyprowadzone z PKP_ENV (nazwa instancji). Root i db.py znajdowane dynamicznie.
 #
 # Test reczny (venv + env-y PKP):  python report_excel.py <pipeline_run_id>
@@ -22,7 +22,7 @@ from openpyxl.styles import Font, PatternFill, Alignment
 from openpyxl.utils import get_column_letter
 
 
-# -- Odnalezienie root repo (stream_mpk) + import ingestion/db.py --------------
+# -- Odnalezienie root repo + import ingestion/db.py --------------
 def _find_repo_root() -> Path:
     """Idzie w gore od tego pliku, zwraca katalog zawierajacy 'ingestion'."""
     here = Path(__file__).resolve()
@@ -41,7 +41,7 @@ import db as _db   # ingestion/db.py -> _db.get_connection()
 # -- Srodowisko (DEV/PROD) i katalog wyjsciowy --------------------------------
 def _resolve_env(raw: str) -> str:
     """PKP_ENV to nazwa instancji -> wyprowadzamy segment DEV/PROD dla sciezki."""
-    u = (raw or "DEV").strip().upper()
+    u = (raw or "PROD").strip().upper()
     if "PROD" in u:
         return "PROD"
     if "DEV" in u:
@@ -49,12 +49,12 @@ def _resolve_env(raw: str) -> str:
     return u   # gdy PKP_ENV jest juz czystym DEV/PROD lub czyms wlasnym
 
 
-ENV = _resolve_env(os.environ.get("PKP_ENV", "DEV"))
-REPORTS_DIR = str(_REPO_ROOT / "data" / ENV / "RAPORT")
+ENV = _resolve_env(os.environ.get("PKP_ENV", "PROD"))
+REPORTS_DIR = str(Path(os.environ["PKP_DATA_ROOT"]) / ENV / "RAPORT")
 
 
 # -- Konfiguracja raportu -----------------------------------------------------
-# Schematy uwzgledniane w raporcie zajetosci. UZUPELNIJ/POPRAW pod swoja baze.
+# Schematy uwzgledniane w raporcie zajetosci.
 REPORT_SCHEMAS = ["SILVER", "GOLD", "MAINTENANCE", "STG"]
 
 # Ile najwiekszych obiektow pokazac per schemat (None = wszystkie).
