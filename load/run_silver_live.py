@@ -29,8 +29,10 @@ def run_silver_live() -> None:
     with db.get_connection() as conn:
         with conn.cursor() as cur:
             cur.callproc("dbms_output.enable", (None,))
-            cur.callproc("silver.pkg_silver_load_live.p_load_all_live")  # master: COMMIT po swojej stronie
-            _drain_dbms_output(cur)
+            try:
+                cur.callproc("silver.pkg_silver_load_live.p_load_all_live")
+            finally:
+                _drain_dbms_output(cur)
     print("Silver LIVE load: zakonczono.")
 
 

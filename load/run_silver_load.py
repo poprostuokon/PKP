@@ -2,7 +2,7 @@
 run_silver_load.py
 ------------------
 Ladowanie warstwy SILVER przez pakiet PL/SQL (odpowiednik dbt run dla silver).
-Wola SILVER.PKG_SILVER_LOAD.LOAD_ALL (dostepny jako DEV_APP) i wypisuje log DBMS_OUTPUT.
+Wola SILVER.PKG_SILVER_LOAD.P_LOAD_ALL (dostepny jako DEV_APP) i wypisuje log DBMS_OUTPUT.
 
 Polaczenie reuzywane z ingestion/db.py (wspolna infra + jeden .env).
 Uruchamiaj z katalogu 'load':  python run_silver_load.py
@@ -34,8 +34,10 @@ def main() -> None:
         with conn.cursor() as cur:
             cur.callproc("dbms_output.enable", (None,))   # None = bufor bez limitu
             # load_all robi COMMIT / ROLLBACK po swojej stronie
-            cur.callproc("silver.pkg_silver_load.p_load_all")
-            _drain_dbms_output(cur)
+            try:
+                cur.callproc("silver.pkg_silver_load.p_load_all")
+            finally:
+                _drain_dbms_output(cur)
     print("Silver load: zakonczono.")
 
 

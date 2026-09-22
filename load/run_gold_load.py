@@ -6,7 +6,8 @@ Ladowanie warstwy GOLD przez pakiet PL/SQL GOLD.PKG_GOLD_LOAD.
 Jeden runner na caly gold - etapami sterowanymi flaga --what:
   * dims   -> p_LOAD_DIMENSIONS  (wszystkie wymiary; --route-full = pelny d_route)
   * facts  -> p_LOAD_FACTS_DAILY (recompute okna --days ostatnich dni)
-  * all    -> dims, potem facts (fakty zaleza od wymiarow)
+  * all    -> dims, facts (daily) i facts_monthly (fakty zaleza od wymiarow)
+  * facts_monthly -> p_LOAD_FACTS_MONTHLY (recompute miesiecznego okna --days)
 
 Kazdy master PL/SQL robi COMMIT / ROLLBACK po swojej stronie.
 Polaczenie reuzywane z ingestion/db.py (wspolna infra + jeden .env).
@@ -59,15 +60,15 @@ def main(what: str, route_full: bool, days: int) -> None:
     with db.get_connection() as conn:
         with conn.cursor() as cur:
             cur.callproc("dbms_output.enable", (None,))   # None = bufor bez limitu
-
-            if what in ("all", "dims"):
-                _load_dims(cur, route_full)
-            if what in ("all", "facts"):
-                _load_facts(cur, days)
-            if what in ("all", "facts_monthly"):
-                _load_facts_monthly(cur, days)
-
-            _drain_dbms_output(cur)
+            try:
+                if what in ("all", "dims"):
+                    _load_dims(cur, route_full)
+                if what in ("all", "facts"):
+                    _load_facts(cur, days)
+                if what in ("all", "facts_monthly"):
+                    _load_facts_monthly(cur, days)
+            finally:
+                _drain_dbms_output(cur)
 
     print(f"Gold load: zakonczono (what={what}, route_full={route_full}, days={days}).")
 
