@@ -10,7 +10,8 @@ Runtime rozwija to na konkretne dateFrom/dateTo.
 
 from datetime import date, timedelta
 
-from .client.config import DATA_ENDPOINTS, DATE_TOKEN
+from .client.config import DATA_ENDPOINTS, DATE_TOKEN, STATION_TOKEN
+from .settings import STATION_ID
 
 
 def resolve_day(default_day: str | None, override: str | None) -> str | None:
@@ -82,11 +83,12 @@ def build_params(name: str,
             elif key == "dateTo":
                 target = r_to
             else:
-                # token daty pod niestandardowym kluczem -> uzyj konca zakresu (dateTo)
                 target = r_to
             if target is None:
                 raise ValueError(f"Endpoint '{name}' ma token daty, ale brak default_day/day/zakresu.")
             params[key] = target
+        elif value == STATION_TOKEN:
+            params[key] = STATION_ID
         else:
             params[key] = value
     return params

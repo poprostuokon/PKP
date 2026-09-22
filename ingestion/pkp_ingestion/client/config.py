@@ -56,19 +56,20 @@ SPECIAL_DICTIONARIES = {
 }
 
 # --- Dane dzienne (DAILY DATA) ---
-# Stacja bazowa projektu (Wroclaw Glowny). Docelowo mozna rozszerzyc o sasiednie ID.
-BASE_STATIONS = "60103"
 
 # "default_day": kotwica zakresu = dateTo:  "D" -> dzis, "D-1" -> wczoraj, None -> brak daty
 # "range_days":  dlugosc okna wstecz od kotwicy (dni). Brak => 1 (pojedynczy dzien).
 #                dateTo = kotwica, dateFrom = kotwica - (range_days - 1).
 DATE_TOKEN = "{day}"
 
+# Stacja bazowa projektu (Wroclaw Glowny). Docelowo mozna rozszerzyc o sasiednie ID.
+STATION_TOKEN = "{station}"
+
 DATA_ENDPOINTS = {
     "schedules": {
         "endpoint":  "/api/v1/schedules",
         "params": {
-            "stations":     BASE_STATIONS,
+            "stations":     STATION_TOKEN,
             "fullRoute":    "true",
             "dictionaries": "false",
             "dateFrom":     DATE_TOKEN,
@@ -81,7 +82,7 @@ DATA_ENDPOINTS = {
     "operations": {
         "endpoint":  "/api/v1/operations",
         "params": {
-            "stations":    BASE_STATIONS,
+            "stations":    STATION_TOKEN,
             "fullRoutes":  "true",     # pelne trasy pociagow przez stacje
             "withPlanned": "true",     # planowe czasy + policzone opoznienia
             "pageSize":    5000,       # max -> mniej stron/calli
@@ -114,7 +115,7 @@ DATA_ENDPOINTS_LIVE = {
     "operations": {
         "endpoint":  "/api/v1/operations",
         "params": {
-            "stations":    BASE_STATIONS,
+            "stations":    STATION_TOKEN,
             "fullRoutes":  "false",    # OFF -> stations[] tylko wlasna stacja (60103)
             "withPlanned": "true",     # planowe czasy -> opoznienia liczone z live
             "pageSize":    5000,
@@ -125,7 +126,7 @@ DATA_ENDPOINTS_LIVE = {
     "disruptions": {
         "endpoint":  "/api/v1/disruptions",
         "params": {
-            "stations":     BASE_STATIONS,   # filtr po stacji (API to przyjmuje)
+            "stations":     STATION_TOKEN,   # filtr po stacji (API to przyjmuje)
             "dictionaries": "false",
             "dateFrom":     DATE_TOKEN,
             "dateTo":       DATE_TOKEN,

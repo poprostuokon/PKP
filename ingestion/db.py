@@ -14,12 +14,11 @@ from pathlib import Path
 import oracledb
 from dotenv import load_dotenv
 
-#load_dotenv(find_dotenv())
+# APP_ENV = KTÓRY plik .env załadować (.env.dev / .env.prod). Tylko wybór pliku.
+# PKP_ENV = nazwa instancji / gałąź w strukturze Data (DEV/PROD). Ustawiana W tym pliku .env.
 app_env = os.getenv("APP_ENV", "prod")
 env_file = Path(__file__).resolve().parent / f".env.{app_env}"
 load_dotenv(env_file, override=False)
-
-#load_dotenv(Path(__file__).with_name(".env"))  
 
 WALLET_DIR = os.environ["PKP_WALLET_DIR"]   # folder z rozpakowanym walletem (tnsnames/sqlnet/cwallet.sso)
 WALLET_PASSWORD = os.environ["PKP_WALLET_PASSWORD"]  # haslo walletu (opcjonalne)

@@ -31,9 +31,8 @@ from .stg_load import prepare_stg_live
 from .storage.local_writer import write_raw
 from .upload_live import run_upload_live
 from .validation import validate_or_quarantine
+from .settings import STATION_ID, TICK_SECONDS
 
-STATION_ID   = 60103
-TICK_SECONDS = 180
 FEEDS        = ("operations", "disruptions")
 _MAX_PAGES = 50
 
