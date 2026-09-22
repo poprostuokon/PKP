@@ -36,6 +36,7 @@ def fetch_operations(client: PkpApiClient, run_ts: str, ingest_date: str) -> lis
     base_params = build_params("operations")   # komplet parametrow z configu
     saved: list[Path] = []
     page = 1
+    had_error = False
 
     while True:
         params = {**base_params, "page": page}  # page = mechanika paginacji
@@ -44,8 +45,12 @@ def fetch_operations(client: PkpApiClient, run_ts: str, ingest_date: str) -> lis
         filename = data_filename("operations", ingest_date, run_ts, page=page)
         raw = client.get(cfg["endpoint"], params=params)
         if not validate_or_quarantine("operations", raw, f"operations_{ingest_date}_p{page:03d}", run_ts):
-            # zla strona -> pomijamy ja, ale petla leci dalej po nastepne strony
-            pagination = json.loads(raw).get("pagination", {}) if raw else {}
+            had_error = True
+            # zla strona -> pomijamy ją, ale petla leci dalej po nastepne strony
+            try:
+                pagination = json.loads(raw).get("pagination", {})
+            except (json.JSONDecodeError, TypeError):
+                pagination = {}
             if not pagination.get("hasNextPage"): 
                 break
             page += 1 
@@ -63,7 +68,8 @@ def fetch_operations(client: PkpApiClient, run_ts: str, ingest_date: str) -> lis
         page += 1
 
 
-    keep_latest_todo(todo_data_dir(), "operations")
+    if not had_error:
+        keep_latest_todo(todo_data_dir(), "operations")
 
     return saved
 

@@ -3,7 +3,7 @@ oci_uploader.py
 ---------------
 Upload plikow do OCI Object Storage (bucket bronze) z weryfikacja MD5.
 
-Auth: profil z ~/.oci/config (klucz API uzytkownika) - NIE wallet DB.
+Auth: profil z OCI_CONFIG_FILE (fallback ~/.oci/config), klucz API - NIE wallet DB.
 Timeout: (connect, read/write) z settings - read/write chroni przed urwaniem body.
 Retry: strojona strategia (ponawia timeouty, zerwane polaczenia, 429, 5xx) -
        plik trafia do ERR dopiero po wyczerpaniu prob.

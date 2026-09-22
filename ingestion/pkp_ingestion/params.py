@@ -3,7 +3,7 @@ params.py
 ---------
 Resolver parametrow endpointow dziennych.
 Config deklaruje date jako token DATE_TOKEN ("{day}") + pola:
-  - default_day: kotwica zakresu (= dateTo):  "D" | "D-1" | None
+  - default_day: kotwica zakresu (= dateTo):  "D+1" | "D" | "D-1..D-3" | None
   - range_days:  dlugosc okna wstecz od kotwicy (brak => 1 = pojedynczy dzien)
 Runtime rozwija to na konkretne dateFrom/dateTo.
 """

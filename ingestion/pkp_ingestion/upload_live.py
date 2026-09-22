@@ -1,7 +1,7 @@
 """
 upload_live.py
 --------------
-Upload delt LIVE z TODO/LIVE/DATA do osobnego bucketu (bronze-pkp-live).
+Upload delt LIVE z TODO/LIVE/DATA do osobnego bucketu live (z OCI_BUCKET_LIVE).
 Model jak daily: KAZDY plik niezaleznie (izolacja bledu).
   - upload + MD5 OK  -> ARCHIVE/LIVE/<date>  (delta zostaje na zawsze = zrodlo do replay)
   - blad             -> ERR/LIVE/<date> + slad w err_<run_ts>.txt

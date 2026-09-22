@@ -20,17 +20,16 @@ load_dotenv(env_file, override=False)
 API_KEY                 = os.environ["PKP_API_KEY"]          # wymagany; brak -> KeyError na starcie
 
 # Srodowisko (DEV/PROD) - decyduje o galezi w strukturze Data.
-
 def _req(name: str) -> str:
     v = os.getenv(name)
     if not v:
         raise RuntimeError(f"Brak wymaganej zmiennej środowiskowej: {name}")
     return v
 
-# Katalog bazowy struktury Data (domyslnie 'Data' w biezacym katalogu).
+# Katalog bazowy struktury Data (wymagany: PKP_DATA_ROOT).
 DATA_ROOT               = Path(_req("PKP_DATA_ROOT"))
 
-# Docelowo podstawiane przez Airflow; domyslnie DEV.
+# Nazwa instancji / galaz w Data (wymagany: PKP_ENV). Podstawiane przez Airflow/.env.
 ENV                     = _req("PKP_ENV")
 
 # --- OCI Object Storage (upload bronze) ---

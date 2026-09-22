@@ -2,7 +2,7 @@
 oci_reader.py
 -------------
 Odczyt obiektow z OCI Object Storage (bucket bronze) - pobieranie do prepare_stg.
-Ten sam profil ~/.oci/config co uploader; namespace pobierany automatycznie.
+Profil z OCI_CONFIG_FILE (fallback ~/.oci/config); namespace pobierany automatycznie.
 Timeout (connect, read/write) + strojony retry - spojne z OciUploader.
 """
 

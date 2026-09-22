@@ -146,7 +146,7 @@ def raw_filename(feed: str) -> str:
 def bucket_object_name_live(filename: str) -> str:
     """
     Sciezka obiektu live w buckecie:
-      live/data/<type>/date=YYYYMMDD/<plik>
+      live/<category>/<subtype>/date=YYYYMMDD/<plik>   (category: data/dict)
     Partycja = data ingestii (run_ts[:8]) jak w daily; delta moze miec
     kilka operatingDate, wlasciwa partycja per rekord jest w DB.
     """

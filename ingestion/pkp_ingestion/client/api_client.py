@@ -68,7 +68,6 @@ class PkpApiClient:
                     continue
                 raise
 
-        # Nie powinno tu dojsc, ale dla pewnosci:
         if last_exc:
             raise last_exc
         raise RuntimeError(f"GET {endpoint} nieudany po {RETRY_MAX_ATTEMPTS} probach")

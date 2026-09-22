@@ -65,7 +65,7 @@ def validate_or_quarantine(feed: str, raw_text: str, name_base: str, run_ts: str
     """
     Waliduje payload. Zwraca:
       True  -> OK, mozna zapisywac do TODO.
-      False -> zly payload; surowy JSON + powod zapisane do ERR/INGEST/<data>,
+      False -> zly payload; surowy JSON + powod zapisane do ERR/<DAILY|LIVE>/<data>,
                feed nalezy pominac (return None u wolajacego).
 
     name_base - baza nazwy pliku bez rozszerzenia, np. 'schedules_2026-08-20'

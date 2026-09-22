@@ -5,8 +5,6 @@ Statyczna konfiguracja polaczenia z PKP PLK API:
 - base_url,
 - mapa endpointow slownikow (DICT),
 - domyslny timeout.
-
-Docelowo dojda tu endpointy schedules/operations/disruptions.
 """
 
 BASE_URL = "https://pdp-api.plk-sa.pl"
@@ -62,7 +60,6 @@ SPECIAL_DICTIONARIES = {
 #                dateTo = kotwica, dateFrom = kotwica - (range_days - 1).
 DATE_TOKEN = "{day}"
 
-# Stacja bazowa projektu (Wroclaw Glowny). Docelowo mozna rozszerzyc o sasiednie ID.
 STATION_TOKEN = "{station}"
 
 DATA_ENDPOINTS = {
@@ -75,8 +72,8 @@ DATA_ENDPOINTS = {
             "dateFrom":     DATE_TOKEN,
             "dateTo":       DATE_TOKEN,
         },
-        "default_day": "D+1",     # kotwica = dateTo
-        "range_days":  4,       # 1 = pojedynczy dzien (jak dotad); 7 = ostatni tydzien
+        "default_day": "D+1",       # kotwica = dateTo
+        "range_days":  4,           # 1 = pojedynczy dzien (jak dotad); 4 = ostatni tydzien
         "paginated":   False,
     },
     "operations": {
@@ -88,7 +85,7 @@ DATA_ENDPOINTS = {
             "pageSize":    5000,       # max -> mniej stron/calli
             # page wstrzykiwany w petli (runtime) - to mechanika paginacji, nie parametr uzytkownika
         },
-        "default_day": "None",          # Dane z wczoraj (D-1) - snapshot "na teraz" w nocy po.
+        "default_day": None,         # bez daty - operations to snapshot "na teraz", nie zakres dobowy
         "paginated": True,             # operations paginowany: petla po stronach
     },
     "disruptions": {
@@ -116,11 +113,11 @@ DATA_ENDPOINTS_LIVE = {
         "endpoint":  "/api/v1/operations",
         "params": {
             "stations":    STATION_TOKEN,
-            "fullRoutes":  "false",    # OFF -> stations[] tylko wlasna stacja (60103)
+            "fullRoutes":  "false",    # OFF -> stations[] tylko wlasna stacja
             "withPlanned": "true",     # planowe czasy -> opoznienia liczone z live
             "pageSize":    5000,
         },
-        "default_day": "None",         # operations bez dat (snapshot ostatnich ~5 dni)
+        "default_day": None,         # operations bez dat (snapshot ostatnich ~5 dni)
         "paginated":   True,
     },
     "disruptions": {

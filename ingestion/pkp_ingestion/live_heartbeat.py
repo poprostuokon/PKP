@@ -3,7 +3,7 @@ live_heartbeat.py
 -----------------
 Heartbeat co tick: dopisz do lokalnego spoola (.jsonl), potem best-effort
 wgraj caly spool do maintenance.poller_heartbeat w JEDNEJ transakcji,
-po COMMIT wyczysc spool. Idempotencja: PK (run_ts, feed).
+po COMMIT wyczysc spool. Idempotencja: PK (run_ts, feed) - duplikaty (ORA-00001) pomijane per wiersz.
 """
 
 import json
@@ -52,7 +52,7 @@ def _read_spool() -> list[dict]:
     if not p.exists():
         return []
     lines = [ln for ln in p.read_text(encoding="utf-8").splitlines() if ln.strip()]
-    if len(lines) > SPOOL_MAX_LINES:          # bezpiecznik: obetnij najstarsze
+    if len(lines) > SPOOL_MAX_LINES:          # bezpiecznik: GUBI najstarsze heartbeaty (DB dlugo padnieta)
         lines = lines[-SPOOL_MAX_LINES:]
     return [json.loads(ln) for ln in lines]
 

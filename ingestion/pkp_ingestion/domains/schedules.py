@@ -8,7 +8,7 @@ params.build_params() podstawia realna date za token {day}. Schedules nie jest
 paginowany - jedna odpowiedz = jeden plik.
 """
 
-from datetime import datetime
+from datetime import datetime, date
 
 from ..client.api_client import PkpApiClient
 from ..client.config import DATA_ENDPOINTS
@@ -22,7 +22,7 @@ from ..validation import validate_or_quarantine
 def fetch_schedules(client, run_ts, day=None, date_from=None, date_to=None):
     cfg = DATA_ENDPOINTS["schedules"]
     params  = build_params("schedules", day, date_from, date_to)
-    biz_day = business_date("schedules", day, date_from)   # poczatek okna
+    biz_day = business_date("schedules", day, date_from) or date.today().isoformat()
 
     filename = data_filename("schedules", biz_day.replace("-", ""), run_ts)
     raw = client.get(cfg["endpoint"], params=params)

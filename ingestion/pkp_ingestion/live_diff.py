@@ -13,7 +13,7 @@ from pathlib import Path
 
 # --- kanonikalizacja + hash ---
 def _canon(obj: dict) -> str:
-    # truthy-only -> jedna postac: usuwamy TYLKO None/False (nie 0!)
+    # kanonikalizacja: usuwamy TYLKO None/False (0, "" i [] ZOSTAJA)
     clean = {k: v for k, v in obj.items() if v is not None and v is not False}
     return json.dumps(clean, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
 

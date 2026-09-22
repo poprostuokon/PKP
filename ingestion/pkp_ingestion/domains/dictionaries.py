@@ -10,8 +10,6 @@ Dwa rodzaje slownikow:
 
 Wzorzec jest generyczny: _fetch_and_save() robi GET + zapis surowego JSON do TODO.
 Dodanie kolejnego prostego slownika = jedna pozycja w mapie endpointow.
-
-Na start: run_carriers (tylko carriers). run_all_dictionaries obejmuje wszystkie.
 """
 
 from datetime import datetime

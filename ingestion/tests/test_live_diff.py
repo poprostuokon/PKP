@@ -1,3 +1,20 @@
+"""
+test_live.py
+------------
+Testy jednostkowe warstwy LIVE (pseudo-streaming), bez sieci i bez bazy:
+
+  * live_diff  - kanonikalizacja (_canon), diff operations (nowy/zmiana/finalny
+                 zamrozony) i disruptions (changed + tombstony fresh/aged).
+  * live_poller - _lag, bramkowanie STATE po uploadzie (_finalize), sklejanie
+                 stron i STALE po generatedAt (_fetch_operations_all/_prep_operations).
+
+Zaleznosci zewnetrzne (API, walidacja) sa monkeypatchowane; env DB stubowany w conftest.py.
+Uruchomienie z katalogu 'ingestion':  python -m pytest tests/ -v
+"""
+
+import json
+import pkp_ingestion.live_poller as lp
+from pkp_ingestion.live_poller import _finalize, _lag
 from pkp_ingestion.live_diff import _canon, diff_operations
 from pkp_ingestion.live_diff import diff_disruptions
 from pkp_ingestion.live_diff import _op_tracked
@@ -35,7 +52,7 @@ def test_finalny_zamrozony_mimo_zmiany():
 def _disr(msg="awaria", route_date="2026-09-17"):
     return {"disruptionTypeCode": "TECH", "message": msg,
             "affectedRoutes": [{"scheduleId": 1, "orderId": 10, "trainOrderId": 5,
-                                "operatingDate": route_date, "stationId": 60103,
+                                "operatingDate": route_date, "stationId": SID,
                                 "sequenceNumber": 1}]}
 
 def test_disr_nowy_leci_jako_changed():
@@ -80,8 +97,76 @@ def test_absent_false_ten_sam_hash():
 def test_disr_zmiana_typu_leci():
     d1 = {"disruptionTypeCode": "TECH", "message": "x",
           "affectedRoutes": [{"scheduleId": 1, "orderId": 10, "trainOrderId": 5,
-                              "operatingDate": "2026-09-17", "stationId": 60103,
+                              "operatingDate": "2026-09-17", "stationId": SID,
                               "sequenceNumber": 1}]}
     d2 = {**d1, "disruptionTypeCode": "STRAJK"}
     changed, _ = diff_disruptions([d1], [d2])
     assert len(changed) == 1
+
+# --- _lag ---
+def test_lag_none_gdy_brak():
+    assert _lag(None) is None
+
+def test_lag_none_gdy_zly_format():
+    assert _lag("nie-data") is None
+
+def test_lag_dodatni_dla_przeszlosci():
+    assert _lag("2000-01-01T00:00:00Z") > 0
+
+
+# --- _finalize: bramkowanie STATE po uploadzie (pkt 3) ---
+def test_finalize_ok_upload_ok_zapisuje_state(tmp_path):
+    sp = tmp_path / "state_operations.json"
+    prep = {"outcome": "OK", "delta_file": "f.json",
+            "curr": {"generatedAt": "x", "trains": []}, "state_path": sp}
+    assert _finalize(prep, {"f.json"}) == "OK"
+    assert sp.exists()                       # delta poszła -> STATE zapisany
+
+def test_finalize_ok_upload_padl_nie_zapisuje_state(tmp_path):
+    sp = tmp_path / "state_operations.json"
+    prep = {"outcome": "OK", "delta_file": "f.json",
+            "curr": {"generatedAt": "x"}, "state_path": sp}
+    assert _finalize(prep, set()) == "ERR"   # delta NIE poszła -> ERR
+    assert not sp.exists()                   # STATE nietknięty -> retry next tick
+
+def test_finalize_empty_zawsze_zapisuje(tmp_path):
+    sp = tmp_path / "state_operations.json"
+    prep = {"outcome": "EMPTY", "curr": {"generatedAt": "x"}, "state_path": sp}
+    assert _finalize(prep, set()) == "EMPTY"
+    assert sp.exists()
+
+def test_finalize_stale_nie_zapisuje():
+    assert _finalize({"outcome": "STALE"}, set()) == "STALE"
+
+
+# --- _fetch_operations_all: sklejanie stron + zła strona = None (pkt 2) ---
+class _FakeClient:
+    def __init__(self, pages):
+        self.pages = pages
+    def get(self, endpoint, params=None):
+        return self.pages[params["page"] - 1]
+
+def test_fetch_operations_skleja_strony(monkeypatch):
+    monkeypatch.setattr(lp, "validate_or_quarantine", lambda *a, **k: True)
+    p1 = json.dumps({"generatedAt": "G1", "trains": [{"id": 1}],
+                     "pagination": {"hasNextPage": True}})
+    p2 = json.dumps({"generatedAt": "G2", "trains": [{"id": 2}],
+                     "pagination": {"hasNextPage": False}})
+    curr = lp._fetch_operations_all(_FakeClient([p1, p2]), "20260101000000")
+    assert curr["generatedAt"] == "G1"       # gen z pierwszej strony
+    assert len(curr["trains"]) == 2          # strony sklejone
+
+def test_fetch_operations_zla_strona_zwraca_none(monkeypatch):
+    monkeypatch.setattr(lp, "validate_or_quarantine", lambda *a, **k: False)
+    p1 = json.dumps({"generatedAt": "G1", "trains": [],
+                     "pagination": {"hasNextPage": True}})
+    assert lp._fetch_operations_all(_FakeClient([p1]), "20260101000000") is None
+
+
+# --- _prep_operations: STALE po generatedAt (pkt 2) ---
+def test_prep_operations_stale(monkeypatch):
+    monkeypatch.setattr(lp, "_fetch_operations_all",
+                        lambda c, r: {"generatedAt": "2026-01-01T00:00:00Z", "trains": []})
+    monkeypatch.setattr(lp, "load_state",
+                        lambda p: {"generatedAt": "2026-01-01T00:00:00Z", "trains": []})
+    assert lp._prep_operations(None, "20260101000000")["outcome"] == "STALE"

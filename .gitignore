@@ -13,7 +13,7 @@ test_api/
 *.egg-info/
 build/
 dist/
-tests/
+
 
 
 # API Keys & Secrets

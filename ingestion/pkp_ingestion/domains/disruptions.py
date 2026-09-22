@@ -4,7 +4,7 @@ disruptions.py
 Pobieranie utrudnien (disruptions) za dany dzien i zapis surowego JSON do TODO/DAILY/DATA.
 
 Wszystkie parametry (lacznie z data) deklarowane sa w config.DATA_ENDPOINTS.
-Domyslnie D-1 (default_day="yesterday") - skrypt uruchamiany w nocy po.
+Domyslnie D-1 (default_day="D-1") - skrypt uruchamiany w nocy po.
 Bez paginacji: jedna odpowiedz = jeden plik.
 """
 
