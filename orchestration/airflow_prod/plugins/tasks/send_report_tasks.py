@@ -1,13 +1,17 @@
 # send_report_tasks.py
 # -----------------------------------------------------------------------------
-# Wysylka raportu utrzymaniowego PKP mailem przez MailerSend (SDK 2.0.3).
+# Wysylka raportu utrzymaniowego PKP mailem przez SMTP OVH (MX Plan).
 # Zalaczniki z data/<ENV>/RAPORT (katalog wyliczany z PKP_ENV w report_excel).
 # Przelaczasz instancje na PROD -> task siega do data/PROD/RAPORT automatycznie.
 #
 # Zmienne srodowiskowe:
-#   MAILERSEND_API_KEY  - token z MailerSend
-#   SENDER_EMAIL        - adres na zweryfikowanej domenie (sandbox: ...@test-xxx.mlsender.net)
-#   REPORT_EMAIL        - odbiorca (SANDBOX: musi byc adres administratora konta MailerSend)
+#   SMTP_HOST      - serwer SMTP (OVH: ssl0.ovh.net)
+#   SMTP_PORT      - port (465 = SSL/TLS)
+#   SMTP_USER      - pelny adres skrzynki (raport@bokoniewski.pl)
+#   SMTP_PASSWORD  - haslo skrzynki
+#   SENDER_EMAIL   - adres nadawcy (zwykle == SMTP_USER)
+#   SENDER_NAME    - nazwa nadawcy (opcjonalna)
+#   REPORT_EMAIL   - odbiorca raportu
 #
 # DAG: PythonOperator(task_id="send_report", python_callable=send_report,
 #                     trigger_rule="all_done")
@@ -15,20 +19,17 @@
 # -----------------------------------------------------------------------------
 
 import os
+import ssl
 import glob
+import smtplib
 from datetime import date
-
-from mailersend import MailerSendClient, EmailBuilder
+from email.message import EmailMessage
+from email.utils import formataddr
 
 try:
     from report_excel import ENV, REPORTS_DIR
 except ImportError:
     from tasks.report_excel import ENV, REPORTS_DIR
-
-try:
-    from audit import SET_RUN_DATE_TASK
-except ImportError:
-    SET_RUN_DATE_TASK = "set_run_date"   # fallback, gdy audit niedostępny standalone
 
 
 ATTACHMENT_PATTERNS = [
@@ -48,7 +49,7 @@ def _collect_attachments() -> list[str]:
 def _resolve_run_date(context) -> str:
     ti = context.get("ti")
     if ti is not None:
-        val = ti.xcom_pull(task_ids=SET_RUN_DATE_TASK, key="run_date")
+        val = ti.xcom_pull(task_ids="set_run_date", key="run_date")
         if val:
             return val
     return date.today().isoformat()
@@ -58,15 +59,20 @@ def send_report(**context):
     """Wysyla mail z zalacznikami z data/<ENV>/RAPORT. Zawsze (trigger_rule=all_done)."""
     run_date = _resolve_run_date(context)
 
-    api_key = os.environ.get("MAILERSEND_API_KEY")
-    sender_email = os.environ.get("SENDER_EMAIL")
+    smtp_host = os.environ.get("SMTP_HOST")
+    smtp_port = int(os.environ.get("SMTP_PORT", "465"))
+    smtp_user = os.environ.get("SMTP_USER")
+    smtp_password = os.environ.get("SMTP_PASSWORD")
+    sender_email = os.environ.get("SENDER_EMAIL") or smtp_user
+    sender_name = os.environ.get("SENDER_NAME")
     report_email = os.environ.get("REPORT_EMAIL")
-    sender_name =  os.environ.get("SENDER_NAME")
 
-    if not api_key:
-        raise Exception("[send_report] Brak MAILERSEND_API_KEY!")
-    if not sender_email:
-        raise Exception("[send_report] Brak SENDER_EMAIL!")
+    if not smtp_host:
+        raise Exception("[send_report] Brak SMTP_HOST!")
+    if not smtp_user:
+        raise Exception("[send_report] Brak SMTP_USER!")
+    if not smtp_password:
+        raise Exception("[send_report] Brak SMTP_PASSWORD!")
     if not report_email:
         raise Exception("[send_report] Brak REPORT_EMAIL!")
 
@@ -80,17 +86,21 @@ def send_report(**context):
 
     attachments = _collect_attachments()
 
-    builder = (
-        EmailBuilder()
-        .from_email(sender_email, sender_name)
-        .to_many([{"email": report_email}])
-        .subject(subject)
-        .text(body_text)
-    )
-    for path in attachments:
-        builder = builder.attach_file(path)   # SDK 2.x sam czyta i koduje plik
+    msg = EmailMessage()
+    msg["From"] = formataddr((sender_name, sender_email)) if sender_name else sender_email
+    msg["To"] = report_email
+    msg["Subject"] = subject
+    msg.set_content(body_text)
 
-    email = builder.build()
+    for path in attachments:
+        with open(path, "rb") as f:
+            data = f.read()
+        msg.add_attachment(
+            data,
+            maintype="application",
+            subtype="octet-stream",
+            filename=os.path.basename(path),
+        )
 
     added = [os.path.basename(p) for p in attachments]
     if not added:
@@ -98,16 +108,12 @@ def send_report(**context):
     print(f"[send_report] Wysylam: {subject}")
     print(f"[send_report] Zalaczniki ({len(added)}): {added}")
 
-    client = MailerSendClient(api_key=api_key)
-    response = client.emails.send(email)
+    context_ssl = ssl.create_default_context()
+    with smtplib.SMTP_SSL(smtp_host, smtp_port, context=context_ssl) as server:
+        server.login(smtp_user, smtp_password)
+        server.send_message(msg)
 
-    status = getattr(response, "status_code", None)
-    print(f"[send_report] Status MailerSend: {status}")
-    if status not in (200, 201, 202):
-        body = getattr(response, "content", getattr(response, "body", ""))
-        raise Exception(f"[send_report] Blad wysylania: {status} {body}")
-
-    print("[send_report] Email wyslany pomyslnie.")
+    print(f"[send_report] Email wyslany pomyslnie -> {report_email}")
 
 
 if __name__ == "__main__":
