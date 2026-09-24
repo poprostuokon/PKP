@@ -18,6 +18,18 @@ def resolve_day(default_day: str | None, override: str | None) -> str | None:
     """Kotwica (YYYY-MM-DD). override ma pierwszenstwo; inaczej wg default_day."""
     if override:
         return override
+    if default_day == "D+7":
+        return (date.today() + timedelta(days=7)).isoformat()
+    if default_day == "D+6":
+        return (date.today() + timedelta(days=6)).isoformat()
+    if default_day == "D+5":
+        return (date.today() + timedelta(days=5)).isoformat()
+    if default_day == "D+4":
+        return (date.today() + timedelta(days=4)).isoformat()
+    if default_day == "D+3":
+        return (date.today() + timedelta(days=3)).isoformat()
+    if default_day == "D+2":
+        return (date.today() + timedelta(days=2)).isoformat()
     if default_day == "D+1":
         return (date.today() + timedelta(days=1)).isoformat()
     if default_day == "D":

@@ -49,4 +49,4 @@ OCI_RETRY_TOTAL_SECONDS = int(os.getenv("PKP_OCI_RETRY_TOTAL_SECONDS", "600"))
 STATION_ID = int(os.getenv("PKP_STATION_ID", "60103"))
 
 # --- Live ingestion: interwal (sekundy) miedzy kolejnymi tickami (polling).
-TICK_SECONDS = int(os.getenv("PKP_TICK_SECONDS", "180"))
+TICK_SECONDS = int(os.getenv("PKP_TICK_SECONDS", "200"))

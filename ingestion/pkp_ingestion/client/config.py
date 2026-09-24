@@ -72,8 +72,8 @@ DATA_ENDPOINTS = {
             "dateFrom":     DATE_TOKEN,
             "dateTo":       DATE_TOKEN,
         },
-        "default_day": "D+1",       # kotwica = dateTo
-        "range_days":  4,           # 1 = pojedynczy dzien (jak dotad); 4 = ostatni tydzien
+        "default_day": "D+7",       # kotwica = dateTo
+        "range_days":  10,
         "paginated":   False,
     },
     "operations": {

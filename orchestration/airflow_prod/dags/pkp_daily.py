@@ -165,7 +165,7 @@ with DAG(
     dag_id="pkp_daily",
     description="PKP dzienny: ingest -> upload -> stg -> silver -> gold -> maintenance -> raport",
     start_date=datetime(2026, 9, 1),
-    schedule="0 8 * * *",
+    schedule="0 6 * * *",
     catchup=False,
     max_active_runs=1,
     default_args=default_args,
