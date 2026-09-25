@@ -302,6 +302,8 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
     /***** p_load_schedule_header  *****/
     /**********************************************************************************************************/
     PROCEDURE p_load_schedule_header IS
+    l_from DATE;
+    l_to   DATE;
     BEGIN
         INSERT INTO schedule_header
             (schedule_id, order_id, train_order_id, operating_date, name, carrier_code, category_code,
@@ -335,7 +337,36 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
                     and t.train_order_id = j.train_order_id)
         QUALIFY row_number() over (
                     partition by j.operating_date, j.schedule_id, j.order_id, j.train_order_id order by 1) = 1;
-        p_log_rows(SQL%ROWCOUNT);
+        p_log_rows(SQL%ROWCOUNT);                               -- log INSERT
+    
+        -- === aktualność planów w oknie z paczki ===
+        SELECT MIN(to_date(j.d,'YYYY-MM-DD')), MAX(to_date(j.d,'YYYY-MM-DD'))
+        INTO   l_from, l_to
+        FROM   land_schedules src,
+               json_table(src.payload, '$.routes[*].operatingDates[*]'
+                 columns (d varchar2(10) path '$')) j;
+    
+        IF l_from IS NOT NULL THEN                              -- pusta paczka = nic nie ruszamy
+            UPDATE schedule_header t
+            SET    t.is_active = 1 - t.is_active                -- tylko faktyczne zmiany 0<->1
+            WHERE  t.operating_date BETWEEN l_from AND l_to
+              AND  t.is_active <> CASE WHEN EXISTS (
+                        SELECT 1
+                        FROM land_schedules src,
+                             json_table(src.payload, '$.routes[*]'
+                               columns (
+                                 schedule_id    number path '$.scheduleId',
+                                 order_id       number path '$.orderId',
+                                 train_order_id number path '$.trainOrderId',
+                                 nested path '$.operatingDates[*]'
+                                   columns (operating_date varchar2(10) path '$'))) j
+                        WHERE to_date(j.operating_date,'YYYY-MM-DD') = t.operating_date
+                          AND j.schedule_id    = t.schedule_id
+                          AND j.order_id       = t.order_id
+                          AND j.train_order_id = t.train_order_id)
+                    THEN 1 ELSE 0 END;
+            p_log_rows(SQL%ROWCOUNT);                           -- log zmian flagi
+        END IF;
     END p_load_schedule_header;
     
     

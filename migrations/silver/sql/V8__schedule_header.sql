@@ -25,6 +25,7 @@ CREATE TABLE silver.schedule_header (
     -- metadane
     snapshot_ts            TIMESTAMP WITH TIME ZONE  NOT NULL,   -- generatedAt (UTC)
     loaded_at              TIMESTAMP WITH TIME ZONE  NOT NULL,
+	is_active 			   NUMBER(1) DEFAULT 1 		 NOT NULL,
     CONSTRAINT pk_sche_id PRIMARY KEY (id),
     CONSTRAINT uq_sche_opda_scid_orid_torid UNIQUE (operating_date, schedule_id, order_id, train_order_id)
 );
