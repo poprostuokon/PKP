@@ -126,6 +126,6 @@ LEFT JOIN disr dr
      AND dr.dsta_id        = l.dsta_id
 WHERE l.rn = 1
   AND sd.arrival_time IS NOT NULL                        -- tylko kursy z przyjazdem na Twoja stacje
-ORDER BY sh.operating_date + nvl(sd.ARRIVAL_DAY, 0), sd.arrival_time, l.actual_arrival
+ORDER BY sh.operating_date + nvl(sd.ARRIVAL_DAY, 0), sd.arrival_time, l.actual_arrival;
 
 grant select on silver.v_live_arrivals_wroclaw_gl to dev_app;

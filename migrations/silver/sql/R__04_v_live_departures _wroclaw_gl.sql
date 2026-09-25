@@ -117,6 +117,6 @@ LEFT JOIN disr dr
      AND dr.dsta_id        = l.dsta_id
 WHERE l.rn = 1
   AND sd.departure_time IS NOT NULL
-ORDER BY sh.operating_date + nvl(sd.DEPARTURE_DAY, 0), sd.departure_time, l.actual_departure
+ORDER BY sh.operating_date + nvl(sd.DEPARTURE_DAY, 0), sd.departure_time, l.actual_departure;
 
 grant select on silver.V_LIVE_DEPARTURES_WROCLAW_GL to DEV_APP;
