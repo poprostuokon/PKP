@@ -76,7 +76,8 @@ def t_gold(**_):
     with db.get_connection() as conn, conn.cursor() as cur:
         cur.callproc("dbms_output.enable", (None,))
         cur.callproc("gold.pkg_gold_load.p_load_dimensions", [False])
-        cur.callproc("gold.pkg_gold_load.p_load_facts_daily", [3])
+        cur.callproc("gold.pkg_gold_load.p_load_facts_daily", [3]
+        cur.callproc("gold.pkg_gold_load.p_load_facts_monthly", [3])
         _drain(cur)
 
 

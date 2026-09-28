@@ -38,10 +38,19 @@ route_pair AS (       -- from/to stacja per (schedule_id, order_id)
     join   schedule_details t
            on t.schedule_id = ep.schedule_id and t.order_id = ep.order_id and t.order_number = ep.max_on
 ),
+/*
 term AS (             -- opoznienie terminalne = przystanek o max actual_sequence
     select ophe_id,
            arrival_delay_min as terminal_delay
     from   operation_details
+    qualify row_number() over (partition by ophe_id order by actual_sequence desc) = 1
+)
+*/
+term AS (             -- opoznienie terminalne = ostatni POTWIERDZONY przystanek (jak w fakcie)
+    select ophe_id,
+           nvl(arrival_delay_min, 0) as terminal_delay        -- confirmed + NULL = 0
+    from   operation_details
+    where  is_confirmed = 1
     qualify row_number() over (partition by ophe_id order by actual_sequence desc) = 1
 )
 select

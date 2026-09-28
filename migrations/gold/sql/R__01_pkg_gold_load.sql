@@ -265,6 +265,7 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
         -- SCD2: kazda kategoria x kazda wersja przewoznika (valid_from/valid_to z def_carrier)
         MERGE INTO d_train_type d
         USING (
+            -- 1) kategorie ze slownika
             select cc.code                as category_code,
                    cc.name                as category_name,
                    cc.speed_category_code as speed_category_code,
@@ -274,6 +275,26 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                    ca.valid_to            as valid_to
             from   def_commercial_category cc
             join   def_carrier ca on ca.code = cc.carrier_code
+            union all
+            -- 2) kategorie zlozone z rozkladu (np. EC/IC), ktorych nie ma w slowniku;
+            --    nazwa = nazwy czesci ze slownika rozdzielone ' / ' (brak w slowniku -> sam kod czesci)
+            select x.category_code,
+                   coalesce(p1.name, regexp_substr(x.category_code, '[^/]+', 1, 1))
+                     || ' / ' ||
+                   coalesce(p2.name, regexp_substr(x.category_code, '[^/]+', 1, 2)) as category_name,
+                   p1.speed_category_code,
+                   ca.code, ca.name, ca.valid_from, ca.valid_to
+            from  (select distinct sh.category_code, sh.carrier_code
+                     from schedule_header sh
+                    where instr(sh.category_code, '/') > 0
+                      and not exists (select 1 from def_commercial_category cc
+                                       where cc.code         = sh.category_code
+                                         and cc.carrier_code = sh.carrier_code)) x
+            join   def_carrier ca on ca.code = x.carrier_code
+            left join def_commercial_category p1
+                   on p1.code = regexp_substr(x.category_code, '[^/]+', 1, 1) and p1.carrier_code = x.carrier_code
+            left join def_commercial_category p2
+                   on p2.code = regexp_substr(x.category_code, '[^/]+', 1, 2) and p2.carrier_code = x.carrier_code
         ) s
         ON (    d.category_code = s.category_code
             AND d.carrier_code  = s.carrier_code
