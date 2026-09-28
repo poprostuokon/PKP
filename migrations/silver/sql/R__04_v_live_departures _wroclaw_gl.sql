@@ -69,7 +69,7 @@ disr AS (
       AND dtl.snapshot_ts >= maintenance.pkg_tool.f_now_warsaw - INTERVAL '24' HOUR
     GROUP BY dtl.schedule_id, dtl.order_id, dtl.operating_date, dtl.dsta_id
 )
-SELECT
+SELECT /*+ NO_RESULT_CACHE */
     sh.operating_date + nvl(sd.DEPARTURE_DAY, 0)        AS planowy_odjazd_dzien,
     sd.departure_time                                   AS planowy_odjazd_godzina,
     sd.arrival_time                                     AS planowy_przyjazd_godzina,
