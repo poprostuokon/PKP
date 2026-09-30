@@ -64,6 +64,3 @@ CREATE OR REPLACE SYNONYM DEV_APP.v_rep_punctuality_monthly  FOR gold.v_rep_punc
 
 -- ===== PAKIET =====
 CREATE OR REPLACE SYNONYM DEV_APP.pkg_gold_load  FOR gold.pkg_gold_load;
-
-grant select on gold.d_route      to silver with grant option;
-grant select on gold.d_train_type to silver with grant option;

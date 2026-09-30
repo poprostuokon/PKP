@@ -24,6 +24,9 @@ grant select on stg.LAND_STOP_TYPES to silver;
 grant select on stg.LAND_COMMERCIAL_CATEGORIES to silver;
 grant select on stg.LAND_DISRUPTION_TYPES to silver;
 
+grant select on gold.d_route      to silver with grant option;
+grant select on gold.d_train_type to silver with grant option;
+
 
 -- ---- synonimy ----
 CREATE OR REPLACE SYNONYM silver.pkg_tool                     FOR maintenance.pkg_tool;
