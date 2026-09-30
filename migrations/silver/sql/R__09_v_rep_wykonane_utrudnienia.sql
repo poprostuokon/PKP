@@ -11,7 +11,7 @@
 -- odcinku) zwiniete do najnowszego utrudnienia.
 -- =============================================================================
 
-CREATE OR REPLACE VIEW silver.V_REP_WYKONANE_UTRUDNIENIA as
+CREATE OR REPLACE FORCE VIEW silver.V_REP_WYKONANE_UTRUDNIENIA as
 with prm as (    -- "dzis" liczone raz
     select /*+ materialize */ trunc(maintenance.pkg_tool.f_now_warsaw) as dzis
     from dual

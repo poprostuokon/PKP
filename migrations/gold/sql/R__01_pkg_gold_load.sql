@@ -414,17 +414,14 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
             join schedule_details dep on dep.schedule_id=ep.schedule_id and dep.order_id=ep.order_id and dep.order_number=ep.min_on
             join schedule_details arr on arr.schedule_id=ep.schedule_id and arr.order_id=ep.order_id and arr.order_number=ep.max_on
         ),
-        op_span AS (         -- RZECZYWISTE znaczniki: pierwszy/ostatni POTWIERDZONY przystanek
+        op_span AS (         -- RZECZYWISTE: pierwszy/ostatni POTWIERDZONY przystanek + ich pozycja w planie
             select ophe_id,
-                   max(case when rn_first = 1 then actual_departure end) as origin_dep_at,
-                   max(case when rn_last  = 1 then actual_arrival   end) as term_arr_at
-            from (
-                select ophe_id, actual_departure, actual_arrival,
-                       row_number() over (partition by ophe_id order by actual_sequence asc)  as rn_first,
-                       row_number() over (partition by ophe_id order by actual_sequence desc) as rn_last
-                from operation_details
-                where is_confirmed = 1
-            )
+                   max(actual_departure) keep (dense_rank first order by actual_sequence) as origin_dep_at,
+                   max(planned_sequence) keep (dense_rank first order by actual_sequence) as origin_ps,
+                   max(actual_arrival)   keep (dense_rank last  order by actual_sequence) as term_arr_at,
+                   max(planned_sequence) keep (dense_rank last  order by actual_sequence) as term_ps
+            from operation_details
+            where is_confirmed = 1
             group by ophe_id
         ),
         term AS (            -- opoznienie terminalne = ostatni potwierdzony przystanek
@@ -444,14 +441,31 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                         then ( nvl(ss.arr_day,0)*1440 + to_number(substr(ss.arr_time,1,2))*60 + to_number(substr(ss.arr_time,4,2)) )
                            - ( nvl(ss.dep_day,0)*1440 + to_number(substr(ss.dep_time,1,2))*60 + to_number(substr(ss.dep_time,4,2)) )
                         end as planned_travel_min,
-                   -- rzeczywisty czas przejazdu [min]
-                   case when os.origin_dep_at is not null and os.term_arr_at is not null
-                        then round((cast(os.term_arr_at as date) - cast(os.origin_dep_at as date)) * 1440) end as actual_travel_min
+                   -- rzeczywisty czas przejazdu [min]: pelna trasa; niezmierzony koniec (np. stacja zagraniczna)
+                   -- uzupelniony z rozkladu (start: plan, koniec: plan + ostatnie znane opoznienie). Tylko kursy 'C'.
+                   case when r.train_status = 'C'
+                         and os.ophe_id is not null
+                         and ss.dep_time is not null and ss.arr_time is not null
+                        then round((
+                               case when os.term_ps = e.max_on and os.term_arr_at is not null
+                                    then cast(os.term_arr_at as date)
+                                    else r.operating_date + nvl(ss.arr_day,0)
+                                         + (to_number(substr(ss.arr_time,1,2))*60 + to_number(substr(ss.arr_time,4,2))) / 1440
+                                         + nvl(tm.terminal_delay,0) / 1440
+                               end
+                             - case when os.origin_ps = e.min_on and os.origin_dep_at is not null
+                                    then cast(os.origin_dep_at as date)
+                                    else r.operating_date + nvl(ss.dep_day,0)
+                                         + (to_number(substr(ss.dep_time,1,2))*60 + to_number(substr(ss.dep_time,4,2))) / 1440
+                               end
+                             ) * 1440)
+                   end as actual_travel_min
             from runs r
             left join term       tm on tm.ophe_id = r.ophe_id
             left join op_span    os on os.ophe_id = r.ophe_id
             left join route_pair rp on rp.schedule_id = r.schedule_id and rp.order_id = r.order_id
             left join sched_span ss on ss.schedule_id = r.schedule_id and ss.order_id = r.order_id
+            left join ep         e  on e.schedule_id  = r.schedule_id and e.order_id  = r.order_id
             join d_route dr on dr.from_station_id = rp.from_station_id and dr.to_station_id = rp.to_station_id
             left join d_train_type ttm
                    on ttm.category_code = r.category_code and ttm.carrier_code = r.carrier_code
@@ -469,7 +483,7 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                case when count(terminal_delay) = 0 then null
                     else nvl(sum(case when terminal_delay >= 6 then terminal_delay end), 0) end     as sum_delayed_delay_min,
                max(terminal_delay)                                                                  as max_terminal_delay_min,
-               -- NOWE miary czasu przejazdu (mianownik = kursy z policzalnym RZECZYWISTYM czasem)
+               -- miary czasu przejazdu (mianownik = kursy z policzalnym RZECZYWISTYM czasem)
                case when count(actual_travel_min) = 0 then null else count(actual_travel_min) end   as travel_runs_count,
                sum(case when actual_travel_min is not null then planned_travel_min end)             as sum_planned_travel_min,
                sum(actual_travel_min)                                                               as sum_actual_travel_min,
@@ -540,8 +554,10 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                    r.category_code, r.carrier_code,
                    od.dsta_id                              as station_id,
                    to_number(substr(sd.arrival_time,1,2)) as hour_id,
-                   case when od.is_confirmed and not od.is_cancelled then 1 else 0 end as is_arrival,
-                   case when od.is_confirmed and not od.is_cancelled then nvl(od.arrival_delay_min,0) end as eff_delay,
+                   case when od.is_confirmed and not od.is_cancelled
+                         and od.actual_arrival is not null then 1 else 0 end                  as is_arrival,
+                   case when od.is_confirmed and not od.is_cancelled
+                         and od.actual_arrival is not null then nvl(od.arrival_delay_min,0) end as eff_delay,
                    case when od.is_cancelled then 1 else 0 end as is_cancelled
             from runs r
             join operation_details od on od.ophe_id = r.ophe_id

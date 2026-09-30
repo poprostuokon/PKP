@@ -58,8 +58,10 @@ select
     od.is_confirmed,
     od.is_cancelled,
     od.arrival_delay_min,
-    case when od.is_confirmed and not od.is_cancelled then nvl(od.arrival_delay_min,0) end as eff_delay,
-    case when od.is_confirmed and not od.is_cancelled then 'Y' else 'N' end               as is_arrival,
+    case when od.is_confirmed and not od.is_cancelled
+          and od.actual_arrival is not null then nvl(od.arrival_delay_min,0) end         as eff_delay,
+    case when od.is_confirmed and not od.is_cancelled
+          and od.actual_arrival is not null then 'Y' else 'N' end                        as is_arrival,
     -- czy przystanek wszedl do faktu (route + type zmapowane)
     case when dr.id is not null and coalesce(ttm.id, ttc.id) is not null
          then 'Y' else 'N' end                                                            as in_fact

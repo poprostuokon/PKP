@@ -11,7 +11,7 @@
 -- Tylko surowe dane, bez formatowania. Czasy actual_* sa juz lokalne.
 -- =============================================================================
 
-CREATE OR REPLACE VIEW silver.V_REP_WYKONANE_TRASA as
+CREATE OR REPLACE FORCE VIEW silver.V_REP_WYKONANE_TRASA as
 with prm as (    -- "dzis" liczone raz
     select /*+ materialize */ trunc(maintenance.pkg_tool.f_now_warsaw) as dzis
     from dual
