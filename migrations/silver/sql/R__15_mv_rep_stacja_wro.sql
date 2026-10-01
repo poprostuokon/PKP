@@ -6,9 +6,16 @@
 -- (pkg_silver_load.p_refresh_rep_mv). Przebudowa przy kazdej zmianie pliku,
 -- bo lista kolumn MV jest ustalana w chwili tworzenia.
 -- Plik musi byc uruchamiany PO widoku v_rep_stacja_wro.
+-- Drop w bloku PL/SQL (parser Flyway nie obsluguje DROP ... IF EXISTS).
 -- =============================================================================
 
-drop materialized view if exists silver.mv_rep_stacja_wro;
+begin
+    execute immediate 'drop materialized view silver.mv_rep_stacja_wro';
+exception
+    when others then
+        if sqlcode != -12003 then raise; end if;   -- ORA-12003: MV nie istnieje
+end;
+/
 
 create materialized view silver.mv_rep_stacja_wro
     build immediate
