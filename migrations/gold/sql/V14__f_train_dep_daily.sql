@@ -24,7 +24,7 @@ CREATE TABLE gold.f_train_dep_daily (
     max_departure_delay_min  NUMBER,                       -- max opoznienie w kombinacji
     cancelled_count          NUMBER            NOT NULL,   -- odwolane przystanki
     loaded_at                TIMESTAMP WITH TIME ZONE NOT NULL,
-    CONSTRAINT pk_ftdd PRIMARY KEY (date_id, route_id, train_type_id, station_id, hour_id)
+    CONSTRAINT pk_ftdepd  PRIMARY KEY (date_id, route_id, train_type_id, station_id, hour_id)
         USING INDEX LOCAL
 )
 PARTITION BY RANGE (date_id) INTERVAL (100)

@@ -24,9 +24,9 @@ CREATE TABLE gold.f_train_dep_monthly (
     max_departure_delay_min  NUMBER,
     cancelled_count          NUMBER           NOT NULL,
     loaded_at                TIMESTAMP WITH TIME ZONE NOT NULL,
-    CONSTRAINT pk_ftdm PRIMARY KEY (month, route_id, train_type_id, station_id, hour_id, day_type)
+    CONSTRAINT pk_ftdepm  PRIMARY KEY (month, route_id, train_type_id, station_id, hour_id, day_type)
         USING INDEX LOCAL,
-    CONSTRAINT chk_ftdm_daytype CHECK (day_type IN ('WD','WE'))
+    CONSTRAINT chk_ftdepm_daytype  CHECK (day_type IN ('WD','WE'))
 )
 PARTITION BY RANGE (month) INTERVAL (1)
 ( PARTITION p_init VALUES LESS THAN (202601) )
