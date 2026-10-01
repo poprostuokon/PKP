@@ -47,11 +47,13 @@ CREATE OR REPLACE SYNONYM DEV_APP.d_disruption_cause  FOR gold.d_disruption_caus
 -- ===== FAKTY DZIENNE =====
 CREATE OR REPLACE SYNONYM DEV_APP.f_train_run_daily         FOR gold.f_train_run_daily;
 CREATE OR REPLACE SYNONYM DEV_APP.f_train_stop_daily        FOR gold.f_train_stop_daily;
+CREATE OR REPLACE SYNONYM DEV_APP.f_train_dep_daily         FOR gold.f_train_dep_daily;
 CREATE OR REPLACE SYNONYM DEV_APP.f_train_disruption_daily  FOR gold.f_train_disruption_daily;
 
 -- ===== FAKTY MIESIECZNE =====
 CREATE OR REPLACE SYNONYM DEV_APP.f_train_run_monthly         FOR gold.f_train_run_monthly;
 CREATE OR REPLACE SYNONYM DEV_APP.f_train_stop_monthly        FOR gold.f_train_stop_monthly;
+CREATE OR REPLACE SYNONYM DEV_APP.f_train_dep_monthly         FOR gold.f_train_dep_monthly;
 CREATE OR REPLACE SYNONYM DEV_APP.f_train_disruption_monthly  FOR gold.f_train_disruption_monthly;
 
 -- ===== WIDOKI DIAGNOSTYCZNE (trace) =====
@@ -60,7 +62,11 @@ CREATE OR REPLACE SYNONYM DEV_APP.v_stop_daily_trace        FOR gold.v_stop_dail
 CREATE OR REPLACE SYNONYM DEV_APP.v_disruption_daily_trace  FOR gold.v_disruption_daily_trace;
 
 -- ===== WIDOKI RAPORTOWE =====
-CREATE OR REPLACE SYNONYM DEV_APP.v_rep_punctuality_monthly  FOR gold.v_rep_punctuality_monthly;
+CREATE OR REPLACE SYNONYM DEV_APP.v_rep_punctuality_monthly      FOR gold.v_rep_punctuality_monthly;
+CREATE OR REPLACE SYNONYM DEV_APP.v_rep_wro_godz_monthly         FOR gold.v_rep_wro_godz_monthly;
+CREATE OR REPLACE SYNONYM DEV_APP.v_rep_wro_dzien_tyg_monthly    FOR gold.v_rep_wro_dzien_tyg_monthly;
+CREATE OR REPLACE SYNONYM DEV_APP.v_rep_wro_kierunki_monthly     FOR gold.v_rep_wro_kierunki_monthly;
+CREATE OR REPLACE SYNONYM DEV_APP.v_rep_wro_utrudnienia_monthly  FOR gold.v_rep_wro_utrudnienia_monthly;
 
 -- ===== PAKIET =====
 CREATE OR REPLACE SYNONYM DEV_APP.pkg_gold_load  FOR gold.pkg_gold_load;
