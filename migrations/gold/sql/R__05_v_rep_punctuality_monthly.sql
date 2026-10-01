@@ -19,6 +19,7 @@ WITH agg AS (
            sum(m.runs_count)                                                as runs_total,
            sum(case when m.delayed_count is not null then m.runs_count end) as runs_completed,
            sum(case when m.delayed_count is null     then m.runs_count end) as cancelled_count,
+           sum(case when st.status_code = 'Q' then m.runs_count end)          as shortened_count,
            sum(m.delayed_count)                                             as delayed_count,
            sum(m.sum_terminal_delay_min)                                    as sum_terminal_delay_min,
            sum(m.sum_delayed_delay_min)                                     as sum_delayed_delay_min,
@@ -30,6 +31,7 @@ WITH agg AS (
            min(m.min_actual_travel_min)                                     as min_actual_travel_min,
            max(m.max_actual_travel_min)                                     as max_actual_travel_min
     from   f_train_run_monthly m
+    join   d_train_status      st on st.id = m.status_id
     group  by m.month, m.route_id, m.train_type_id
 )
 select
@@ -45,6 +47,7 @@ select
     a.runs_total,
     a.runs_completed,
     a.cancelled_count,
+    a.shortened_count,
     a.delayed_count,
     (a.runs_completed - a.delayed_count)          as on_time_count,
     a.sum_terminal_delay_min,

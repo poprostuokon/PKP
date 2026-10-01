@@ -1,9 +1,6 @@
 -- =============================================================================
 -- silver.v_rep_trasa_stacje_miesiac
 -- -----------------------------------------------------------------------------
--- Widok raportowy APEX (strona 9, Ajax POBIERZ_TRASE): stacje trasy po kolei
--- w danym miesiacu, osobno dla kazdej kategorii pociagu. Jeden wiersz = postoj
--- (plus stacja poczatkowa, ktora ma tylko odjazd).
 -- Kolejnosc stacji z planu wzorcowego: kurs tej trasy i tej kategorii z miesiaca,
 -- ktorego plan zaczyna sie i konczy na koncowkach trasy (gold.d_route), z
 -- najwieksza liczba postojow. Dzieki kategorii os pokazuje tylko stacje, na

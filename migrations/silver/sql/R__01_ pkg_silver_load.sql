@@ -27,6 +27,9 @@ grant select on stg.LAND_DISRUPTION_TYPES to silver;
 grant select on gold.d_route      to silver with grant option;
 grant select on gold.d_train_type to silver with grant option;
 
+grant create materialized view to silver;
+grant create table             to silver;
+
 
 -- ---- synonimy ----
 CREATE OR REPLACE SYNONYM silver.pkg_tool                     FOR maintenance.pkg_tool;
@@ -60,6 +63,10 @@ CREATE OR REPLACE PACKAGE silver.pkg_silver_load AUTHID DEFINER AS
     PROCEDURE p_load_operation_details;
     PROCEDURE p_load_disruption_header;
     PROCEDURE p_load_disruption_details;
+	
+	-- MV (widoki zmaterializowane)
+    PROCEDURE p_refresh_rep_mv;
+	
     -- orchestracja: wszystko w kolejnosci zaleznosci, jeden COMMIT
     PROCEDURE p_load_all;
 END pkg_silver_load;
@@ -598,7 +605,18 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
                     order by 1) = 1;
         p_log_rows(SQL%ROWCOUNT);
     END p_load_disruption_details;
-
+	
+	
+	/**********************************************************************************************************/
+    /***** p_refresh_rep_mv  *****/
+    /**********************************************************************************************************/
+    -- migawki raportowe stacji Wroclaw Glowny; po zaladowaniu silver (stacja zalezy od utrudnien -> kolejnosc)
+    PROCEDURE p_refresh_rep_mv IS
+    BEGIN
+        dbms_mview.refresh('SILVER.MV_REP_STACJA_WRO',      method => 'C', atomic_refresh => TRUE);
+        dbms_mview.refresh('SILVER.MV_REP_UTRUDNIENIA_WRO', method => 'C', atomic_refresh => TRUE);
+        p_log_rows(0);
+    END p_refresh_rep_mv;
 
 
 
@@ -627,6 +645,9 @@ create or replace PACKAGE BODY silver.pkg_silver_load AS
         p_load_operation_details;
         p_load_disruption_header;
         p_load_disruption_details;
+		
+		-- MV Refresh
+        p_refresh_rep_mv;
 
         COMMIT;
         DBMS_OUTPUT.PUT_LINE('=== SILVER load OK (COMMIT) ===');
