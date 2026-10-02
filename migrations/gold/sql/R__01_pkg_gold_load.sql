@@ -613,6 +613,10 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
     /**********************************************************************************************************/
     /***** p_load_f_train_disruption_daily  *****/
     /**********************************************************************************************************/
+    -- occurrences_count = dotkniete przystanki (wiersze disruption_details)
+    -- runs_count        = kursy z utrudnieniem o danej przyczynie (distinct kurs w wierszu faktu)
+    -- runs_total_count  = kursy z utrudnieniem liczone raz: kurs przypisany do najnizszej cause_id
+    --                     na danej stacji w danym dniu (sumowalne takze miedzy przyczynami)
     PROCEDURE p_load_f_train_disruption_daily(p_days IN NUMBER DEFAULT c_default_days) IS
         v_from DATE;
         v_to   DATE;
@@ -626,7 +630,8 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                            AND TO_NUMBER(TO_CHAR(v_to,  'YYYYMMDD'));
 
         INSERT INTO f_train_disruption_daily
-            (date_id, route_id, station_id, train_type_id, hour_id, cause_id, occurrences_count, loaded_at)
+            (date_id, route_id, station_id, train_type_id, hour_id, cause_id,
+             occurrences_count, runs_count, runs_total_count, loaded_at)
         WITH dd AS (          -- dotkniete przystanki w oknie
             select d.operating_date,
                    to_number(to_char(d.operating_date,'YYYYMMDD')) as date_id,
@@ -654,7 +659,9 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                    x.station_id,
                    coalesce(ttm.id, ttc.id) as train_type_id,
                    to_number(substr(coalesce(sd.arrival_time, sd.departure_time),1,2)) as hour_id,
-                   coalesce(dc_t.id, dc_m.id) as cause_id
+                   coalesce(dc_t.id, dc_m.id) as cause_id,
+                   x.schedule_id,
+                   x.order_id
             from dd x
             join schedule_header sh
               on  sh.operating_date = x.operating_date and sh.schedule_id = x.schedule_id
@@ -673,14 +680,26 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
                   and ttc.valid_to = c_valid_to
             left join d_disruption_cause dc_t on dc_t.cause_code = dh.disruption_type_code
             left join d_disruption_cause dc_m on dc_m.cause_code = dh.message
+        ),
+        ok AS (               -- tylko wiersze, ktore wchodza do faktu
+            select r.*,
+                   r.schedule_id || '|' || r.order_id as kurs
+            from resolved r
+            where r.train_type_id is not null
+              and r.cause_id      is not null
+              and r.hour_id       is not null
+        ),
+        kursy AS (            -- najnizsza przyczyna kursu na stacji w danym dniu
+            select o.*,
+                   min(o.cause_id) over (partition by o.date_id, o.station_id, o.kurs) as cause_min
+            from ok o
         )
         select date_id, route_id, station_id, train_type_id, hour_id, cause_id,
-               count(*) as occurrences_count,
+               count(*)                                                    as occurrences_count,
+               count(distinct kurs)                                        as runs_count,
+               count(distinct case when cause_id = cause_min then kurs end) as runs_total_count,
                pkg_tool.f_now_warsaw
-        from resolved
-        where train_type_id is not null
-          and cause_id      is not null
-          and hour_id       is not null
+        from kursy
         group by date_id, route_id, station_id, train_type_id, hour_id, cause_id;
 
         p_log_rows(SQL%ROWCOUNT);
@@ -940,11 +959,13 @@ create or replace PACKAGE BODY gold.pkg_gold_load AS
 
         INSERT INTO f_train_disruption_monthly
             (month, route_id, station_id, train_type_id, hour_id, cause_id, day_type,
-             occurrences_count, loaded_at)
+             occurrences_count, runs_count, runs_total_count, loaded_at)
         SELECT dd.year*100 + dd.month                               as month,
                f.route_id, f.station_id, f.train_type_id, f.hour_id, f.cause_id,
                case when dd.is_weekend = 'T' then 'WE' else 'WD' end as day_type,
                sum(f.occurrences_count),
+               sum(f.runs_count),
+               sum(f.runs_total_count),
                pkg_tool.f_now_warsaw
         from f_train_disruption_daily f
         join d_date dd on dd.id = f.date_id

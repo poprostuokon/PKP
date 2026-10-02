@@ -17,7 +17,9 @@ select d.year * 100 + d.month                                   as month,
        regexp_replace(c.cause_name,
                       'Na odcinku od stacji \{[^}]*\} do stacji \{[^}]*\}',
                       'Na części trasy')                        as przyczyna,
-       sum(f.occurrences_count)                                 as wystapienia
+       sum(f.occurrences_count)                                 as wystapienia,
+       sum(f.runs_count)                                        as kursy,
+       sum(f.runs_total_count)                                  as kursy_razem
   from gold.f_train_disruption_daily f
   join gold.d_date d             on d.id = f.date_id
   join gold.d_disruption_cause c on c.id = f.cause_id

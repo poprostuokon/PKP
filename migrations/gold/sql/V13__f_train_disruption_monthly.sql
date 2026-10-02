@@ -18,6 +18,8 @@ CREATE TABLE gold.f_train_disruption_monthly (
     day_type           CHAR(2)              NOT NULL,   -- 'WD' dni robocze / 'WE' weekend
     -- miara addytywna (roll-up z f_train_disruption_daily)
     occurrences_count  NUMBER               NOT NULL,   -- liczba wystapien (dotkniete przystanki)
+	runs_count  	   NUMBER               NOT NULL,
+	runs_total_count   NUMBER               NOT NULL,
     loaded_at          TIMESTAMP WITH TIME ZONE NOT NULL,
     CONSTRAINT pk_ftdm PRIMARY KEY (month, route_id, station_id, train_type_id, hour_id, cause_id, day_type)
         USING INDEX LOCAL,
