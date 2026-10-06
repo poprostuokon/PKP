@@ -68,7 +68,7 @@ Każdy plik jest wysyłany niezależnie, z weryfikacją sumy MD5. Po sukcesie pl
 4. `disruption_header` → `disruption_details`,
 5. odświeżenie widoków zmaterializowanych pod raporty.
 
-Dane operacyjne są ładowane jako insert-only-new (`INSERT … WHERE NOT EXISTS`).
+Dane operacyjne są ładowane jako insert-only-new (`INSERT … WHERE NOT EXISTS`). Wyjątkiem jest `schedule_header`: oprócz dopisania nowych kursów ładowanie aktualizuje flagę `is_active` — plan, którego nie ma już w oknie dat z bieżącej paczki, zostaje oznaczony jako nieaktualny.
 
 **Dlaczego jedna transakcja:** nagłówki i szczegóły muszą być spójne. Częściowo załadowany Silver byłby gorszy niż Silver z wczoraj.
 
@@ -235,7 +235,7 @@ data/<ENV>/
 |---|---|
 | Staging | bramka `stg_load_log` — plik `LOADED` nie jest ładowany ponownie |
 | Silver, słowniki | `MERGE` po kluczu biznesowym |
-| Silver, dane operacyjne | `INSERT … WHERE NOT EXISTS` |
+| Silver, dane operacyjne | `INSERT … WHERE NOT EXISTS`; w `schedule_header` dodatkowo aktualizacja `is_active` tylko tam, gdzie flaga się zmienia |
 | Silver, tracking live | `change_hash` |
 | Gold, wymiary | `MERGE` / idempotentny `INSERT` |
 | Gold, fakty | `DELETE` okna + `INSERT` |

@@ -56,7 +56,7 @@ Wszystkie 12 tabel ma identyczną strukturę:
 | `def_stop_type` | typ postoju | `id` | `MERGE` |
 | `def_commercial_category` | kategoria u przewoźnika | `code`, `carrier_code` | `MERGE` |
 | `def_disruption_cause` | przyczyna utrudnienia | `code` | `MERGE` |
-| `schedule_header` | kurs w dniu kursowania | `id` | insert-only-new |
+| `schedule_header` | kurs w dniu kursowania | `id` | insert-only-new + aktualizacja `is_active` |
 | `schedule_details` | przystanek planu | `schedule_id`, `order_id`, `order_number` | insert-only-new |
 | `operation_header` | wykonany kurs w dniu | `id` | insert-only-new |
 | `operation_details` | przystanek wykonanego kursu | `ophe_id`, `actual_sequence` | insert-only-new |
@@ -180,7 +180,7 @@ Pakiet `pkg_silver_load` odświeża też dwa widoki zmaterializowane, `mv_rep_st
 | `intl_departure_number` | VARCHAR2(50) | tak | numer międzynarodowy (odjazd) |
 | `snapshot_ts` | TIMESTAMP TZ | nie | generatedAt (UTC) |
 | `loaded_at` | TIMESTAMP TZ | nie | czas załadowania (Europe/Warsaw) |
-| `is_active` | NUMBER(1) | nie | czy wiersz jest aktualny |
+| `is_active` | NUMBER(1) | nie | 1 = plan aktualny, 0 = plan zniknął z API; aktualizowane przy ładowaniu |
 
 #### `silver.schedule_details`
 
