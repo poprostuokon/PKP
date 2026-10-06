@@ -1,0 +1,141 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="medallion_architecture" name="Medallion Architecture">
+    <mxGraphModel dx="3318" dy="619" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2140" pageHeight="860" background="light-dark(#1a1a1a, #000000)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="header" parent="1" style="text;html=1;strokeColor=#0F6E56;fillColor=#0F3D30;align=center;verticalAlign=middle;rounded=1;fontColor=#E1F5EE;fontSize=14;fontStyle=1;" value="PKP — Wrocław Główny  ·  architektura Medallion (Oracle Autonomous Database + OCI Object Storage)" vertex="1">
+          <mxGeometry height="40" width="1000" x="560" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="api" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3A3A3A;strokeColor=#888888;fontColor=#E0E0E0;fontSize=11;arcSize=8;align=left;" value="&lt;div style=&quot;text-align: center;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(224, 224, 224), rgb(45, 45, 45));&quot;&gt;&lt;span style=&quot;font-weight: bold; white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;b&gt;API PKP PLK&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;&lt;b&gt;&lt;div style=&quot;text-align: justify;&quot;&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(224, 224, 224), rgb(45, 45, 45));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;schedules &lt;/b&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(224, 224, 224), rgb(45, 45, 45)); font-weight: normal;&quot;&gt;(rozkład jazdy)&lt;/span&gt;&lt;/div&gt;&lt;/b&gt;&lt;b&gt;&lt;div style=&quot;text-align: justify;&quot;&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(224, 224, 224), rgb(45, 45, 45));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;operations &lt;/b&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(224, 224, 224), rgb(45, 45, 45)); font-weight: normal;&quot;&gt;(wykonane operacje)&lt;/span&gt;&lt;/div&gt;&lt;/b&gt;&lt;b&gt;&lt;div style=&quot;text-align: justify;&quot;&gt;&lt;b style=&quot;background-color: transparent; color: light-dark(rgb(224, 224, 224), rgb(45, 45, 45));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;disruptions &lt;/b&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(224, 224, 224), rgb(45, 45, 45)); font-weight: normal;&quot;&gt;(utrudnienia)&lt;/span&gt;&lt;/div&gt;&lt;/b&gt;&lt;div style=&quot;text-align: justify;&quot;&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(224, 224, 224), rgb(45, 45, 45));&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;b&gt;słowniki &lt;/b&gt;(7 endpoint&#39;ów)&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="160" width="230" x="-20" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="g_ing" parent="1" style="swimlane;startSize=0;fillColor=#0D2B22;strokeColor=#0F6E56;strokeWidth=2;dashed=1;rounded=1;arcSize=5;" value="" vertex="1">
+          <mxGeometry height="420" width="230" x="270" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="g_ing_lbl" parent="g_ing" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#4CAF82;fontSize=12;fontStyle=2;" value="&lt;b&gt;Ingestion — Python&lt;/b&gt;" vertex="1">
+          <mxGeometry height="24" width="200" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="ing_d" parent="g_ing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F6E56;strokeColor=#0F6E56;fontColor=#E1F5EE;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;DAILY&lt;/b&gt;&lt;br&gt;Airflow · DAG pkp_daily&lt;br&gt;schedule: 0 6 * * *&lt;br&gt;pełny obraz doby&lt;br&gt;walidacja JSON Schema" vertex="1">
+          <mxGeometry height="150" width="200" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ing_l" parent="g_ing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F6E56;strokeColor=#0F6E56;fontColor=#E1F5EE;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;LIVE&lt;/b&gt;&lt;br&gt;live_poller · kontener Docker&lt;br&gt;cykl co ~3 min&lt;div&gt;walidacja JSON Schema&lt;br&gt;diff względem STATE&lt;br&gt;dalej tylko zmiany (delta)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="150" width="200" x="15" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="g_brz" parent="1" style="swimlane;startSize=0;fillColor=#2B1A0D;strokeColor=#CD7F32;strokeWidth=2;dashed=1;rounded=1;arcSize=5;" value="" vertex="1">
+          <mxGeometry height="420" width="230" x="560" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="g_brz_lbl" parent="g_brz" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#E0A060;fontSize=12;fontStyle=2;" value="&lt;b&gt;BRONZE — OCI Object Storage&lt;/b&gt;" vertex="1">
+          <mxGeometry height="24" width="200" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="brz_d" parent="g_brz" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5C3A1E;strokeColor=#CD7F32;fontColor=#F5D6B0;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;bucket daily&lt;/b&gt;&lt;br&gt;daily/&amp;lt;typ&amp;gt;/date=YYYYMMDD/&lt;br&gt;surowy JSON 1:1 z API&lt;br&gt;retencja: lifecycle rule (usuwane pliki starsze niż 3 dni)" vertex="1">
+          <mxGeometry height="150" width="200" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="brz_l" parent="g_brz" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5C3A1E;strokeColor=#CD7F32;fontColor=#F5D6B0;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;bucket live&lt;/b&gt;&lt;br&gt;live/&amp;lt;typ&amp;gt;/date=YYYYMMDD/&lt;br&gt;pliki delta&lt;br&gt;retencja: lifecycle rule (usuwane pliki starsze niż 2 dni)" vertex="1">
+          <mxGeometry height="150" width="200" x="15" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="g_stg" parent="1" style="swimlane;startSize=0;fillColor=#0050ef;strokeColor=#001DBC;strokeWidth=2;dashed=1;rounded=1;arcSize=5;fontColor=#ffffff;" value="" vertex="1">
+          <mxGeometry height="420" width="220" x="850" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="g_stg_lbl" parent="g_stg" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#BBBBBB;fontSize=12;fontStyle=2;" value="&lt;b&gt;STAGING — schemat stg&lt;/b&gt;" vertex="1">
+          <mxGeometry height="24" width="190" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_d" parent="g_stg" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;landing daily&lt;/b&gt;&lt;br&gt;land_schedules&lt;br&gt;land_operations&lt;br&gt;land_disruptions&lt;br&gt;land_&amp;lt;słownik&amp;gt; (7 tabel)&lt;br&gt;kolumna payload: JSON" vertex="1">
+          <mxGeometry height="150" width="190" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_l" parent="g_stg" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0050ef;strokeColor=#001DBC;fontColor=#ffffff;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;landing live&lt;/b&gt;&lt;br&gt;land_operations_live&lt;br&gt;land_disruptions_live&lt;br&gt;kolumna payload: JSON" vertex="1">
+          <mxGeometry height="150" width="190" x="15" y="235" as="geometry" />
+        </mxCell>
+        <mxCell id="g_sil" parent="1" style="swimlane;startSize=0;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;dashed=1;rounded=1;arcSize=5;gradientColor=#b3b3b3;" value="" vertex="1">
+          <mxGeometry height="420" width="250" x="1190" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="g_sil_lbl" parent="g_sil" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#7EB8F7;fontSize=12;fontStyle=2;" value="&lt;b&gt;SILVER — schemat silver&lt;/b&gt;" vertex="1">
+          <mxGeometry height="24" width="220" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="sil_def" parent="g_sil" style="rounded=1;whiteSpace=wrap;html=1;fontSize=11;arcSize=8;spacing=6;fillColor=light-dark(#60A917,#999999);fontColor=#ffffff;strokeColor=#2D7600;" value="&lt;b&gt;Słowniki&lt;/b&gt;&lt;br&gt;def_* (7 tabel)&lt;br&gt;MERGE po kluczu biznesowym" vertex="1">
+          <mxGeometry height="105" width="220" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="sil_dat" parent="g_sil" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#1E3A5F,#B3B3B3);strokeColor=#4A6FA5;fontColor=#A8D4FF;fontSize=11;arcSize=8;spacing=6;" value="&lt;b style=&quot;color: light-dark(rgb(0, 0, 0), rgb(0, 0, 0));&quot;&gt;Dane operacyjne&lt;/b&gt;&lt;br&gt;s&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(0, 0, 0));&quot;&gt;chedule_header / _details&lt;br&gt;operation_header / _details&lt;br&gt;disruption_header / _details&lt;br&gt;*_tracking_log (live)&lt;/span&gt;" vertex="1">
+          <mxGeometry height="105" width="220" x="15" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="sil_v" parent="g_sil" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#1E3A5F,#B3B3B3);strokeColor=#4A6FA5;fontColor=#A8D4FF;fontSize=11;arcSize=8;spacing=6;" value="&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(0, 0, 0));&quot;&gt;&lt;b&gt;Widoki&lt;/b&gt;&lt;br&gt;v_live_* — tablica odjazdów&lt;br&gt;v_rep_* — rozkład, trasy&lt;/span&gt;" vertex="1">
+          <mxGeometry height="105" width="220" x="15" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="g_gld" parent="1" style="swimlane;startSize=0;fillColor=#2B1D00;strokeColor=#B8860B;strokeWidth=2;dashed=1;rounded=1;arcSize=5;" value="" vertex="1">
+          <mxGeometry height="420" width="250" x="1560" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="g_gld_lbl" parent="g_gld" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#FFE680;fontSize=12;fontStyle=2;" value="&lt;b style=&quot;color: light-dark(rgb(0, 0, 0), rgb(102, 102, 0));&quot;&gt;GOLD — schemat gold (Star Schema)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="24" width="220" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="gld_d" parent="g_gld" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B5800;strokeColor=#B8860B;fontColor=#FFE680;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;Wymiary&lt;/b&gt;&lt;br&gt;d_date · d_hour · d_station&lt;br&gt;d_route · d_train_type&lt;br&gt;d_train_status&lt;br&gt;d_disruption_cause" vertex="1">
+          <mxGeometry height="105" width="220" x="15" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="gld_f" parent="g_gld" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B5800;strokeColor=#B8860B;fontColor=#FFE680;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;Fakty&lt;/b&gt;&lt;br&gt;f_train_run_*&lt;br&gt;f_train_stop_*&lt;br&gt;f_train_dep_*&lt;br&gt;f_train_disruption_*&lt;br&gt;ziarno: _daily i _monthly" vertex="1">
+          <mxGeometry height="105" width="220" x="15" y="170" as="geometry" />
+        </mxCell>
+        <mxCell id="gld_v" parent="g_gld" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B5800;strokeColor=#B8860B;fontColor=#FFE680;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;Widoki raportowe&lt;/b&gt;&lt;br&gt;v_rep_* — punktualność,&lt;br&gt;ranking tras, przyczyny" vertex="1">
+          <mxGeometry height="105" width="220" x="15" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="apex" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=light-dark(#008A00,#E6E6E6);strokeColor=light-dark(#005700,#E6E6E6);fontColor=#ffffff;fontSize=11;arcSize=8;" value="&lt;b&gt;Oracle APEX&lt;/b&gt;&lt;br&gt;aplikacja BI&lt;br&gt;tablica live&lt;br&gt;rozkład jazdy&lt;br&gt;statystyki punktualności" vertex="1">
+          <mxGeometry height="160" width="180" x="1900" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="g_mnt" parent="1" style="swimlane;startSize=0;fillColor=#1A1A2E;strokeColor=#4A4A8A;strokeWidth=2;dashed=1;rounded=1;arcSize=5;" value="" vertex="1">
+          <mxGeometry height="130" width="960" x="850" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="g_mnt_lbl" parent="g_mnt" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#9090D0;fontSize=12;fontStyle=2;" value="&lt;b&gt;MAINTENANCE — schemat maintenance&lt;/b&gt;" vertex="1">
+          <mxGeometry height="24" width="930" x="15" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="mnt_a" parent="g_mnt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2D2D5E;strokeColor=#4A4A8A;fontColor=#C0C0FF;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;Audyt&lt;/b&gt;&lt;br&gt;pipeline_run / pipeline_run_step&lt;br&gt;stg_load_log · poller_heartbeat" vertex="1">
+          <mxGeometry height="72" width="290" x="15" y="42" as="geometry" />
+        </mxCell>
+        <mxCell id="mnt_m" parent="g_mnt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2D2D5E;strokeColor=#4A4A8A;fontColor=#C0C0FF;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;Utrzymanie&lt;/b&gt;&lt;br&gt;pkg_maintenance: reorganizacja tabel&lt;br&gt;i indeksów · kolejka sql_exec_queue" vertex="1">
+          <mxGeometry height="72" width="290" x="335" y="42" as="geometry" />
+        </mxCell>
+        <mxCell id="mnt_r" parent="g_mnt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2D2D5E;strokeColor=#4A4A8A;fontColor=#C0C0FF;fontSize=11;arcSize=8;spacing=6;" value="&lt;b&gt;Raport dzienny&lt;/b&gt;&lt;br&gt;Excel + PDF → e-mail&lt;br&gt;po każdym przebiegu pkp_daily" vertex="1">
+          <mxGeometry height="72" width="290" x="655" y="42" as="geometry" />
+        </mxCell>
+        <mxCell id="flyway" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#222222;strokeColor=#888888;fontColor=#E0E0E0;fontSize=11;dashed=1;" value="&lt;b&gt;Flyway&lt;/b&gt; — wersjonowanie schematów: admin · stg · maintenance · silver · gold  ·  V = struktura, R = pakiety i widoki  ·  wdrożenie: GitHub Actions, DEV → akceptacja → PROD" vertex="1">
+          <mxGeometry height="44" width="960" x="850" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#4CAF82;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="ing_d" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="api" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#4CAF82;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.7;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="ing_l" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="ing_d" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#4CAF82;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="brz_d" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="ing_l" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#4CAF82;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="brz_l" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="brz_d" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E0A060;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#E0A060;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="stg_d" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="brz_l" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E0A060;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#E0A060;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="stg_l" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="stg_d" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7EB8F7;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#7EB8F7;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.2976;entryDx=0;entryDy=0;" target="g_sil" value="pkg_silver_load">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="stg_l" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7EB8F7;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#7EB8F7;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.7381;entryDx=0;entryDy=0;" target="g_sil" value="pkg_silver_load_live">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="g_sil" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#FFE680;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#FFE680;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="g_gld" value="pkg_gold_load">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" edge="1" parent="1" source="g_gld" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#FFE680;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#FFE680;labelBackgroundColor=#1a1a1a;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="apex" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" edge="1" parent="1" source="sil_v" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7EB8F7;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;fontSize=10;fontStyle=1;fontColor=#7EB8F7;labelBackgroundColor=#1a1a1a;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="apex" value="dane live">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1315" y="565" />
+              <mxPoint x="1990" y="565" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

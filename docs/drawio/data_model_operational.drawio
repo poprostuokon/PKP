@@ -1,0 +1,742 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="data_model_operational" name="Operational">
+    <mxGraphModel dx="3358" dy="895" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="legend" parent="1" style="text;html=1;strokeColor=#555555;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;rounded=1;fontSize=11;" value="🔑 klucz główny   ·   🔗 klucz obcy (constraint FK, linia ciągła)   ·   ↪ referencja logiczna bez constraintu (linia przerywana tylko dla schedule_header → schedule_details)   ·   UQ = część klucza unikalnego" vertex="1">
+          <mxGeometry height="30" width="1500" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_h" parent="1" style="text;html=1;strokeColor=none;fillColor=#7E4A1F;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontColor=#ffffff;fontSize=16;fontStyle=1;" value="SCHEMA: stg — landing JSON (Staging)" vertex="1">
+          <mxGeometry height="40" width="1500" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_frame" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#7E4A1F;strokeWidth=2;dashed=1;arcSize=2;" value="" vertex="1">
+          <mxGeometry height="580" width="1500" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="land_schedules" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_schedules" vertex="1">
+          <mxGeometry height="80" width="300" x="60" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="land_schedules_r0" parent="land_schedules" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_schedules_r1" parent="land_schedules" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_operations" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_operations" vertex="1">
+          <mxGeometry height="80" width="300" x="420" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="land_operations_r0" parent="land_operations" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_operations_r1" parent="land_operations" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_disruptions" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_disruptions" vertex="1">
+          <mxGeometry height="80" width="300" x="780" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="land_disruptions_r0" parent="land_disruptions" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_disruptions_r1" parent="land_disruptions" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_operations_live" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_operations_live" vertex="1">
+          <mxGeometry height="80" width="300" x="60" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="land_operations_live_r0" parent="land_operations_live" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_operations_live_r1" parent="land_operations_live" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_disruptions_live" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_disruptions_live" vertex="1">
+          <mxGeometry height="80" width="300" x="420" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="land_disruptions_live_r0" parent="land_disruptions_live" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_disruptions_live_r1" parent="land_disruptions_live" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_cities" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_cities" vertex="1">
+          <mxGeometry height="80" width="300" x="60" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="land_cities_r0" parent="land_cities" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_cities_r1" parent="land_cities" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_stations" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_stations" vertex="1">
+          <mxGeometry height="80" width="300" x="420" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="land_stations_r0" parent="land_stations" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_stations_r1" parent="land_stations" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_carriers" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_carriers" vertex="1">
+          <mxGeometry height="80" width="300" x="780" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="land_carriers_r0" parent="land_carriers" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_carriers_r1" parent="land_carriers" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_train_statuses" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_train_statuses" vertex="1">
+          <mxGeometry height="80" width="300" x="1140" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="land_train_statuses_r0" parent="land_train_statuses" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_train_statuses_r1" parent="land_train_statuses" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_stop_types" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_stop_types" vertex="1">
+          <mxGeometry height="80" width="300" x="60" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="land_stop_types_r0" parent="land_stop_types" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_stop_types_r1" parent="land_stop_types" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_commercial_categories" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_commercial_categories" vertex="1">
+          <mxGeometry height="80" width="300" x="420" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="land_commercial_categories_r0" parent="land_commercial_categories" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_commercial_categories_r1" parent="land_commercial_categories" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="land_disruption_types" parent="1" style="swimlane;startSize=30;fillColor=#F5E6D3;strokeColor=#7E4A1F;fontStyle=1;fontSize=12;" value="stg.land_disruption_types" vertex="1">
+          <mxGeometry height="80" width="300" x="780" y="560" as="geometry" />
+        </mxCell>
+        <mxCell id="land_disruption_types_r0" parent="land_disruption_types" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="payload : JSON" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="land_disruption_types_r1" parent="land_disruption_types" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#F5E6D3;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="sil_h" parent="1" style="text;html=1;strokeColor=none;fillColor=#1F4E79;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontColor=#ffffff;fontSize=16;fontStyle=1;" value="SCHEMA: silver — model relacyjny" vertex="1">
+          <mxGeometry height="40" width="1500" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="sil_frame" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#1F4E79;strokeWidth=2;dashed=1;arcSize=2;" value="" vertex="1">
+          <mxGeometry height="1455" width="1500" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="def_city" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.def_city" vertex="1">
+          <mxGeometry height="155" width="300" x="60" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="def_city_r0" parent="def_city" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="def_city_r1" parent="def_city" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="name : VARCHAR2(200)  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="def_city_r2" parent="def_city" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="station_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="def_city_r3" parent="def_city" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="is_active : BOOLEAN" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="def_city_r4" parent="def_city" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="def_carrier" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.def_carrier" vertex="1">
+          <mxGeometry height="155" width="300" x="420" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="def_carrier_r0" parent="def_carrier" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 code : VARCHAR2(20) PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="def_carrier_r1" parent="def_carrier" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 valid_from : DATE PK  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="def_carrier_r2" parent="def_carrier" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="def_carrier_r3" parent="def_carrier" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="valid_to : DATE" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="def_carrier_r4" parent="def_carrier" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="def_commercial_category" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.def_commercial_category" vertex="1">
+          <mxGeometry height="155" width="300" x="780" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="def_commercial_category_r0" parent="def_commercial_category" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 code : VARCHAR2(20) PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="def_commercial_category_r1" parent="def_commercial_category" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 carrier_code : VARCHAR2(20) PK" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="def_commercial_category_r2" parent="def_commercial_category" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="def_commercial_category_r3" parent="def_commercial_category" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="speed_category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="def_commercial_category_r4" parent="def_commercial_category" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="def_train_status" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.def_train_status" vertex="1">
+          <mxGeometry height="105" width="300" x="1140" y="830" as="geometry" />
+        </mxCell>
+        <mxCell id="def_train_status_r0" parent="def_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 code : VARCHAR2(20) PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="def_train_status_r1" parent="def_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="def_train_status_r2" parent="def_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="def_station" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.def_station" vertex="1">
+          <mxGeometry height="180" width="300" x="60" y="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="def_station_r0" parent="def_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 id : NUMBER PK  (klucz z API)" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="def_station_r1" parent="def_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="def_station_r2" parent="def_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔗 dcit_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="def_station_r3" parent="def_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="is_active : BOOLEAN" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="def_station_r4" parent="def_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="first_seen_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="def_station_r5" parent="def_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="def_stop_type" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.def_stop_type" vertex="1">
+          <mxGeometry height="105" width="300" x="420" y="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="def_stop_type_r0" parent="def_stop_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 id : NUMBER PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="def_stop_type_r1" parent="def_stop_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="description : VARCHAR2(500)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="def_stop_type_r2" parent="def_stop_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="def_disruption_cause" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.def_disruption_cause" vertex="1">
+          <mxGeometry height="105" width="300" x="780" y="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="def_disruption_cause_r0" parent="def_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 code : VARCHAR2(20) PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="def_disruption_cause_r1" parent="def_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="description : VARCHAR2(500)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="def_disruption_cause_r2" parent="def_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_tbl_def" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.audit_tbl_def" vertex="1">
+          <mxGeometry height="230" width="300" x="1140" y="1045" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_tbl_def_r0" parent="audit_tbl_def" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 audit_id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_tbl_def_r1" parent="audit_tbl_def" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="table_name : VARCHAR2(30)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_tbl_def_r2" parent="audit_tbl_def" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="business_key : VARCHAR2(400)" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_tbl_def_r3" parent="audit_tbl_def" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="column_name : VARCHAR2(128)" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_tbl_def_r4" parent="audit_tbl_def" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="old_value : VARCHAR2(4000)" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_tbl_def_r5" parent="audit_tbl_def" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="new_value : VARCHAR2(4000)" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_tbl_def_r6" parent="audit_tbl_def" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="changed_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="audit_tbl_def_r7" parent="audit_tbl_def" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="changed_by : VARCHAR2(128)" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.operation_tracking_log" vertex="1">
+          <mxGeometry height="455" width="300" x="60" y="1335" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r0" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 operating_date : DATE PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r1" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r2" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="schedule_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r3" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="order_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r4" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="train_order_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r5" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔗 dsta_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r6" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="train_status : VARCHAR2(10)" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r7" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="actual_arrival : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r8" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="actual_departure : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r9" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="arrival_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r10" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="departure_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r11" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="is_confirmed : BOOLEAN" vertex="1">
+          <mxGeometry height="25" width="300" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r12" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="is_cancelled : BOOLEAN" vertex="1">
+          <mxGeometry height="25" width="300" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r13" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="change_hash : CHAR(64)" vertex="1">
+          <mxGeometry height="25" width="300" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r14" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="snapshot_ts : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r15" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="ingested_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="405" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_tracking_log_r16" parent="operation_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFFFFF;fontStyle=2;fontSize=10;" value="partycje: RANGE (operating_date), co miesiąc" vertex="1">
+          <mxGeometry height="25" width="300" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.schedule_details" vertex="1">
+          <mxGeometry height="505" width="300" x="420" y="1335" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r0" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑↪ schedule_id : NUMBER PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r1" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑↪ order_id : NUMBER PK" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r2" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 order_number : NUMBER PK" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r3" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="↪ dsta_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r4" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="arrival_time : VARCHAR2(8)" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r5" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="arrival_day : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r6" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="arrival_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r7" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="arrival_platform : VARCHAR2(10)" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r8" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="arrival_track : VARCHAR2(10)" vertex="1">
+          <mxGeometry height="25" width="300" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r9" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="arrival_category : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="300" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r10" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="arrival_train_no : VARCHAR2(50)" vertex="1">
+          <mxGeometry height="25" width="300" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r11" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="departure_time : VARCHAR2(8)" vertex="1">
+          <mxGeometry height="25" width="300" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r12" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="departure_day : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r13" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="departure_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r14" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="departure_platform : VARCHAR2(10)" vertex="1">
+          <mxGeometry height="25" width="300" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r15" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="departure_track : VARCHAR2(10)" vertex="1">
+          <mxGeometry height="25" width="300" y="405" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r16" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="departure_category : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="300" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r17" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="departure_train_no : VARCHAR2(50)" vertex="1">
+          <mxGeometry height="25" width="300" y="455" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_details_r18" parent="schedule_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔗 dstty_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="300" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.schedule_header" vertex="1">
+          <mxGeometry height="380" width="300" x="780" y="1335" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r0" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r1" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="schedule_id : NUMBER  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r2" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="order_id : NUMBER  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r3" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="train_order_id : NUMBER  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r4" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="operating_date : DATE  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r5" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r6" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="carrier_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r7" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r8" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="national_number : VARCHAR2(50)" vertex="1">
+          <mxGeometry height="25" width="300" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r9" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="intl_arrival_number : VARCHAR2(50)" vertex="1">
+          <mxGeometry height="25" width="300" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r10" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="intl_departure_number : VARCHAR2(50)" vertex="1">
+          <mxGeometry height="25" width="300" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r11" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="snapshot_ts : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r12" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="schedule_header_r13" parent="schedule_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="is_active : NUMBER(1)" vertex="1">
+          <mxGeometry height="25" width="300" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.disruption_tracking_log" vertex="1">
+          <mxGeometry height="380" width="300" x="1140" y="1335" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r0" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 operating_date : DATE PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r1" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r2" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="schedule_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r3" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="order_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r4" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="train_order_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r5" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="↪ dsta_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r6" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="sequence_number : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r7" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="disruption_type_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r8" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="message : VARCHAR2(1000)" vertex="1">
+          <mxGeometry height="25" width="300" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r9" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="change_hash : CHAR(64)" vertex="1">
+          <mxGeometry height="25" width="300" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r10" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="is_active : BOOLEAN  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="300" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r11" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="snapshot_ts : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r12" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_tracking_log_r13" parent="disruption_tracking_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFFFFF;fontStyle=2;fontSize=10;" value="partycje: RANGE (operating_date), co miesiąc" vertex="1">
+          <mxGeometry height="25" width="300" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_header" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.operation_header" vertex="1">
+          <mxGeometry height="230" width="300" x="60" y="1900" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_header_r0" parent="operation_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_header_r1" parent="operation_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="schedule_id : NUMBER  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_header_r2" parent="operation_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="order_id : NUMBER  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_header_r3" parent="operation_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="train_order_id : NUMBER  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_header_r4" parent="operation_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="operating_date : DATE  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_header_r5" parent="operation_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="train_status : VARCHAR2(10)" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_header_r6" parent="operation_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="snapshot_ts : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_header_r7" parent="operation_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.operation_details" vertex="1">
+          <mxGeometry height="305" width="300" x="420" y="1900" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r0" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑🔗 ophe_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r1" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 actual_sequence : NUMBER PK" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r2" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="planned_sequence : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r3" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="↪ dsta_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r4" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="actual_arrival : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r5" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="actual_departure : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r6" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="is_confirmed : BOOLEAN" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r7" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="is_cancelled : BOOLEAN" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r8" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="arrival_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r9" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="departure_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="operation_details_r10" parent="operation_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="dwell_time_sec : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_header" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.disruption_header" vertex="1">
+          <mxGeometry height="155" width="300" x="780" y="1900" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_header_r0" parent="disruption_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_header_r1" parent="disruption_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="disruption_type_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_header_r2" parent="disruption_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="message : VARCHAR2(1000)" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_header_r3" parent="disruption_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="snapshot_ts : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_header_r4" parent="disruption_header" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_details" parent="1" style="swimlane;startSize=30;fillColor=#DAE8FC;strokeColor=#1F4E79;fontStyle=1;fontSize=12;" value="silver.disruption_details" vertex="1">
+          <mxGeometry height="230" width="300" x="1140" y="1900" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_details_r0" parent="disruption_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 operating_date : DATE PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_details_r1" parent="disruption_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 schedule_id : NUMBER PK" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_details_r2" parent="disruption_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑 order_id : NUMBER PK" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_details_r3" parent="disruption_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑↪ dsta_id : NUMBER PK" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_details_r4" parent="disruption_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="🔑🔗 dihe_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_details_r5" parent="disruption_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="train_order_id : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_details_r6" parent="disruption_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="sequence_number : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="disruption_details_r7" parent="disruption_details" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#DAE8FC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="mnt_h" parent="1" style="text;html=1;strokeColor=none;fillColor=#555555;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontColor=#ffffff;fontSize=16;fontStyle=1;" value="SCHEMA: maintenance — audyt i utrzymanie" vertex="1">
+          <mxGeometry height="40" width="1500" y="2305" as="geometry" />
+        </mxCell>
+        <mxCell id="mnt_frame" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#555555;strokeWidth=2;dashed=1;arcSize=2;" value="" vertex="1">
+          <mxGeometry height="550" width="1500" y="2355" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run" parent="1" style="swimlane;startSize=30;fillColor=#E8E8E8;strokeColor=#555555;fontStyle=1;fontSize=12;" value="maintenance.pipeline_run" vertex="1">
+          <mxGeometry height="205" width="300" x="60" y="2395" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_r0" parent="pipeline_run" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_r1" parent="pipeline_run" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="run_date : DATE" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_r2" parent="pipeline_run" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="dag_run_id : VARCHAR2(250)  UQ" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_r3" parent="pipeline_run" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="start_time : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_r4" parent="pipeline_run" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="end_time : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_r5" parent="pipeline_run" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="status : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_r6" parent="pipeline_run" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="created_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_step" parent="1" style="swimlane;startSize=30;fillColor=#E8E8E8;strokeColor=#555555;fontStyle=1;fontSize=12;" value="maintenance.pipeline_run_step" vertex="1">
+          <mxGeometry height="230" width="300" x="420" y="2395" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_step_r0" parent="pipeline_run_step" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_step_r1" parent="pipeline_run_step" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="🔗 pipeline_run_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_step_r2" parent="pipeline_run_step" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="step_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_step_r3" parent="pipeline_run_step" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="start_time : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_step_r4" parent="pipeline_run_step" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="end_time : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_step_r5" parent="pipeline_run_step" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="status : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_step_r6" parent="pipeline_run_step" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="error_details : CLOB" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="pipeline_run_step_r7" parent="pipeline_run_step" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="created_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_load_log" parent="1" style="swimlane;startSize=30;fillColor=#E8E8E8;strokeColor=#555555;fontStyle=1;fontSize=12;" value="maintenance.stg_load_log" vertex="1">
+          <mxGeometry height="230" width="300" x="780" y="2395" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_load_log_r0" parent="stg_load_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="🔑 object_name : VARCHAR2(1024) PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_load_log_r1" parent="stg_load_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="feed : VARCHAR2(30)" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_load_log_r2" parent="stg_load_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="load_mode : VARCHAR2(30)" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_load_log_r3" parent="stg_load_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="part_date : DATE" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_load_log_r4" parent="stg_load_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="status : VARCHAR2(10)  (LOADED/FAILED)" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_load_log_r5" parent="stg_load_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="bytes : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_load_log_r6" parent="stg_load_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="err_msg : VARCHAR2(4000)" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="stg_load_log_r7" parent="stg_load_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat" parent="1" style="swimlane;startSize=30;fillColor=#E8E8E8;strokeColor=#555555;fontStyle=1;fontSize=12;" value="maintenance.poller_heartbeat" vertex="1">
+          <mxGeometry height="255" width="300" x="1140" y="2395" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat_r0" parent="poller_heartbeat" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="🔑 run_ts : TIMESTAMP PK" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat_r1" parent="poller_heartbeat" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="🔑 feed : VARCHAR2(30) PK" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat_r2" parent="poller_heartbeat" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="outcome : VARCHAR2(10)" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat_r3" parent="poller_heartbeat" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="delta_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat_r4" parent="poller_heartbeat" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="generated_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat_r5" parent="poller_heartbeat" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="lag_seconds : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat_r6" parent="poller_heartbeat" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="cycle_ms : NUMBER" vertex="1">
+          <mxGeometry height="25" width="300" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat_r7" parent="poller_heartbeat" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="err_msg : VARCHAR2(4000)" vertex="1">
+          <mxGeometry height="25" width="300" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="poller_heartbeat_r8" parent="poller_heartbeat" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="created_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="sql_exec_queue" parent="1" style="swimlane;startSize=30;fillColor=#E8E8E8;strokeColor=#555555;fontStyle=1;fontSize=12;" value="maintenance.sql_exec_queue" vertex="1">
+          <mxGeometry height="55" width="300" x="60" y="2710" as="geometry" />
+        </mxCell>
+        <mxCell id="sql_exec_queue_r0" parent="sql_exec_queue" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="sql_ : CLOB" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sql_exec_queue_log" parent="1" style="swimlane;startSize=30;fillColor=#E8E8E8;strokeColor=#555555;fontStyle=1;fontSize=12;" value="maintenance.sql_exec_queue_log" vertex="1">
+          <mxGeometry height="155" width="300" x="420" y="2710" as="geometry" />
+        </mxCell>
+        <mxCell id="sql_exec_queue_log_r0" parent="sql_exec_queue_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="300" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="sql_exec_queue_log_r1" parent="sql_exec_queue_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="executed_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="sql_exec_queue_log_r2" parent="sql_exec_queue_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="sql_ : CLOB" vertex="1">
+          <mxGeometry height="25" width="300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="sql_exec_queue_log_r3" parent="sql_exec_queue_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="status : VARCHAR2(10)  (DONE/FAILED)" vertex="1">
+          <mxGeometry height="25" width="300" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="sql_exec_queue_log_r4" parent="sql_exec_queue_log" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#E8E8E8;" value="error_msg : VARCHAR2(4000)" vertex="1">
+          <mxGeometry height="25" width="300" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="fk1" edge="1" parent="1" source="def_city" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F4E79;strokeWidth=1.5;startArrow=oval;startFill=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="def_station" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fk2" edge="1" parent="1" source="def_station" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F4E79;strokeWidth=1.5;startArrow=oval;startFill=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="operation_tracking_log" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fk3" edge="1" parent="1" source="def_stop_type" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F4E79;strokeWidth=1.5;startArrow=oval;startFill=1;endArrow=block;endFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="schedule_details" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fk4" edge="1" parent="1" source="operation_header_r0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F4E79;strokeWidth=1.5;startArrow=oval;startFill=1;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="operation_details_r0" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fk5" edge="1" parent="1" source="disruption_header_r0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F4E79;strokeWidth=1.5;startArrow=oval;startFill=1;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="disruption_details_r4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1" edge="1" parent="1" source="schedule_header_r1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#1F4E79;strokeWidth=1.5;startArrow=oval;startFill=1;endArrow=block;endFill=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;" target="schedule_details_r0" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fk6" edge="1" parent="1" source="pipeline_run_r0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#555555;strokeWidth=1.5;startArrow=oval;startFill=1;endArrow=block;endFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="pipeline_run_step_r1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

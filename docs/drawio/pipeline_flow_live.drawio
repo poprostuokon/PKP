@@ -1,0 +1,189 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="pipeline_flow_live" name="Pipeline Flow Live">
+    <mxGraphModel dx="1414" dy="3082" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2339" background="light-dark(#1a1a1a, #000000)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="frame" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A2B1A;strokeColor=light-dark(#4CAF82,#97D077);strokeWidth=2;arcSize=2;" value="" vertex="1">
+          <mxGeometry height="1010" width="1460" x="20" y="-10" as="geometry" />
+        </mxCell>
+        <mxCell id="header" parent="1" style="text;html=1;strokeColor=#0F6E56;fillColor=#0F3D30;align=center;verticalAlign=middle;rounded=1;fontColor=#E1F5EE;fontSize=14;fontStyle=1;" value="live_poller  ·  serwis Docker  ·  tick: 200 s (PKP_TICK_SECONDS)" vertex="1">
+          <mxGeometry height="40" width="650" x="295" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g1" parent="1" style="swimlane;startSize=0;fillColor=#0D2B22;strokeColor=#0F6E56;strokeWidth=2;dashed=1;rounded=1;arcSize=5;" value="" vertex="1">
+          <mxGeometry height="190" width="1100" x="70" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_g1" parent="g1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#4CAF82;fontSize=12;fontStyle=2;" value="&lt;b&gt;1. Prep — osobno dla operations i disruptions  (izolacja błędu per feed, bez zapisu STATE)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="700" x="20" y="8" as="geometry" />
+        </mxCell>
+        <mxCell id="s_fetch" parent="g1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F6E56;strokeColor=#0F6E56;fontColor=#E1F5EE;fontSize=11;fontStyle=1;" value="fetch&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;API PKP PLK · operations: wszystkie strony → jeden snapshot&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="190" x="25" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s_val" parent="g1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F6E56;strokeColor=#0F6E56;fontColor=#E1F5EE;fontSize=11;fontStyle=1;" value="validate&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;JSON Schema · błędny plik → kwarantanna ERR/LIVE&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="190" x="240" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s_stale" parent="g1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F6E56;strokeColor=#0F6E56;fontColor=#E1F5EE;fontSize=11;fontStyle=1;" value="stale check&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;generatedAt ≤ generatedAt ze STATE&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="190" x="455" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s_diff" parent="g1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F6E56;strokeColor=#0F6E56;fontColor=#E1F5EE;fontSize=11;fontStyle=1;" value="diff&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;SHA-256 pól śledzonych względem STATE&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="190" x="670" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="s_delta" parent="g1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F6E56;strokeColor=#0F6E56;fontColor=#E1F5EE;fontSize=11;fontStyle=1;" value="delta&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;tylko nowe / zmienione rekordy → TODO/LIVE/DATA&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="190" x="885" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="o_ERR" parent="g1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#7B5800,#FF6666);strokeColor=#B8860B;fontColor=#FFE680;fontSize=10;fontStyle=1;" value="ERR" vertex="1">
+          <mxGeometry height="30" width="110" x="280" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="o_STALE" parent="g1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#7B5800,#FF6666);strokeColor=#B8860B;fontColor=#FFE680;fontSize=10;fontStyle=1;" value="STALE" vertex="1">
+          <mxGeometry height="30" width="110" x="495" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="o_EMPTY" parent="g1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#7B5800,#FF6666);strokeColor=#B8860B;fontColor=#FFE680;fontSize=10;fontStyle=1;" value="EMPTY" vertex="1">
+          <mxGeometry height="30" width="110" x="710" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="o_OK" parent="g1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#7B5800,#FF6666);strokeColor=#B8860B;fontColor=#FFE680;fontSize=10;fontStyle=1;" value="OK" vertex="1">
+          <mxGeometry height="30" width="110" x="925" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="g2" parent="1" style="swimlane;startSize=0;fillColor=#2B1A0D;strokeColor=#CD7F32;strokeWidth=2;dashed=1;rounded=1;arcSize=5;" value="" vertex="1">
+          <mxGeometry height="120" width="1100" x="70" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_g2" parent="g2" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#E0A060;fontSize=12;fontStyle=2;" value="&lt;b&gt;2. Sink — jeden upload dla obu feedów&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="700" x="20" y="8" as="geometry" />
+        </mxCell>
+        <mxCell id="up" parent="g2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5C3A1E;strokeColor=#CD7F32;fontColor=#F5D6B0;fontSize=11;fontStyle=1;" value="upload_live&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;delta → bucket live · weryfikacja MD5 · każdy plik niezależnie&lt;/span&gt;" vertex="1">
+          <mxGeometry height="56" width="380" x="100" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="up_res" parent="g2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5C3A1E;strokeColor=#CD7F32;fontColor=#F5D6B0;fontSize=11;fontStyle=1;" value="pliki lokalne&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;sukces → ARCHIVE/LIVE/&amp;lt;data&amp;gt;  ·  błąd → ERR/LIVE/&amp;lt;data&amp;gt;&lt;/span&gt;" vertex="1">
+          <mxGeometry height="56" width="380" x="620" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="g3" parent="1" style="swimlane;startSize=0;fillColor=#222222;strokeColor=#888888;strokeWidth=2;dashed=1;rounded=1;arcSize=5;" value="" vertex="1">
+          <mxGeometry height="130" width="1100" x="70" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_g3" parent="g3" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#BBBBBB;fontSize=12;fontStyle=2;" value="&lt;b&gt;3. STATE + heartbeat — dopiero po sinku&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="700" x="20" y="8" as="geometry" />
+        </mxCell>
+        <mxCell id="st" parent="g3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3A3A3A;strokeColor=#888888;fontColor=#E0E0E0;fontSize=11;fontStyle=1;" value="save_state  (state_&amp;lt;feed&amp;gt;.json, zapis atomowy)&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;OK → tylko gdy delta jest w buckecie  ·  EMPTY → zawsze  ·  STALE / ERR → bez zmian&lt;/span&gt;" vertex="1">
+          <mxGeometry height="66" width="480" x="50" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="hb" parent="g3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3A3A3A;strokeColor=#888888;fontColor=#E0E0E0;fontSize=11;fontStyle=1;" value="heartbeat&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;lokalny spool .jsonl → maintenance.poller_heartbeat&lt;br&gt;wynik, liczba rekordów, lag, czas cyklu&lt;/span&gt;" vertex="1">
+          <mxGeometry height="66" width="480" x="570" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="g4" parent="1" style="swimlane;startSize=0;fillColor=#1A2535;strokeColor=#4A6FA5;strokeWidth=2;dashed=1;rounded=1;arcSize=5;" value="" vertex="1">
+          <mxGeometry height="130" width="1100" x="70" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_g4" parent="g4" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontColor=#7EB8F7;fontSize=12;fontStyle=2;" value="&lt;b&gt;4. Baza — best-effort, tylko gdy delta trafiła do bucketu  (błąd nie cofa STATE; plik dociągnie kolejny cykl)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="22" width="700" x="20" y="8" as="geometry" />
+        </mxCell>
+        <mxCell id="pstg" parent="g4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#4A6FA5;fontColor=#A8D4FF;fontSize=11;fontStyle=1;" value="prepare_stg_live&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;bucket live → stg.land_*_live&lt;br&gt;gate: stg_load_log (LOADED pomija, FAILED ponawia)&lt;/span&gt;" vertex="1">
+          <mxGeometry height="66" width="320" x="30" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="psil" parent="g4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#4A6FA5;fontColor=#A8D4FF;fontSize=11;fontStyle=1;" value="p_load_all_live&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;silver.pkg_silver_load_live&lt;br&gt;jedna transakcja: COMMIT / ROLLBACK&lt;/span&gt;" vertex="1">
+          <mxGeometry height="66" width="320" x="390" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="trk" parent="g4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#4A6FA5;fontColor=#A8D4FF;fontSize=11;fontStyle=1;" value="tracking w Silver&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;operation_tracking_log: insert-only wg change_hash&lt;br&gt;disruption_tracking_log: SCD2&lt;/span&gt;" vertex="1">
+          <mxGeometry height="66" width="320" x="750" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="sleep" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3A3A3A;strokeColor=#888888;fontColor=#E0E0E0;fontSize=12;fontStyle=1;" value="sleep&lt;br&gt;&lt;span style=&quot;font-weight:normal;font-size:10px;&quot;&gt;do pełnych 200 s od startu cyklu → kolejny tick&lt;/span&gt;" vertex="1">
+          <mxGeometry height="50" width="400" x="420" y="905" as="geometry" />
+        </mxCell>
+        <mxCell id="a0" edge="1" parent="1" source="header" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="g1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s0" edge="1" parent="1" source="s_fetch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s_val" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" edge="1" parent="1" source="s_val" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s_stale" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" edge="1" parent="1" source="s_stale" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s_diff" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" edge="1" parent="1" source="s_diff" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s_delta" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eo_ERR" edge="1" parent="1" source="s_val" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B8860B;strokeWidth=1.5;endArrow=block;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="o_ERR" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eo_STALE" edge="1" parent="1" source="s_stale" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B8860B;strokeWidth=1.5;endArrow=block;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="o_STALE" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eo_EMPTY" edge="1" parent="1" source="s_diff" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B8860B;strokeWidth=1.5;endArrow=block;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="o_EMPTY" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="eo_OK" edge="1" parent="1" source="s_delta" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B8860B;strokeWidth=1.5;endArrow=block;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="o_OK" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" edge="1" parent="1" source="g1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="g2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" edge="1" parent="1" source="up" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E0A060;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="up_res" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" edge="1" parent="1" source="g2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#E0A060;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="g3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a4" edge="1" parent="1" source="st" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#888888;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="hb" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a5" edge="1" parent="1" source="g3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B8860B;strokeWidth=2;endArrow=block;endFill=1;dashed=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="g4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a6" edge="1" parent="1" source="psil" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7EB8F7;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="trk" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a6b" edge="1" parent="1" source="pstg" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7EB8F7;strokeWidth=1.5;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="psil" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a7" edge="1" parent="1" source="g4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#7EB8F7;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="sleep" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="loop" edge="1" parent="1" source="sleep" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#888888;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;dashed=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="header" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="45" y="930" />
+              <mxPoint x="45" y="50" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_header" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;fontStyle=1;fontColor=#E0E0E0;" value="Legenda" vertex="1">
+          <mxGeometry height="20" width="80" x="1250" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_ing" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0F6E56;strokeColor=#0F6E56;fontColor=#E1F5EE;fontSize=10;" value="Prep (API → delta)" vertex="1">
+          <mxGeometry height="30" width="180" x="1250" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_brz" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#5C3A1E;strokeColor=#CD7F32;fontColor=#F5D6B0;fontSize=10;" value="Sink (bucket live)" vertex="1">
+          <mxGeometry height="30" width="180" x="1250" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_aud" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3A3A3A;strokeColor=#888888;fontColor=#E0E0E0;fontSize=10;" value="STATE / heartbeat" vertex="1">
+          <mxGeometry height="30" width="180" x="1250" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_sil" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1E3A5F;strokeColor=#4A6FA5;fontColor=#A8D4FF;fontSize=10;" value="Baza (stg → Silver)" vertex="1">
+          <mxGeometry height="30" width="180" x="1250" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_tr" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#7B5800,#FF6666);strokeColor=#B8860B;fontColor=#FFE680;fontSize=10;" value="wynik feedu w cyklu" vertex="1">
+          <mxGeometry height="30" width="180" x="1250" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_t1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;spacingLeft=40;fontColor=#E0E0E0;" value="kolejny krok" vertex="1">
+          <mxGeometry height="20" width="190" x="1250" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_a1" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#4CAF82;strokeWidth=2;endArrow=block;endFill=1;startArrow=oval;startFill=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="350" as="sourcePoint" />
+            <mxPoint x="1280" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leg_t2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=10;spacingLeft=40;fontColor=#E0E0E0;" value="warunkowo / wynik / pętla" vertex="1">
+          <mxGeometry height="20" width="190" x="1250" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="leg_a2" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;strokeColor=#B8860B;strokeWidth=1.5;endArrow=block;endFill=1;dashed=1;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1250" y="380" as="sourcePoint" />
+            <mxPoint x="1280" y="380" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="note" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#222222;strokeColor=#888888;fontColor=#E0E0E0;fontSize=10;align=left;verticalAlign=top;spacing=8;dashed=1;" value="&lt;b&gt;Wyniki feedu&lt;/b&gt;&lt;br&gt;&lt;b&gt;OK&lt;/b&gt; — jest delta, idzie do bucketu&lt;br&gt;&lt;b&gt;EMPTY&lt;/b&gt; — snapshot nowy, brak zmian&lt;br&gt;&lt;b&gt;STALE&lt;/b&gt; — API nie odświeżyło danych&lt;br&gt;&lt;b&gt;ERR&lt;/b&gt; — błąd pobrania lub walidacji&lt;br&gt;&lt;br&gt;&lt;b&gt;Samonaprawa&lt;/b&gt;&lt;br&gt;STATE zapisywany po udanym uploadzie: nieudany cykl nie przesuwa stanu, więc następny tick wylicza tę samą deltę ponownie." vertex="1">
+          <mxGeometry height="200" width="200" x="1250" y="420" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

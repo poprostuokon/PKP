@@ -1,0 +1,1333 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="gold_star_schema" name="Gold Star Schema">
+    <mxGraphModel dx="3068" dy="743" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="gold_header" parent="1" style="text;html=1;strokeColor=none;fillColor=#B8860B;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=1;fontColor=#ffffff;fontSize=16;fontStyle=1;" value="SCHEMA: gold — Star Schema" vertex="1">
+          <mxGeometry height="40" width="2480" as="geometry" />
+        </mxCell>
+        <mxCell id="leg1" parent="1" style="text;html=1;strokeColor=#B8860B;fillColor=#FFE680;align=left;verticalAlign=middle;spacingLeft=10;rounded=1;fontSize=11;" value="🟨 Tabela faktów (f_*_daily / f_*_monthly)" vertex="1">
+          <mxGeometry height="30" width="360" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="leg2" parent="1" style="text;html=1;strokeColor=#B8860B;fillColor=#FFF8DC;align=left;verticalAlign=middle;spacingLeft=10;rounded=1;fontSize=11;" value="🟧 Tabela wymiaru (d_*)" vertex="1">
+          <mxGeometry height="30" width="360" x="380" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="leg3" parent="1" style="text;html=1;strokeColor=#B8860B;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;rounded=1;fontSize=11;" value="🔑 klucz główny   ·   🔗 klucz obcy (relacja logiczna, bez constraintu FK)" vertex="1">
+          <mxGeometry height="30" width="520" x="760" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="leg4" parent="1" style="text;html=1;strokeColor=#B8860B;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=10;rounded=1;fontSize=11;" value="Progi punktualności UTK: na czas &amp;lt; 6 min, opóźniony ≥ 6 min   ·   day_type: WD = dni robocze, WE = weekend" vertex="1">
+          <mxGeometry height="30" width="760" x="1300" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s0" parent="1" style="swimlane;startSize=0;fillColor=none;strokeColor=#B8860B;strokeWidth=2;dashed=1;rounded=1;" value="" vertex="1">
+          <mxGeometry height="800" width="1200" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_h" parent="s0" style="text;html=1;strokeColor=none;fillColor=#8B6914;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;fontSize=13;fontStyle=1;spacingLeft=10;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Gold — kursy, dziennie&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f" parent="s0" style="swimlane;startSize=30;fillColor=#FFE680;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.f_train_run_daily" vertex="1">
+          <mxGeometry height="405" width="320" x="440" y="202" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r0" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 date_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r1" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 route_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r2" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 train_type_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r3" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 status_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r4" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="runs_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r5" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="delayed_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r6" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_terminal_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r7" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_delayed_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r8" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="max_terminal_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r9" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="travel_runs_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r10" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_planned_travel_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r11" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_actual_travel_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r12" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="min_actual_travel_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r13" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="max_actual_travel_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_f_r14" parent="s0_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="320" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_p" parent="s0" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#8B6914;" value="partycje: RANGE (date_id) INTERVAL (100) → 1 partycja / miesiąc&lt;br&gt;PK na indeksie LOCAL" vertex="1">
+          <mxGeometry height="34" width="360" x="420" y="615" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date" parent="s0" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_date" vertex="1">
+          <mxGeometry height="330" width="280" x="40" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r0" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (YYYYMMDD)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r1" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="full_date : DATE  UQ" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r2" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="year : NUMBER(4)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r3" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="quarter : NUMBER(1)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r4" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="month : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r5" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="month_name : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r6" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r7" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day_of_week : NUMBER(1)  (ISO)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r8" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day_name : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r9" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="iso_week : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r10" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="is_weekend : CHAR(1)  (T/N)" vertex="1">
+          <mxGeometry height="25" width="280" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_date_r11" parent="s0_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_e_d_date" edge="1" parent="s0" source="s0_d_date" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s0_f_r0" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_route" parent="s0" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_route" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="545" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_route_r0" parent="s0_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_route_r1" parent="s0_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 from_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_route_r2" parent="s0_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 to_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_route_r3" parent="s0_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_e_d_route" edge="1" parent="s0" source="s0_d_route" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s0_f_r1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type" parent="s0" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_type" vertex="1">
+          <mxGeometry height="255" width="280" x="880" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type_r0" parent="s0_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type_r1" parent="s0_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type_r2" parent="s0_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type_r3" parent="s0_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="speed_category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type_r4" parent="s0_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type_r5" parent="s0_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type_r6" parent="s0_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_from : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type_r7" parent="s0_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_to : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_type_r8" parent="s0_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_e_d_train_type" edge="1" parent="s0" source="s0_d_train_type" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s0_f_r2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_status" parent="s0" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_status" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="507" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_status_r0" parent="s0_d_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_status_r1" parent="s0_d_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="status_code : VARCHAR2(20)  UQ" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_status_r2" parent="s0_d_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="status_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_d_train_status_r3" parent="s0_d_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s0_e_d_train_status" edge="1" parent="s0" source="s0_d_train_status" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s0_f_r3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" parent="1" style="swimlane;startSize=0;fillColor=none;strokeColor=#B8860B;strokeWidth=2;dashed=1;rounded=1;" value="" vertex="1">
+          <mxGeometry height="800" width="1200" x="1280" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_h" parent="s1" style="text;html=1;strokeColor=none;fillColor=#8B6914;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;fontSize=13;fontStyle=1;spacingLeft=10;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Gold — przyjazdy na przystankach, dziennie&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f" parent="s1" style="swimlane;startSize=30;fillColor=#FFE680;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.f_train_stop_daily" vertex="1">
+          <mxGeometry height="355" width="320" x="440" y="227" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r0" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 date_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r1" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 route_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r2" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 train_type_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r3" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 station_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r4" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 hour_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r5" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="arrivals_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r6" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="arrivals_on_time : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r7" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="arrivals_delayed : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r8" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_arrival_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r9" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_delayed_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r10" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="max_arrival_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r11" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="cancelled_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_f_r12" parent="s1_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="320" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_p" parent="s1" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#8B6914;" value="partycje: RANGE (date_id) INTERVAL (100) → 1 partycja / miesiąc&lt;br&gt;PK na indeksie LOCAL" vertex="1">
+          <mxGeometry height="34" width="360" x="420" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date" parent="s1" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_date" vertex="1">
+          <mxGeometry height="330" width="280" x="40" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r0" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (YYYYMMDD)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r1" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="full_date : DATE  UQ" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r2" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="year : NUMBER(4)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r3" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="quarter : NUMBER(1)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r4" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="month : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r5" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="month_name : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r6" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r7" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day_of_week : NUMBER(1)  (ISO)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r8" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day_name : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r9" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="iso_week : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r10" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="is_weekend : CHAR(1)  (T/N)" vertex="1">
+          <mxGeometry height="25" width="280" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_date_r11" parent="s1_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_e_d_date" edge="1" parent="s1" source="s1_d_date" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s1_f_r0" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_route" parent="s1" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_route" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_route_r0" parent="s1_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_route_r1" parent="s1_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 from_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_route_r2" parent="s1_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 to_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_route_r3" parent="s1_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_e_d_route" edge="1" parent="s1" source="s1_d_route" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s1_f_r1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_station" parent="s1" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_station" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_station_r0" parent="s1_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (klucz z API)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_station_r1" parent="s1_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="station_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_station_r2" parent="s1_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="city_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_station_r3" parent="s1_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_e_d_station" edge="1" parent="s1" source="s1_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s1_f_r3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type" parent="s1" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_type" vertex="1">
+          <mxGeometry height="255" width="280" x="880" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type_r0" parent="s1_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type_r1" parent="s1_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type_r2" parent="s1_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type_r3" parent="s1_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="speed_category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type_r4" parent="s1_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type_r5" parent="s1_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type_r6" parent="s1_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_from : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type_r7" parent="s1_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_to : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_train_type_r8" parent="s1_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_e_d_train_type" edge="1" parent="s1" source="s1_d_train_type" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s1_f_r2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_hour" parent="s1" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_hour" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="507" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_hour_r0" parent="s1_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER(2) PK  (0-23)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_hour_r1" parent="s1_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="hour_label : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_hour_r2" parent="s1_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="part_of_day : VARCHAR2(30)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_d_hour_r3" parent="s1_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_e_d_hour" edge="1" parent="s1" source="s1_d_hour" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s1_f_r4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s1_e_rs" edge="1" parent="s1" source="s1_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="s1_d_route" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" parent="1" style="swimlane;startSize=0;fillColor=none;strokeColor=#B8860B;strokeWidth=2;dashed=1;rounded=1;" value="" vertex="1">
+          <mxGeometry height="800" width="1200" y="1870" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_h" parent="s2" style="text;html=1;strokeColor=none;fillColor=#8B6914;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;fontSize=13;fontStyle=1;spacingLeft=10;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Gold — odjazdy z przystanków, dziennie&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f" parent="s2" style="swimlane;startSize=30;fillColor=#FFE680;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.f_train_dep_daily" vertex="1">
+          <mxGeometry height="355" width="320" x="440" y="227" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r0" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 date_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r1" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 route_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r2" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 train_type_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r3" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 station_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r4" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 hour_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r5" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="departures_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r6" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="departures_on_time : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r7" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="departures_delayed : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r8" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_departure_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r9" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_delayed_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r10" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="max_departure_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r11" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="cancelled_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_f_r12" parent="s2_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="320" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_p" parent="s2" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#8B6914;" value="partycje: RANGE (date_id) INTERVAL (100) → 1 partycja / miesiąc&lt;br&gt;PK na indeksie LOCAL" vertex="1">
+          <mxGeometry height="34" width="360" x="420" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date" parent="s2" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_date" vertex="1">
+          <mxGeometry height="330" width="280" x="40" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r0" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (YYYYMMDD)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r1" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="full_date : DATE  UQ" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r2" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="year : NUMBER(4)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r3" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="quarter : NUMBER(1)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r4" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="month : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r5" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="month_name : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r6" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r7" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day_of_week : NUMBER(1)  (ISO)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r8" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day_name : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r9" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="iso_week : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r10" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="is_weekend : CHAR(1)  (T/N)" vertex="1">
+          <mxGeometry height="25" width="280" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_date_r11" parent="s2_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_e_d_date" edge="1" parent="s2" source="s2_d_date" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s2_f_r0" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_route" parent="s2" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_route" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_route_r0" parent="s2_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_route_r1" parent="s2_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 from_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_route_r2" parent="s2_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 to_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_route_r3" parent="s2_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_e_d_route" edge="1" parent="s2" source="s2_d_route" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s2_f_r1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_station" parent="s2" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_station" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_station_r0" parent="s2_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (klucz z API)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_station_r1" parent="s2_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="station_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_station_r2" parent="s2_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="city_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_station_r3" parent="s2_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_e_d_station" edge="1" parent="s2" source="s2_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s2_f_r3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type" parent="s2" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_type" vertex="1">
+          <mxGeometry height="255" width="280" x="880" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type_r0" parent="s2_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type_r1" parent="s2_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type_r2" parent="s2_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type_r3" parent="s2_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="speed_category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type_r4" parent="s2_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type_r5" parent="s2_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type_r6" parent="s2_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_from : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type_r7" parent="s2_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_to : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_train_type_r8" parent="s2_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_e_d_train_type" edge="1" parent="s2" source="s2_d_train_type" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s2_f_r2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_hour" parent="s2" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_hour" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="507" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_hour_r0" parent="s2_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER(2) PK  (0-23)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_hour_r1" parent="s2_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="hour_label : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_hour_r2" parent="s2_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="part_of_day : VARCHAR2(30)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_d_hour_r3" parent="s2_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_e_d_hour" edge="1" parent="s2" source="s2_d_hour" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s2_f_r4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s2_e_rs" edge="1" parent="s2" source="s2_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="s2_d_route" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" parent="1" style="swimlane;startSize=0;fillColor=none;strokeColor=#B8860B;strokeWidth=2;dashed=1;rounded=1;" value="" vertex="1">
+          <mxGeometry height="800" width="1200" x="1280" y="1870" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_h" parent="s3" style="text;html=1;strokeColor=none;fillColor=#8B6914;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;fontSize=13;fontStyle=1;spacingLeft=10;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Gold — utrudnienia, dziennie&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f" parent="s3" style="swimlane;startSize=30;fillColor=#FFE680;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.f_train_disruption_daily" vertex="1">
+          <mxGeometry height="280" width="320" x="440" y="265" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r0" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 date_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r1" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 route_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r2" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 station_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r3" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 train_type_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r4" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 hour_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r5" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 cause_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r6" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="occurrences_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r7" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="runs_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r8" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="runs_total_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_f_r9" parent="s3_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="320" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_p" parent="s3" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#8B6914;" value="partycje: RANGE (date_id) INTERVAL (100) → 1 partycja / miesiąc&lt;br&gt;PK na indeksie LOCAL" vertex="1">
+          <mxGeometry height="34" width="360" x="420" y="553" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date" parent="s3" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_date" vertex="1">
+          <mxGeometry height="330" width="280" x="40" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r0" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (YYYYMMDD)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r1" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="full_date : DATE  UQ" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r2" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="year : NUMBER(4)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r3" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="quarter : NUMBER(1)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r4" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="month : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r5" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="month_name : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r6" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r7" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day_of_week : NUMBER(1)  (ISO)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r8" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="day_name : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r9" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="iso_week : NUMBER(2)" vertex="1">
+          <mxGeometry height="25" width="280" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r10" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="is_weekend : CHAR(1)  (T/N)" vertex="1">
+          <mxGeometry height="25" width="280" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_date_r11" parent="s3_d_date" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_e_d_date" edge="1" parent="s3" source="s3_d_date" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s3_f_r0" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_route" parent="s3" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_route" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="460" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_route_r0" parent="s3_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_route_r1" parent="s3_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 from_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_route_r2" parent="s3_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 to_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_route_r3" parent="s3_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_e_d_route" edge="1" parent="s3" source="s3_d_route" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s3_f_r1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_station" parent="s3" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_station" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="630" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_station_r0" parent="s3_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (klucz z API)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_station_r1" parent="s3_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="station_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_station_r2" parent="s3_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="city_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_station_r3" parent="s3_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_e_d_station" edge="1" parent="s3" source="s3_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s3_f_r2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type" parent="s3" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_type" vertex="1">
+          <mxGeometry height="255" width="280" x="880" y="127" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type_r0" parent="s3_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type_r1" parent="s3_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type_r2" parent="s3_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type_r3" parent="s3_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="speed_category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type_r4" parent="s3_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type_r5" parent="s3_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type_r6" parent="s3_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_from : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type_r7" parent="s3_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_to : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_train_type_r8" parent="s3_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_e_d_train_type" edge="1" parent="s3" source="s3_d_train_type" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s3_f_r3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_hour" parent="s3" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_hour" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_hour_r0" parent="s3_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER(2) PK  (0-23)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_hour_r1" parent="s3_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="hour_label : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_hour_r2" parent="s3_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="part_of_day : VARCHAR2(30)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_hour_r3" parent="s3_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_e_d_hour" edge="1" parent="s3" source="s3_d_hour" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s3_f_r4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_disruption_cause" parent="s3" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_disruption_cause" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="592" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_disruption_cause_r0" parent="s3_d_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_disruption_cause_r1" parent="s3_d_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="cause_code : VARCHAR2(20)  UQ" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_disruption_cause_r2" parent="s3_d_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="cause_name : VARCHAR2(400)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_d_disruption_cause_r3" parent="s3_d_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_e_d_disruption_cause" edge="1" parent="s3" source="s3_d_disruption_cause" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s3_f_r5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3_e_rs" edge="1" parent="s3" source="s3_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="s3_d_route" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" parent="1" style="swimlane;startSize=0;fillColor=none;strokeColor=#B8860B;strokeWidth=2;dashed=1;rounded=1;" value="" vertex="1">
+          <mxGeometry height="800" width="1200" y="990" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_h" parent="s4" style="text;html=1;strokeColor=none;fillColor=#8B6914;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;fontSize=13;fontStyle=1;spacingLeft=10;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Gold — kursy, miesięcznie&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f" parent="s4" style="swimlane;startSize=30;fillColor=#FFE680;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.f_train_run_monthly" vertex="1">
+          <mxGeometry height="430" width="320" x="440" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r0" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑 month : NUMBER(6) PK  (YYYYMM)" vertex="1">
+          <mxGeometry height="25" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r1" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 route_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r2" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 train_type_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r3" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 status_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r4" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑 day_type : CHAR(2) PK  (WD/WE)" vertex="1">
+          <mxGeometry height="25" width="320" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r5" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="runs_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r6" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="delayed_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r7" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_terminal_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r8" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_delayed_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r9" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="max_terminal_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r10" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="travel_runs_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r11" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_planned_travel_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r12" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_actual_travel_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r13" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="min_actual_travel_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r14" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="max_actual_travel_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_f_r15" parent="s4_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="320" y="405" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_p" parent="s4" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#8B6914;" value="partycje: RANGE (month) INTERVAL (1) → 1 partycja / miesiąc&lt;br&gt;PK na indeksie LOCAL" vertex="1">
+          <mxGeometry height="34" width="360" x="420" y="628" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_route" parent="s4" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_route" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_route_r0" parent="s4_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_route_r1" parent="s4_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 from_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_route_r2" parent="s4_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 to_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_route_r3" parent="s4_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_e_d_route" edge="1" parent="s4" source="s4_d_route" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s4_f_r1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type" parent="s4" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_type" vertex="1">
+          <mxGeometry height="255" width="280" x="880" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type_r0" parent="s4_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type_r1" parent="s4_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type_r2" parent="s4_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type_r3" parent="s4_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="speed_category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type_r4" parent="s4_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type_r5" parent="s4_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type_r6" parent="s4_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_from : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type_r7" parent="s4_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_to : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_type_r8" parent="s4_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_e_d_train_type" edge="1" parent="s4" source="s4_d_train_type" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s4_f_r2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_status" parent="s4" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_status" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="507" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_status_r0" parent="s4_d_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_status_r1" parent="s4_d_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="status_code : VARCHAR2(20)  UQ" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_status_r2" parent="s4_d_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="status_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_d_train_status_r3" parent="s4_d_train_status" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s4_e_d_train_status" edge="1" parent="s4" source="s4_d_train_status" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s4_f_r3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s5" parent="1" style="swimlane;startSize=0;fillColor=none;strokeColor=#B8860B;strokeWidth=2;dashed=1;rounded=1;" value="" vertex="1">
+          <mxGeometry height="800" width="1200" x="1280" y="990" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_h" parent="s5" style="text;html=1;strokeColor=none;fillColor=#8B6914;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;fontSize=13;fontStyle=1;spacingLeft=10;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Gold — przyjazdy na przystankach, miesięcznie&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f" parent="s5" style="swimlane;startSize=30;fillColor=#FFE680;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.f_train_stop_monthly" vertex="1">
+          <mxGeometry height="380" width="320" x="440" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r0" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑 month : NUMBER(6) PK  (YYYYMM)" vertex="1">
+          <mxGeometry height="25" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r1" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 route_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r2" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 train_type_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r3" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 station_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r4" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 hour_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r5" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑 day_type : CHAR(2) PK  (WD/WE)" vertex="1">
+          <mxGeometry height="25" width="320" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r6" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="arrivals_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r7" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="arrivals_on_time : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r8" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="arrivals_delayed : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r9" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_arrival_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r10" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_delayed_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r11" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="max_arrival_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r12" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="cancelled_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_f_r13" parent="s5_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="320" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_p" parent="s5" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#8B6914;" value="partycje: RANGE (month) INTERVAL (1) → 1 partycja / miesiąc&lt;br&gt;PK na indeksie LOCAL" vertex="1">
+          <mxGeometry height="34" width="360" x="420" y="603" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_route" parent="s5" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_route" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_route_r0" parent="s5_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_route_r1" parent="s5_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 from_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_route_r2" parent="s5_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 to_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_route_r3" parent="s5_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_e_d_route" edge="1" parent="s5" source="s5_d_route" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s5_f_r1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_station" parent="s5" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_station" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_station_r0" parent="s5_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (klucz z API)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_station_r1" parent="s5_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="station_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_station_r2" parent="s5_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="city_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_station_r3" parent="s5_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_e_d_station" edge="1" parent="s5" source="s5_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s5_f_r3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type" parent="s5" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_type" vertex="1">
+          <mxGeometry height="255" width="280" x="880" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type_r0" parent="s5_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type_r1" parent="s5_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type_r2" parent="s5_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type_r3" parent="s5_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="speed_category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type_r4" parent="s5_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type_r5" parent="s5_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type_r6" parent="s5_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_from : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type_r7" parent="s5_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_to : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_train_type_r8" parent="s5_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_e_d_train_type" edge="1" parent="s5" source="s5_d_train_type" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s5_f_r2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_hour" parent="s5" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_hour" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="507" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_hour_r0" parent="s5_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER(2) PK  (0-23)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_hour_r1" parent="s5_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="hour_label : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_hour_r2" parent="s5_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="part_of_day : VARCHAR2(30)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_d_hour_r3" parent="s5_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_e_d_hour" edge="1" parent="s5" source="s5_d_hour" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s5_f_r4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s5_e_rs" edge="1" parent="s5" source="s5_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="s5_d_route" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s6" parent="1" style="swimlane;startSize=0;fillColor=none;strokeColor=#B8860B;strokeWidth=2;dashed=1;rounded=1;" value="" vertex="1">
+          <mxGeometry height="800" width="1200" y="2750" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_h" parent="s6" style="text;html=1;strokeColor=none;fillColor=#8B6914;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;fontSize=13;fontStyle=1;spacingLeft=10;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Gold — odjazdy z przystanków, miesięcznie&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f" parent="s6" style="swimlane;startSize=30;fillColor=#FFE680;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.f_train_dep_monthly" vertex="1">
+          <mxGeometry height="380" width="320" x="440" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r0" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑 month : NUMBER(6) PK  (YYYYMM)" vertex="1">
+          <mxGeometry height="25" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r1" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 route_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r2" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 train_type_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r3" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 station_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r4" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 hour_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r5" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑 day_type : CHAR(2) PK  (WD/WE)" vertex="1">
+          <mxGeometry height="25" width="320" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r6" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="departures_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r7" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="departures_on_time : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r8" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="departures_delayed : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r9" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_departure_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r10" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="sum_delayed_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r11" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="max_departure_delay_min : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="305" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r12" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="cancelled_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_f_r13" parent="s6_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="320" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_p" parent="s6" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#8B6914;" value="partycje: RANGE (month) INTERVAL (1) → 1 partycja / miesiąc&lt;br&gt;PK na indeksie LOCAL" vertex="1">
+          <mxGeometry height="34" width="360" x="420" y="603" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_route" parent="s6" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_route" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_route_r0" parent="s6_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_route_r1" parent="s6_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 from_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_route_r2" parent="s6_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 to_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_route_r3" parent="s6_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_e_d_route" edge="1" parent="s6" source="s6_d_route" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s6_f_r1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_station" parent="s6" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_station" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_station_r0" parent="s6_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (klucz z API)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_station_r1" parent="s6_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="station_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_station_r2" parent="s6_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="city_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_station_r3" parent="s6_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_e_d_station" edge="1" parent="s6" source="s6_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s6_f_r3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type" parent="s6" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_type" vertex="1">
+          <mxGeometry height="255" width="280" x="880" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type_r0" parent="s6_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type_r1" parent="s6_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type_r2" parent="s6_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type_r3" parent="s6_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="speed_category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type_r4" parent="s6_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type_r5" parent="s6_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type_r6" parent="s6_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_from : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type_r7" parent="s6_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_to : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_train_type_r8" parent="s6_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_e_d_train_type" edge="1" parent="s6" source="s6_d_train_type" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s6_f_r2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_hour" parent="s6" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_hour" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="507" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_hour_r0" parent="s6_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER(2) PK  (0-23)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_hour_r1" parent="s6_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="hour_label : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_hour_r2" parent="s6_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="part_of_day : VARCHAR2(30)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_d_hour_r3" parent="s6_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_e_d_hour" edge="1" parent="s6" source="s6_d_hour" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s6_f_r4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s6_e_rs" edge="1" parent="s6" source="s6_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="s6_d_route" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s7" parent="1" style="swimlane;startSize=0;fillColor=none;strokeColor=#B8860B;strokeWidth=2;dashed=1;rounded=1;" value="" vertex="1">
+          <mxGeometry height="800" width="1200" x="1280" y="2750" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_h" parent="s7" style="text;html=1;strokeColor=none;fillColor=#8B6914;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#ffffff;fontSize=13;fontStyle=1;spacingLeft=10;" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;Gold — utrudnienia, miesięcznie&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="1200" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f" parent="s7" style="swimlane;startSize=30;fillColor=#FFE680;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.f_train_disruption_monthly" vertex="1">
+          <mxGeometry height="305" width="320" x="440" y="252" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r0" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑 month : NUMBER(6) PK  (YYYYMM)" vertex="1">
+          <mxGeometry height="25" width="320" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r1" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 route_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r2" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 station_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r3" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 train_type_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r4" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 hour_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r5" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑🔗 cause_id : NUMBER PK FK" vertex="1">
+          <mxGeometry height="25" width="320" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r6" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF5B0;" value="🔑 day_type : CHAR(2) PK  (WD/WE)" vertex="1">
+          <mxGeometry height="25" width="320" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r7" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="occurrences_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r8" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="runs_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r9" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="runs_total_count : NUMBER" vertex="1">
+          <mxGeometry height="25" width="320" y="255" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_f_r10" parent="s7_f" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFE680;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="320" y="280" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_p" parent="s7" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;fontSize=10;fontStyle=2;fontColor=#8B6914;" value="partycje: RANGE (month) INTERVAL (1) → 1 partycja / miesiąc&lt;br&gt;PK na indeksie LOCAL" vertex="1">
+          <mxGeometry height="34" width="360" x="420" y="565" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_route" parent="s7" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_route" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_route_r0" parent="s7_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_route_r1" parent="s7_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 from_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_route_r2" parent="s7_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔗 to_station_id : NUMBER FK" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_route_r3" parent="s7_d_route" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_e_d_route" edge="1" parent="s7" source="s7_d_route" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s7_f_r1" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_station" parent="s7" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_station" vertex="1">
+          <mxGeometry height="130" width="280" x="40" y="445" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_station_r0" parent="s7_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (klucz z API)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_station_r1" parent="s7_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="station_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_station_r2" parent="s7_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="city_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_station_r3" parent="s7_d_station" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_e_d_station" edge="1" parent="s7" source="s7_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="s7_f_r2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type" parent="s7" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_train_type" vertex="1">
+          <mxGeometry height="255" width="280" x="880" y="127" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type_r0" parent="s7_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type_r1" parent="s7_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type_r2" parent="s7_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="category_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type_r3" parent="s7_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="speed_category_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type_r4" parent="s7_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_code : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type_r5" parent="s7_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="carrier_name : VARCHAR2(200)" vertex="1">
+          <mxGeometry height="25" width="280" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type_r6" parent="s7_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_from : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type_r7" parent="s7_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="valid_to : DATE  (SCD2)" vertex="1">
+          <mxGeometry height="25" width="280" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_train_type_r8" parent="s7_d_train_type" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_e_d_train_type" edge="1" parent="s7" source="s7_d_train_type" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s7_f_r3" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_hour" parent="s7" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_hour" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="422" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_hour_r0" parent="s7_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER(2) PK  (0-23)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_hour_r1" parent="s7_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="hour_label : VARCHAR2(20)" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_hour_r2" parent="s7_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="part_of_day : VARCHAR2(30)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_hour_r3" parent="s7_d_hour" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_e_d_hour" edge="1" parent="s7" source="s7_d_hour" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s7_f_r4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_disruption_cause" parent="s7" style="swimlane;startSize=30;fillColor=#FFF8DC;strokeColor=#B8860B;fontStyle=1;fontSize=12;" value="gold.d_disruption_cause" vertex="1">
+          <mxGeometry height="130" width="280" x="880" y="592" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_disruption_cause_r0" parent="s7_d_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="🔑 id : NUMBER PK  (IDENTITY)" vertex="1">
+          <mxGeometry height="25" width="280" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_disruption_cause_r1" parent="s7_d_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="cause_code : VARCHAR2(20)  UQ" vertex="1">
+          <mxGeometry height="25" width="280" y="55" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_disruption_cause_r2" parent="s7_d_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="cause_name : VARCHAR2(400)" vertex="1">
+          <mxGeometry height="25" width="280" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_d_disruption_cause_r3" parent="s7_d_disruption_cause" style="text;html=1;align=left;verticalAlign=middle;spacingLeft=10;fillColor=#FFF8DC;" value="loaded_at : TIMESTAMP TZ" vertex="1">
+          <mxGeometry height="25" width="280" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_e_d_disruption_cause" edge="1" parent="s7" source="s7_d_disruption_cause" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" target="s7_f_r5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s7_e_rs" edge="1" parent="s7" source="s7_d_station" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" target="s7_d_route" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="roll0" edge="1" parent="1" source="s0" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=1;dashed=1;strokeWidth=2;fontSize=12;fontStyle=1;" target="s4" value="roll-up: SUM / MIN / MAX, podział na day_type">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="roll1" edge="1" parent="1" source="s1" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=1;dashed=1;strokeWidth=2;fontSize=12;fontStyle=1;" target="s5" value="roll-up: SUM / MIN / MAX, podział na day_type">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="roll2" edge="1" parent="1" source="s2" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=1;dashed=1;strokeWidth=2;fontSize=12;fontStyle=1;" target="s6" value="roll-up: SUM / MIN / MAX, podział na day_type">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="roll3" edge="1" parent="1" source="s3" style="edgeStyle=none;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;startArrow=oval;startFill=1;strokeColor=light-dark(#000000,#A2770D);exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;endArrow=block;endFill=1;dashed=1;strokeWidth=2;fontSize=12;fontStyle=1;" target="s7" value="roll-up: SUM / MIN / MAX, podział na day_type">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
