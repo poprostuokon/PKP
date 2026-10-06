@@ -1,7 +1,7 @@
 # =============================================================================
 # pkp_daily.py — dzienny DAG Airflow dla pipeline'u PKP
 # -----------------------------------------------------------------------------
-# Orkiestracja pełnego przebiegu dobowego (cron 04:00):
+# Orkiestracja pełnego przebiegu dobowego (cron 06:00):
 #   ingest (słowniki, rozkłady, operacje, utrudnienia) -> upload do OCI ->
 #   staging -> SILVER -> GOLD (wymiary + fakty dzienne) -> maintenance
 #   (reorg tabel i indeksów) -> raport (Excel/PDF na maila).
@@ -14,6 +14,8 @@
 # =============================================================================
 
 from datetime import datetime
+from opentelemetry import context
+
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.trigger_rule import TriggerRule
@@ -72,12 +74,13 @@ def t_silver(**_):
         _drain(cur)
 
 def t_gold(**_):
+    days = int(context["params"]["gold_days_back"])
     import db
     with db.get_connection() as conn, conn.cursor() as cur:
         cur.callproc("dbms_output.enable", (None,))
         cur.callproc("gold.pkg_gold_load.p_load_dimensions", [False])
-        cur.callproc("gold.pkg_gold_load.p_load_facts_daily", [3]
-        cur.callproc("gold.pkg_gold_load.p_load_facts_monthly", [3])
+        cur.callproc("gold.pkg_gold_load.p_load_facts_daily", [days])
+        cur.callproc("gold.pkg_gold_load.p_load_facts_monthly", [days])
         _drain(cur)
 
 
@@ -94,7 +97,7 @@ def t_table_maint(**_):
     with db.get_connection() as conn, conn.cursor() as cur:
         cur.callproc("dbms_output.enable", (None,))
         for s in MAINT_SCHEMAS:
-            cur.callproc("maintenance.pkg_maintenance.p_gen_table_move_schema", [s, 8, 50])
+            cur.callproc("maintenance.pkg_maintenance.p_gen_table_move_schema", [s])
         try:
             cur.callproc("maintenance.pkg_maintenance.p_run_compress_queue")
         finally:
@@ -105,7 +108,7 @@ def t_index_maint(**_):
     with db.get_connection() as conn, conn.cursor() as cur:
         cur.callproc("dbms_output.enable", (None,))
         for s in MAINT_SCHEMAS:
-            cur.callproc("maintenance.pkg_maintenance.p_gen_index_rebuild_schema", [s, 15, 15])
+            cur.callproc("maintenance.pkg_maintenance.p_gen_index_rebuild_schema", [s])
         try:
             cur.callproc("maintenance.pkg_maintenance.p_run_compress_queue")
         finally:
@@ -171,6 +174,7 @@ with DAG(
     max_active_runs=1,
     default_args=default_args,
     tags=["pkp", "daily", "etl"],
+    params={"gold_days_back": 3},
 ) as dag:
 
     set_run_date = PythonOperator(task_id=SET_RUN_DATE_TASK, python_callable=create_pipeline_run)
