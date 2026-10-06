@@ -14,7 +14,6 @@
 # =============================================================================
 
 from datetime import datetime
-from opentelemetry import context
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -73,7 +72,7 @@ def t_silver(**_):
         cur.callproc("silver.pkg_silver_load.p_load_all")
         _drain(cur)
 
-def t_gold(**_):
+def t_gold(**context):
     days = int(context["params"]["gold_days_back"])
     import db
     with db.get_connection() as conn, conn.cursor() as cur:
