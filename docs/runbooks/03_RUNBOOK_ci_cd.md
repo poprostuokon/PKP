@@ -187,11 +187,11 @@ Polecenie `repair` synchronizuje sumy kontrolne w historii z aktualną treścią
 nie wykonuje kodu SQL ani nie modyfikuje danych i struktury:
 
 ```powershell
-$env:TNS_ADMIN       = "C:\BAOK\python\stream_mpk\OCI\Wallet_PKPPROD"
+$env:TNS_ADMIN       = "C:\<ścieżka>\OCI\Wallet_PKPPROD"
 $env:FLYWAY_URL      = "jdbc:oracle:thin:@pkpprod_high"
 $env:FLYWAY_USER     = "ADMIN"
 $env:FLYWAY_PASSWORD = "<haslo ADMIN PROD>"
-$flyway = "C:\flyway\flyway.cmd"; $root = "C:\BAOK\python\stream_mpk"
+$flyway = "C:\flyway\flyway.cmd"; $root = "C:\<ścieżka>"
 foreach ($p in "admin","stg","maintenance","silver","gold") {
   & $flyway "-configFiles=$root\migrations\$p\conf\flyway.conf" `
             "-locations=filesystem:$root\migrations\$p\sql" `

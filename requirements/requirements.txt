@@ -38,7 +38,7 @@ packaging==26.3
 parsedatetime==2.6
 pathspec==1.0.4
 pillow==12.3.0
-pkp-ingestion @ file:///C:/BAOK/python/stream_mpk/ingestion
+#pkp-ingestion @ file:///C:/<ścieżka>/python/stream_mpk/ingestion
 pluggy==1.6.0
 protobuf==6.33.6
 pycparser==3.0
